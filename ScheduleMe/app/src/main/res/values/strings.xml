@@ -1,3 +1,83 @@
 <resources>
+    <!-- App -->
     <string name="app_name">ScheduleMe</string>
+
+
+    <string name="anonymous_user">Anonymous User</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="name">Name</string>
+    <string name="profile">Profile</string>
+    <string name="logout">Logout</string>
+    <string name="add_review">Add Review</string>
+    <string name="events">Events</string>
+    <string name="reviews">Reviews</string>
+    <string name="rating">Rating</string>
+    <string name="description">Review</string>
+    <string name="more_info">Details</string>
+    <string name="favorite">Favorite</string>
+
+    <string name="all_locations">All locations</string>
+    <string name="within_3">In 3 km</string>
+    <string name="within_5">In 5 km</string>
+    <string name="favourites">Favorites</string>
+
+    <string name="alreadyReviewed">You have already reviewed this location today</string>
+    <!-- Main Activity -->
+    <string name="authentication_failed">Authentication failed</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="toast_incorrect_info_warning">Invalid login information</string>
+    <string name="title_activity_maps">Map</string>
+
+    <!-- Events Activity -->
+    <string name="dialog_event_title">Event Information</string>
+    <string name="dialog_event_name">Name</string>
+    <string name="dialog_event_time">Time and Day</string>
+    <string name="dialog_event_details">Details</string>
+    <string name="dialog_event_today">Today!</string>
+
+    <!-- Location Reviews Activity -->
+    <string name="dialog_review_title">Add Review</string>
+    <string name="dialog_review_message">Add Details</string>
+    <string name="dialog_review_post">Post</string>
+    <string name="dialog_review_missing_info">Please fill out all the information</string>
+
+    <!-- Main PAge -->
+    <string name="current_location">My location</string>
+    <string name="locations_list">Locations List</string>
+
+    <!-- Profile Activity -->
+    <string name="deleted_account">Your account has been deleted</string>
+    <string name="failure_deleted_account">Your account has not been deleted</string>
+    <string name="failure_image_loading">Did not load the image</string>
+    <string name="failure_pick_image">Did not pick an image</string>
+    <string name="delete_account">Delete Account</string>
+    <string name="favorites_list">Favorite Locations</string>
+
+    <string name="dialog_delete_title">Delete Account</string>
+    <string name="dialog_delete_message">Are you sure you want to delete your account ?\n\nYour reviews WILL NOT be deleted, but will be displayed from an Anonymous User</string>
+    <string name="dialog_delete_yes">Yes</string>
+    <string name="dialog_delete_no">No</string>
+
+    <string name="dialog_change_name_title">Change Name</string>
+    <string name="dialog_change_name_message">New Name</string>
+    <string name="dialog_change_name_missing_info">Please fill out all the information</string>
+    <string name="dialog_change_name_post">Change</string>
+
+    <string name="error_opening_camera">The camera couldn\'t be opened</string>
+    <string name="failure_taking_picture">You didn\'t take a picture</string>
+
+    <!-- Register Page -->
+    <string name="password_match_error">Passwords do not match</string>
+    <string name="signup_message">Register Page</string>
+    <string name="toast_fill_warning">Please fill out all the information</string>
+    <string name="repeat_password">Password confirmation</string>
+
+    <!-- Settings -->
+    <string name="settingsLanguageView">Language</string>
+
+    <!--Review page-->
+    <string name="voice_rec_prompt">Add a review</string>
+    <string name="voice_rec">Voice Recognition</string>
 </resources>

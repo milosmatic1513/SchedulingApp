@@ -30,7 +30,6 @@ public class RegisterPage extends AppCompatActivity {
     FirebaseDatabase database;
     FirebaseAuth mAuth;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,7 +99,8 @@ public class RegisterPage extends AppCompatActivity {
                             );
 
                             //Redirect to home page
-                            Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                            Intent intent = new Intent(getApplicationContext(),FacetecAuthentication.class);
+                            intent.putExtra("mode",2);
                             startActivity(intent);
                         }
                         else {

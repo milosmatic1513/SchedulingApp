@@ -9,7 +9,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ScheduleMe">
-        <activity android:name=".RegisterPage"></activity>
+        <activity android:name=".MainPage"></activity>
+        <activity android:name=".FacetecAuthentication" />
+        <activity android:name=".RegisterPage" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

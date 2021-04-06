@@ -1,0 +1,102 @@
+package com.example.scheduleme.DataClasses;
+
+import java.util.Calendar;
+import java.util.Date;
+
+public class CalendarEntry {
+    private String userID;
+    private String title;
+    private String description;
+    private Date date;
+    private String timeStart;
+    private String timeEnd;
+    private String type;
+    private boolean important;
+
+    public CalendarEntry(String userID,String title,String description,Date date,String type,boolean important,String timeStart,String timeEnd)
+    {
+        this.userID = userID;
+        this.title = title;
+        this.description = description;
+        this.date = date;
+        this.type = type;
+        this.important = important;
+        this.timeStart = timeStart;
+        this.timeEnd = timeEnd;
+    }
+    public CalendarEntry()
+    {
+        this.userID = "";
+        this.title = "";
+        this.description = "";
+        this.date = null;
+        this.type = "";
+        this.important = false;
+        this.timeStart = "0000";
+        this.timeEnd = "0000";
+    }
+
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public boolean isImportant() {
+        return important;
+    }
+
+    public void setImportant(boolean important) {
+        this.important = important;
+    }
+
+    public String getTimeStart() {
+        return timeStart;
+    }
+
+    public void setTimeStart(String timeStart) {
+        this.timeStart = timeStart;
+    }
+
+    public String getTimeEnd() {
+        return timeEnd;
+    }
+
+    public void setTimeEnd(String timeEnd) {
+        this.timeEnd = timeEnd;
+    }
+}

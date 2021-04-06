@@ -39,4 +39,9 @@ dependencies {
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.facetec:facetec-sdk:9.1.1@aar'
+    implementation 'com.squareup.okhttp3:okhttp:3.12.1'
+    implementation 'com.squareup.okio:okio:1.15.0'
+    implementation 'com.google.code.gson:gson:2.8.5'
 }

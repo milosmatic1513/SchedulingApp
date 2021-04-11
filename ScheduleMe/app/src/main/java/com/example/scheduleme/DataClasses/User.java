@@ -1,9 +1,6 @@
 package com.example.scheduleme.DataClasses;
 
-import android.graphics.Bitmap;
-
 public class User {
-
     private String name;
 
     public User() {
@@ -21,5 +18,6 @@ public class User {
     public void setName(String name) {
         this.name = name;
     }
+
 
 }

@@ -62,11 +62,11 @@ public class Config {
     public static FaceTecCustomization retrieveConfigurationWizardCustomization() {
         
         // For Color Customization
-        int outerBackgroundColor = Color.parseColor("#FF24253C");
-        int frameColor = Color.parseColor("#FF24253C");
-        int borderColor = Color.parseColor("#417fb2");
-        int ovalColor = Color.parseColor("#417fb2");
-        int dualSpinnerColor = Color.parseColor("#417fb2");
+        int outerBackgroundColor = Color.parseColor("#79c5e7");
+        int frameColor = Color.parseColor("#79c5e7");
+        int borderColor = Color.parseColor("#ffffff");
+        int ovalColor = Color.parseColor("#ffffff");
+        int dualSpinnerColor = Color.parseColor("#ffffff");
         int textColor = Color.parseColor("#ffffff");
         int buttonAndFeedbackBarColor =  Color.parseColor("#417fb2");
         int buttonAndFeedbackBarTextColor = Color.parseColor("#ffffff");

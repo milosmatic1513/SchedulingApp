@@ -7,13 +7,13 @@ public class CalendarEntryBuilder {
     private String userID="";
     private String title="";
     private String description="";
-    private Date date;
+    private long date=0;
     private String timeStart;
     private String timeEnd;
     private String type="";
     private boolean important=false;
 
-    public CalendarEntryBuilder(String userID,String title,String description,Date date,String type,boolean important,String timeStart,String timeEnd)
+    public CalendarEntryBuilder(String userID,String title,String description,long date,String type,boolean important,String timeStart,String timeEnd)
     {
         this.userID = userID;
         this.title = title;
@@ -52,7 +52,7 @@ public class CalendarEntryBuilder {
         this.description = description;
         return this;
     }
-    public CalendarEntryBuilder setDate(Date date)
+    public CalendarEntryBuilder setDate(long date)
     {
         this.date = date;
         return this;

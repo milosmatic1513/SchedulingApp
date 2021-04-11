@@ -10,7 +10,6 @@ import android.util.Log;
 
 
 import com.example.scheduleme.FacetecAuthentication;
-import com.example.scheduleme.MainActivity;
 import com.facetec.sdk.FaceTecCustomization;
 import com.facetec.sdk.FaceTecFaceScanProcessor;
 import com.facetec.sdk.FaceTecFaceScanResultCallback;

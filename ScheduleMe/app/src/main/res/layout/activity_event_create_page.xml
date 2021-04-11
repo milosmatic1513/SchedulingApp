@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_color"
+    android:backgroundTint="@color/background_color"
+    tools:context=".EventCreatePage">
+
+    <Button
+        android:id="@+id/createButton"
+        android:layout_width="310dp"
+        android:layout_height="78dp"
+
+        android:layout_marginStart="51dp"
+        android:layout_marginEnd="51dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="#79c5e7"
+        android:enabled="false"
+        android:onClick="checkCreate"
+        android:text="Create"
+        android:textAllCaps="false"
+        android:textColor="#FBFBFB"
+        android:textSize="30sp"
+        app:iconTint="#2980b9"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="#79c5e7"
+        android:backgroundTint="#79c5e7"
+        android:padding="20dp"
+        android:paddingStart="40dp"
+        android:text="Create Task Page"
+        android:textColor="@color/white"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/createButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView8">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingStart="30dp"
+            android:paddingEnd="30dp">
+
+            <TextView
+                android:id="@+id/textViewTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:paddingBottom="20dp"
+                android:text="Title"
+                android:textColor="@color/black"
+                android:textSize="24sp" />
+
+            <EditText
+                android:id="@+id/editTextTitle"
+                android:layout_width="match_parent"
+                android:layout_height="43dp"
+
+                android:width="300dp"
+                android:background="@drawable/background_rounded"
+                android:backgroundTint="#F3EFEF"
+                android:ems="10"
+                android:hint="Title"
+                android:inputType="text"
+
+                android:padding="10dp" />
+
+            <TextView
+                android:id="@+id/textViewTitle5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp"
+                android:text="Description"
+                android:textColor="@color/black"
+                android:textSize="24sp" />
+
+            <EditText
+                android:id="@+id/editTextDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_rounded"
+                android:gravity="top|left"
+                android:hint="Description..."
+                android:inputType="textMultiLine"
+                android:lines="8"
+                android:maxLines="10"
+                android:minLines="6"
+                android:padding="10dp"
+                android:scrollbars="vertical" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/textViewTitle3"
+                    android:layout_width="140dp"
+                    android:layout_height="52dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:text="Time From"
+                    android:textColor="@color/black"
+                    android:textSize="24sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textViewTitle4"
+                    android:layout_width="140dp"
+                    android:layout_height="49dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:text="Time To"
+                    android:textColor="@color/black"
+                    android:textSize="24sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <EditText
+                    android:id="@+id/editTextTimeFrom"
+                    android:layout_width="140dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/background_rounded"
+                    android:ems="10"
+                    android:hint="10:00"
+                    android:inputType="textPersonName"
+                    android:paddingEnd="10dp"
+                    android:textAlignment="viewEnd"
+                    app:layout_constraintStart_toStartOf="@+id/textViewTitle3"
+                    app:layout_constraintTop_toBottomOf="@+id/textViewTitle3" />
+
+                <EditText
+                    android:id="@+id/editTextTimeTo"
+                    android:layout_width="140dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="3dp"
+                    android:background="@drawable/background_rounded"
+                    android:ems="10"
+                    android:hint="10:00"
+                    android:inputType="textPersonName"
+                    android:paddingEnd="10dp"
+                    android:textAlignment="viewEnd"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textViewTitle4" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/textViewTitle2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="20dp"
+                android:paddingBottom="10dp"
+                android:text="Date"
+                android:textColor="@color/black"
+                android:textSize="24sp" />
+
+            <EditText
+                android:id="@+id/editTextDate"
+                android:layout_width="match_parent"
+                android:layout_height="49dp"
+                android:layout_margin="20dp"
+                android:background="@drawable/background_rounded"
+                android:ems="10"
+                android:hint="10/10/2021"
+                android:inputType="date"
+                android:paddingEnd="10dp"
+                android:textAlignment="viewEnd" />
+
+            <Switch
+                android:id="@+id/switchImportant"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp"
+                android:text="Important"
+                android:textSize="24sp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

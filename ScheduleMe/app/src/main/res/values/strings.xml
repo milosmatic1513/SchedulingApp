@@ -74,10 +74,6 @@
     <string name="toast_fill_warning">Please fill out all the information</string>
     <string name="repeat_password">Password confirmation</string>
 
-    <!-- Settings -->
-    <string name="settingsLanguageView">Language</string>
 
-    <!--Review page-->
-    <string name="voice_rec_prompt">Add a review</string>
-    <string name="voice_rec">Voice Recognition</string>
+    <string name="month_1"></string>
 </resources>

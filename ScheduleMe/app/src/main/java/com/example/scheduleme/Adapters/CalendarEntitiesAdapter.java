@@ -1,25 +1,21 @@
 package com.example.scheduleme.Adapters;
-import com.example.scheduleme.DataClasses.CalendarEntry;
 
 import android.content.Context;
-import android.provider.CalendarContract;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.scheduleme.DataClasses.CalendarEntry;
 import com.example.scheduleme.MyOnClickListener;
 import com.example.scheduleme.R;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
-import java.util.Observable;
 
 public class CalendarEntitiesAdapter extends RecyclerView.Adapter<CalendarEntitiesAdapter.ViewHolder> {
 
@@ -93,12 +89,11 @@ public class CalendarEntitiesAdapter extends RecyclerView.Adapter<CalendarEntiti
         }
 
     }
-
     @Override
     public int getItemCount() {
         return calendarEntries.size();
     }
-    public CalendarEntitiesAdapter(List<CalendarEntry> calendarEntries,MyOnClickListener listener) {
+    public CalendarEntitiesAdapter(List<CalendarEntry> calendarEntries, MyOnClickListener listener) {
         this.calendarEntries = calendarEntries;
         this.listener = listener;
 

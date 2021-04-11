@@ -7,47 +7,106 @@
     android:background="@color/background_color"
     tools:context=".MainPage">
 
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="62dp"
-        android:layout_height="51dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:backgroundTint="#CD1F1F"
-        android:onClick="logout"
-        android:textColor="#FFFFFF"
-        android:textSize="24sp"
-        app:icon="@android:drawable/ic_menu_revert"
-        app:iconTint="#FFFFFF"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/calendarEntryRecyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="0dp"
-        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button3" />
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout3" />
 
-    <TextView
-        android:id="@+id/authenticatedTag"
-        android:layout_width="128dp"
-        android:layout_height="33dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/background_rounded"
-        android:backgroundTint="#3DD642"
-        android:padding="5dp"
-        android:text="Authenticated"
-        android:textAlignment="center"
-        android:textColor="#FFFFFF"
-        android:textSize="18sp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        android:backgroundTint="#79c5e7"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/textViewDateDay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:padding="0dp"
+            android:text="07"
+            android:textColor="@color/white"
+            android:textSize="80sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.488" />
+
+        <TextView
+            android:id="@+id/textViewDateYear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="16dp"
+            android:text="2021"
+            android:textColor="#FFFFFF"
+            android:textSize="30sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textViewDateDay" />
+
+        <TextView
+            android:id="@+id/textViewDateMonth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="May"
+            android:textColor="#FBFBFB"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toTopOf="@+id/textViewDateYear"
+            app:layout_constraintStart_toStartOf="@+id/textViewDateYear" />
+
+        <TextView
+            android:id="@+id/authenticatedTag"
+            android:layout_width="128dp"
+            android:layout_height="33dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/background_rounded"
+            android:backgroundTint="#4056a1"
+            android:padding="5dp"
+            android:text="Authenticated"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/imageViewCalendar"
+            android:layout_width="61dp"
+            android:layout_height="49dp"
+            android:layout_marginEnd="48dp"
+            android:layout_marginBottom="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@android:drawable/ic_menu_month" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <Button
+        android:id="@+id/button6"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/round_button"
+        android:backgroundTint="#EA1E1E"
+        android:gravity="center|center_vertical|fill_vertical"
+        android:onClick="createEvent"
+        android:padding="0dp"
+        android:paddingTop="0dp"
+        android:text="+"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

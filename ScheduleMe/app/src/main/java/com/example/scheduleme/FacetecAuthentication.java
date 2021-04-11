@@ -7,15 +7,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.facetec.sdk.FaceTecIDScanResult;
 import com.facetec.sdk.FaceTecSDK;
 import com.facetec.sdk.FaceTecSessionResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,6 +24,7 @@ import Processors.Config;
 import Processors.EnrollmentProcessor;
 import Processors.LivenessCheckProcessor;
 import Processors.NetworkingHelpers;
+import Processors.PhotoIDMatchProcessor;
 import Processors.Processor;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -92,13 +90,23 @@ public class FacetecAuthentication extends AppCompatActivity {
                             }
                         });
                     }
+                    else if (mode==3)
+                    {
+                        //enroll
+                        getSessionToken(new SessionTokenCallback() {
+                            @Override
+                            public void onSessionTokenReceived(String sessionToken) {
 
+                                latestProcessor = new PhotoIDMatchProcessor(sessionToken, FacetecAuthentication.this);
+                            }
+                        });
+                    }
                 }
 
             }
         });
 
-       FaceTecSDK.setCustomization(Config.currentCustomization);
+        FaceTecSDK.setCustomization(Config.currentCustomization);
     }
 
     public void setLatestIDScanResult(FaceTecIDScanResult idScanResult) {
@@ -224,7 +232,7 @@ public class FacetecAuthentication extends AppCompatActivity {
 
     public void goToMain()
     {
-        Intent intent = new Intent(getApplicationContext(),MainPage.class);
+        Intent intent = new Intent(getApplicationContext(), MainPage.class);
         intent.putExtra("Authenticated",isAuthenticated);
         startActivity(intent);
     }
@@ -237,5 +245,6 @@ public class FacetecAuthentication extends AppCompatActivity {
 
         }
     }
+
 
 }

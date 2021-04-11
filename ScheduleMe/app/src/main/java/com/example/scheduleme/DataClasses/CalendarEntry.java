@@ -1,19 +1,19 @@
 package com.example.scheduleme.DataClasses;
 
-import java.util.Calendar;
+import java.io.Serializable;
 import java.util.Date;
 
-public class CalendarEntry {
+public class CalendarEntry implements Serializable {
     private String userID;
     private String title;
     private String description;
-    private Date date;
+    private long date;
     private String timeStart;
     private String timeEnd;
     private String type;
     private boolean important;
 
-    public CalendarEntry(String userID,String title,String description,Date date,String type,boolean important,String timeStart,String timeEnd)
+    public CalendarEntry(String userID,String title,String description,long date,String type,boolean important,String timeStart,String timeEnd)
     {
         this.userID = userID;
         this.title = title;
@@ -29,7 +29,7 @@ public class CalendarEntry {
         this.userID = "";
         this.title = "";
         this.description = "";
-        this.date = null;
+        this.date = 0;
         this.type = "";
         this.important = false;
         this.timeStart = "0000";
@@ -60,11 +60,11 @@ public class CalendarEntry {
         this.description = description;
     }
 
-    public Date getDate() {
+    public long getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(long date) {
         this.date = date;
     }
 

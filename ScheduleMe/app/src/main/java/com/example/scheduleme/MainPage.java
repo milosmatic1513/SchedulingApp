@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -213,13 +214,18 @@ public class MainPage extends AppCompatActivity {
         startActivity(intent);
 
     }
+
     public void idProcessor(View view) {
         //Redirect to home page
         Intent intent = new Intent(getApplicationContext(),FacetecAuthentication.class);
         intent.putExtra("mode",3);
         startActivity(intent);
+        //Intent intent = new Intent(getApplicationContext(),FacetecIdScanner.class);
+        //startActivity(intent);
 
     }
+
+
     public void updateDate(Date date) {
 
 

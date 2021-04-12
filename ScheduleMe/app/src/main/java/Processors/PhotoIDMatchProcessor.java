@@ -94,7 +94,7 @@ public class PhotoIDMatchProcessor extends Processor implements FaceTecFaceScanP
         // Part 5:  Make the Networking Call to Your Servers.  Below is just example code, you are free to customize based on how your own API works.
         //
         okhttp3.Request request = new okhttp3.Request.Builder()
-                .url(Config.BaseURL + "/enrollment-3d")
+                .url(Config.BaseURL + "/match-3d-3d")
                 .header("Content-Type", "application/json")
                 .header("X-Device-Key", Config.DeviceKeyIdentifier)
                 .header("User-Agent", FaceTecSDK.createFaceTecAPIUserAgentString(sessionResult.getSessionId()))
@@ -136,12 +136,19 @@ public class PhotoIDMatchProcessor extends Processor implements FaceTecFaceScanP
                     boolean didSucceed = responseJSON.getBoolean("success");
 
                     if (didSucceed == true) {
-                        // CASE:  Success!  The Enrollment was performed and the User successfully enrolled.
+                        // CASE:  Success! Authentication succeeded.
 
-                        // Demonstrates dynamically setting the Success Screen Message.
-                        FaceTecCustomization.overrideResultScreenSuccessMessage = "Liveness\nConfirmed";
+                        //
+                        // DEVELOPER NOTE:  These properties are for demonstration purposes only so the Sample App can get information about what is happening in the processor.
+                        // In the code in your own App, you can pass around signals, flags, intermediates, and results however you would like.
+                        //
+                        isSuccess = true;
 
+                        FaceTecCustomization.overrideResultScreenSuccessMessage = "Authenticated";
                         faceScanResultCallback.succeed();
+                        sampleAppActivity.isAuthenticated=true;
+
+
                     }
                     else if (didSucceed == false) {
                         // CASE:  In our Sample code, "success" being present and false means that the User Needs to Retry.
@@ -216,16 +223,16 @@ public class PhotoIDMatchProcessor extends Processor implements FaceTecFaceScanP
         JSONObject parameters = new JSONObject();
         try {
             parameters.put("externalDatabaseRefID", sampleAppActivity.getLatestExternalDatabaseRefID());
-            parameters.put("idScan", idScanResult.getIDScanBase64());
+            //parameters.put("idScan", idScanResult.getIDScanBase64());
             parameters.put("minMatchLevel", minMatchLevel);
 
             ArrayList<String> frontImagesCompressedBase64 = idScanResult.getFrontImagesCompressedBase64();
             ArrayList<String> backImagesCompressedBase64 = idScanResult.getBackImagesCompressedBase64();
             if(frontImagesCompressedBase64.size() > 0) {
-                parameters.put("idScanFrontImage", frontImagesCompressedBase64.get(0));
+                parameters.put("image", frontImagesCompressedBase64.get(0));
             }
             if(backImagesCompressedBase64.size() > 0) {
-                parameters.put("idScanBackImage", backImagesCompressedBase64.get(0));
+                //parameters.put("idScanBackImage", backImagesCompressedBase64.get(0));
             }
         }
         catch(JSONException e) {
@@ -237,7 +244,7 @@ public class PhotoIDMatchProcessor extends Processor implements FaceTecFaceScanP
         // Part 4:  Make the Networking Call to Your Servers.  Below is just example code, you are free to customize based on how your own API works.
         //
         okhttp3.Request request = new okhttp3.Request.Builder()
-                .url(Config.BaseURL + "/match-3d-2d-idscan")
+                .url(Config.BaseURL + "/match-3d-2d-3rdparty-idphoto")
                 .header("Content-Type", "application/json")
                 .header("X-Device-Key", Config.DeviceKeyIdentifier)
                 .header("User-Agent", FaceTecSDK.createFaceTecAPIUserAgentString(idScanResult.getSessionId()))
@@ -277,8 +284,8 @@ public class PhotoIDMatchProcessor extends Processor implements FaceTecFaceScanP
                     sampleAppActivity.setLatestServerResult(responseJSON);
 
                     boolean didSucceed = responseJSON.getBoolean("success");
-                    int fullIDStatusEnumInt = responseJSON.getInt("fullIDStatusEnumInt");
-                    int digitalIDSpoofStatusEnumInt = responseJSON.getInt("digitalIDSpoofStatusEnumInt");
+                   // int fullIDStatusEnumInt = responseJSON.getInt("fullIDStatusEnumInt");
+                    //int digitalIDSpoofStatusEnumInt = responseJSON.getInt("digitalIDSpoofStatusEnumInt");
 
                     if (didSucceed == true) {
                         // CASE:  Success!  The ID Match was performed and the User successfully matched.
@@ -295,18 +302,8 @@ public class PhotoIDMatchProcessor extends Processor implements FaceTecFaceScanP
                     }
                     else if (didSucceed == false) {
 
-                        // CASE:  In our Sample code, "success" being present and false means that the User Needs to Retry.
-                        // Real Users will likely succeed on subsequent attempts after following on-screen guidance.
-                        // Attackers/Fraudsters will continue to get rejected.
-
-                        // Handle invalid ID by displaying custom message
-                        // If we could not determine the ID was Fully Visible and that the ID was a Physical, alter the feedback message to the User.
-                        if(fullIDStatusEnumInt == 1 || digitalIDSpoofStatusEnumInt == 1) {
                             idScanResultCallback.retry(FaceTecIDScanRetryMode.FRONT, "Photo ID\nNot Fully Visible");
-                        }
-                        else {
-                            idScanResultCallback.retry(FaceTecIDScanRetryMode.FRONT);
-                        }
+
                     }
                     else {
                         // CASE:  UNEXPECTED response from API.  Our Sample Code keys of a success boolean on the root of the JSON object --> You define your own API contracts with yourself and may choose to do something different here based on the error.

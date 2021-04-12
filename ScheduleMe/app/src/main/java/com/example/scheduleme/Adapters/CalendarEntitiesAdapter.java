@@ -32,6 +32,7 @@ public class CalendarEntitiesAdapter extends RecyclerView.Adapter<CalendarEntiti
         public TextView importantTag;
         private WeakReference<MyOnClickListener> listenerRef;
 
+
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview
         public ViewHolder(View itemView, MyOnClickListener listener) {

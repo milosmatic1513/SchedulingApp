@@ -12,8 +12,9 @@ public class CalendarEntry implements Serializable {
     private String timeEnd;
     private String type;
     private boolean important;
+    private int repeating;
 
-    public CalendarEntry(String userID,String title,String description,long date,String type,boolean important,String timeStart,String timeEnd)
+    public CalendarEntry(String userID,String title,String description,long date,String type,boolean important,String timeStart,String timeEnd,int repeating)
     {
         this.userID = userID;
         this.title = title;
@@ -23,7 +24,9 @@ public class CalendarEntry implements Serializable {
         this.important = important;
         this.timeStart = timeStart;
         this.timeEnd = timeEnd;
+        this.repeating = repeating;
     }
+
     public CalendarEntry()
     {
         this.userID = "";
@@ -34,6 +37,7 @@ public class CalendarEntry implements Serializable {
         this.important = false;
         this.timeStart = "0000";
         this.timeEnd = "0000";
+        this.repeating = 0;
     }
 
     public String getUserID() {
@@ -98,5 +102,13 @@ public class CalendarEntry implements Serializable {
 
     public void setTimeEnd(String timeEnd) {
         this.timeEnd = timeEnd;
+    }
+
+    public int getRepeating() {
+        return repeating;
+    }
+
+    public void setRepeating(int repeating) {
+        this.repeating = repeating;
     }
 }

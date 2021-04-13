@@ -74,6 +74,14 @@
     <string name="toast_fill_warning">Please fill out all the information</string>
     <string name="repeat_password">Password confirmation</string>
 
+    <!-- Spinner Values -->
 
-    <string name="month_1"></string>
+    <string-array name="spinnerItems">
+        <item>None</item>
+        <item>Daily</item>
+        <item>Weekly</item>
+        <item>Yearly</item>
+    </string-array>
+
+
 </resources>

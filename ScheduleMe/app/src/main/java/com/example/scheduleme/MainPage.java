@@ -225,7 +225,6 @@ public class MainPage extends AppCompatActivity {
 
     }
 
-
     public void updateDate(Date date) {
 
 
@@ -244,10 +243,42 @@ public class MainPage extends AppCompatActivity {
         String formattedDateYear = dfyear.format(date);
         textViewDateYear.setText(formattedDateYear);
 
+        //get day of the week
+        SimpleDateFormat dfdayOfTheWeek = new SimpleDateFormat("E", Locale.getDefault());
+        String formattedDateDayOfTheWeek = dfdayOfTheWeek .format(date);
+
         //update recycler view
         calendarEntriesForAdapter.clear();
-        Log.e("date",date.getTime()+"");
-        calendarEntriesForAdapter.addAll(calendarEntries.stream().filter(calendarEntry -> calendarEntry.getDate()==date.getTime()).collect(Collectors.toList()));
+
+        //Get non repeating Tasks
+        calendarEntriesForAdapter.addAll(calendarEntries.stream()
+                .filter(calendarEntry -> (calendarEntry.getDate()==date.getTime() || calendarEntry.getRepeating()==1)  && (calendarEntry.getRepeating()!=2 && calendarEntry.getRepeating()!=3) )
+                .collect(Collectors.toList())
+        );
+
+        List<CalendarEntry> calendarEntriesRepeating = new ArrayList<>();
+        calendarEntriesRepeating.addAll(calendarEntries.stream()
+                .filter(calendarEntry -> calendarEntry.getRepeating()==2 || calendarEntry.getRepeating()==3  )
+                .collect(Collectors.toList())
+        );
+        Date dateTemp =new Date();
+        for(CalendarEntry entry:calendarEntriesRepeating )
+        {
+            //find weekly repeating tasks
+           if(entry.getRepeating()==2)
+           {
+               //check if the day of the week matches the selected day of the week
+               dateTemp.setTime(entry.getDate());
+               SimpleDateFormat day = new SimpleDateFormat("E", Locale.getDefault());
+               String dayOfTheWeek = day.format(dateTemp);
+
+               if(dayOfTheWeek.equals(formattedDateDayOfTheWeek))
+               {
+                   calendarEntriesForAdapter.add(entry);
+               }
+
+           }
+        }
         adapter.notifyDataSetChanged();
     }
 }

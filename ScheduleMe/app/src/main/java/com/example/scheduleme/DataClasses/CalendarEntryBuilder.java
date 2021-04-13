@@ -12,8 +12,9 @@ public class CalendarEntryBuilder {
     private String timeEnd;
     private String type="";
     private boolean important=false;
+    private int repeating;
 
-    public CalendarEntryBuilder(String userID,String title,String description,long date,String type,boolean important,String timeStart,String timeEnd)
+    public CalendarEntryBuilder(String userID,String title,String description,long date,String type,boolean important,String timeStart,String timeEnd,int repeating)
     {
         this.userID = userID;
         this.title = title;
@@ -23,6 +24,7 @@ public class CalendarEntryBuilder {
         this.important = important;
         this.timeStart = timeStart;
         this.timeEnd = timeEnd;
+        this.repeating=repeating;
 
     }
     public CalendarEntryBuilder()
@@ -35,6 +37,7 @@ public class CalendarEntryBuilder {
         this.important = important;
         this.timeStart = "0000";
         this.timeEnd = "0000";
+        this.repeating=0;
 
     }
     public CalendarEntryBuilder setUserID(String userID)
@@ -77,8 +80,13 @@ public class CalendarEntryBuilder {
         this.important = important;
         return this;
     }
+    public CalendarEntryBuilder setRepeating(int repeating)
+    {
+        this.repeating = repeating;
+        return this;
+    }
     public CalendarEntry build()
     {
-        return new CalendarEntry(userID,title,description,date,type,important,timeStart,timeEnd);
+        return new CalendarEntry(userID,title,description,date,type,important,timeStart,timeEnd,repeating);
     }
 }

@@ -185,6 +185,40 @@
                 android:paddingEnd="10dp"
                 android:textAlignment="viewEnd" />
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp">
+
+                <TextView
+                    android:id="@+id/textViewTitle6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="47dp"
+                    android:gravity="center"
+                    android:text="Repeat"
+                    android:textColor="@color/black"
+                    android:textSize="24sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Spinner
+                    android:id="@+id/spinner"
+                    android:layout_width="162dp"
+                    android:layout_height="44dp"
+                    android:background="@drawable/background_rounded"
+                    android:entries="@array/spinnerItems"
+                    android:gravity="center_horizontal"
+                    android:textAlignment="center"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:listitem="item" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
             <Switch
                 android:id="@+id/switchImportant"
                 android:layout_width="match_parent"

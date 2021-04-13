@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -44,7 +45,7 @@ public class EventCreatePage extends AppCompatActivity {
     EditText editTextFrom;
     EditText editTextTo;
     EditText editTextDate;
-
+    Spinner spinnerRepeat;
     Switch switchImportant;
 
     Button createButton;
@@ -70,7 +71,7 @@ public class EventCreatePage extends AppCompatActivity {
         editTextDate.setInputType(InputType.TYPE_NULL);
         switchImportant=(Switch)findViewById(R.id.switchImportant);
         createButton = (Button)findViewById(R.id.createButton);
-
+        spinnerRepeat = (Spinner)findViewById(R.id.spinner);
 
         //listeners
         editTextFrom.setOnClickListener(new View.OnClickListener() {
@@ -182,6 +183,7 @@ public class EventCreatePage extends AppCompatActivity {
                     .setTimeEnd(editTextTo.getText().toString().replace(":",""))
                     .setImportant(switchImportant.isChecked())
                     .setDate(Long.parseLong(editTextDate.getTag().toString()))
+                    .setRepeating(spinnerRepeat.getSelectedItemPosition())
                     .build();
             DatabaseReference myRef = database.getReference("Users/"+currentUser.getUid()+"/Tasks/").push();
             myRef.setValue(calendarEntry);

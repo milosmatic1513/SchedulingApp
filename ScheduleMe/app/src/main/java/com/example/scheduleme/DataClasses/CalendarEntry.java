@@ -1,7 +1,9 @@
 package com.example.scheduleme.DataClasses;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class CalendarEntry implements Serializable {
     private String userID;
@@ -110,5 +112,30 @@ public class CalendarEntry implements Serializable {
 
     public void setRepeating(int repeating) {
         this.repeating = repeating;
+    }
+
+    //Custom functions
+    public String getDayOfMonth() {
+        SimpleDateFormat dfday = new SimpleDateFormat("dd", Locale.getDefault());
+        String formattedDateDay = dfday.format(date);
+        return formattedDateDay;
+    }
+
+    public String getDayOfWeek() {
+        SimpleDateFormat dfdayOfTheWeek = new SimpleDateFormat("E", Locale.getDefault());
+        String formattedDateDayOfTheWeek = dfdayOfTheWeek .format(date);
+        return formattedDateDayOfTheWeek;
+    }
+
+    public String getMonth() {
+        SimpleDateFormat dfmonth = new SimpleDateFormat("MMM", Locale.getDefault());
+        String formattedDateMonth = dfmonth.format(date);
+        return formattedDateMonth;
+    }
+
+    public String getYear() {
+        SimpleDateFormat dfyear = new SimpleDateFormat("yyyy", Locale.getDefault());
+        String formattedDateYear = dfyear.format(date);
+        return formattedDateYear;
     }
 }

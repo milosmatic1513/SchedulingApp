@@ -267,12 +267,9 @@ public class MainPage extends AppCompatActivity {
             //find weekly repeating tasks
            if(entry.getRepeating()==2)
            {
-               //check if the day of the week matches the selected day of the week
-               dateTemp.setTime(entry.getDate());
-               SimpleDateFormat day = new SimpleDateFormat("E", Locale.getDefault());
-               String dayOfTheWeek = day.format(dateTemp);
 
-               if(dayOfTheWeek.equals(formattedDateDayOfTheWeek))
+
+               if(entry.getDayOfWeek().equals(formattedDateDayOfTheWeek))
                {
                    calendarEntriesForAdapter.add(entry);
                }

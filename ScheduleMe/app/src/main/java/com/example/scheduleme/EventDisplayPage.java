@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,5 +40,9 @@ public class EventDisplayPage extends AppCompatActivity {
             timeTextView.setText(calendarEntry.getTimeStart().substring(0,2)+":"+calendarEntry.getTimeStart().substring(2,4)+"-"+calendarEntry.getTimeEnd().substring(0,2)+":"+calendarEntry.getTimeEnd().substring(2,4));
             descriptionEditText.setText(calendarEntry.getDescription());
         }
+    }
+    public void done(View view)
+    {
+        finish();
     }
 }

@@ -4,7 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -54,9 +56,11 @@ public class MainPage extends AppCompatActivity {
     DatePickerDialog pickerDate;
 
     List<CalendarEntry> calendarEntries;
-    List<CalendarEntry> calendarEntriesForAdapter;
     RecyclerView calendarEntryRecyclerView;
     CalendarEntitiesAdapter adapter;
+
+    Date currentDate;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,14 +89,15 @@ public class MainPage extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         database =FirebaseDatabase.getInstance();
 
-
-
+        //set Current selected Date
+        currentDate = new Date(System.currentTimeMillis());
         //set Listeners
 
         imageViewCalendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final Calendar cldr = Calendar.getInstance();
+                cldr.setTime(currentDate);
                 int year = cldr.get(Calendar.YEAR);
                 int month = cldr.get(Calendar.MONTH);
                 int day = cldr.get(Calendar.DAY_OF_MONTH);
@@ -106,7 +111,8 @@ public class MainPage extends AppCompatActivity {
                         try {
                             SimpleDateFormat sdf= new SimpleDateFormat("dd/MM/yyyy HH:mm");
                             Date dateParsed = sdf.parse(date);
-                            updateDate(dateParsed);
+                            currentDate = dateParsed;
+                            updateDate(currentDate);
 
 
 
@@ -120,17 +126,8 @@ public class MainPage extends AppCompatActivity {
                 pickerDate.show();
             }
         });
-    }
 
-    public void logout(View view) {
-        mAuth.signOut();
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-        startActivity(intent);
 
-    }
-
-    public void onStart() {
-        super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         currentUser = mAuth.getCurrentUser();
         if(currentUser==null)
@@ -147,40 +144,14 @@ public class MainPage extends AppCompatActivity {
                     // This method is called once with the initial value and again
                     // whenever data at this location is updated.
                     calendarEntries = new ArrayList<>();
-                    calendarEntriesForAdapter = new ArrayList<>();
+
                     for(DataSnapshot dataSnapshotChild : dataSnapshot.getChildren())
                     {
                         calendarEntries.add(dataSnapshotChild.getValue(CalendarEntry.class));
 
                     }
-                    calendarEntriesForAdapter.addAll(calendarEntries);
 
-                    // Create adapter passing in the sample user data
-                    //.stream().filter(calendarEntry -> calendarEntry.getDate() == 1610316180000L ).collect(Collectors.toList())
-                    adapter = new CalendarEntitiesAdapter(  calendarEntriesForAdapter, new MyOnClickListener(){
-                        @Override
-                        public void onItemClicked(int index) {
-                            if(!authenticated && calendarEntries.get(index).isImportant()) {
-                                Intent intent = new Intent(getApplicationContext(), FacetecAuthentication.class);
-                                intent.putExtra("mode",1);
-                                startActivity(intent);
-                            }
-                            else
-                            {
-                                Intent intent = new Intent(getApplicationContext(),EventDisplayPage.class);
-                                intent.putExtra("CalendarEntry",calendarEntries.get(index));
-                                startActivity(intent);
-
-                            }
-
-                        }
-                    });
-
-                    // Attach the adapter to the recyclerview to populate items
-                    calendarEntryRecyclerView.setAdapter(adapter);
-                    // Set layout manager to position the items
-                    calendarEntryRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-
+                    updateRecyclerView(calendarEntries);
 
                     SimpleDateFormat sdf= new SimpleDateFormat("dd/MM/yyyy HH:mm");
                     try {
@@ -202,6 +173,12 @@ public class MainPage extends AppCompatActivity {
             });
 
         }
+    }
+
+    public void logout(View view) {
+        mAuth.signOut();
+        finish();
+
     }
 
     public void setAuthenticated(boolean authenticated)
@@ -248,7 +225,7 @@ public class MainPage extends AppCompatActivity {
         String formattedDateDayOfTheWeek = dfdayOfTheWeek .format(date);
 
         //update recycler view
-        calendarEntriesForAdapter.clear();
+        List<CalendarEntry> calendarEntriesForAdapter=new ArrayList<>();
 
         //Get non repeating Tasks
         calendarEntriesForAdapter.addAll(calendarEntries.stream()
@@ -276,6 +253,38 @@ public class MainPage extends AppCompatActivity {
 
            }
         }
-        adapter.notifyDataSetChanged();
+        updateRecyclerView(calendarEntriesForAdapter);
     }
-}
+
+    public void updateRecyclerView(List<CalendarEntry> calendarEntries){
+
+        adapter = new CalendarEntitiesAdapter(  calendarEntries, new MyOnClickListener(){
+            @Override
+            public void onItemClicked(int index) {
+                if(!authenticated && calendarEntries.get(index).isImportant()) {
+                    Intent intent = new Intent(getApplicationContext(), FacetecAuthentication.class);
+                    intent.putExtra("mode",1);
+                    startActivityForResult(intent,1);
+                }
+                else
+                {
+                    Intent intent = new Intent(getApplicationContext(),EventDisplayPage.class);
+                    intent.putExtra("CalendarEntry",calendarEntries.get(index));
+                    startActivityForResult(intent,2);
+
+                }
+
+            }
+        });
+
+        // Attach the adapter to the recyclerview to populate items
+        calendarEntryRecyclerView.setAdapter(adapter);
+        // Set layout manager to position the items
+        calendarEntryRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+    }
+    @Override
+    public void onBackPressed() {
+        this.moveTaskToBack(true);
+    }
+
+} 

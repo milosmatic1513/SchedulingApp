@@ -49,7 +49,8 @@ public class EventCreatePage extends AppCompatActivity {
     Switch switchImportant;
 
     Button createButton;
-    
+
+    CalendarEntry calendarEntry;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +74,18 @@ public class EventCreatePage extends AppCompatActivity {
         createButton = (Button)findViewById(R.id.createButton);
         spinnerRepeat = (Spinner)findViewById(R.id.spinner);
 
+        calendarEntry = (CalendarEntry) getIntent().getSerializableExtra("task");
+        if(calendarEntry !=null){
+            editTextTitle.setText(calendarEntry.getTitle());
+            editTextDescription.setText(calendarEntry.getDescription());
+            switchImportant.setChecked(calendarEntry.isImportant());
+            spinnerRepeat.setSelection(calendarEntry.getRepeating());
+            editTextDate.setText(calendarEntry.getDayOfMonth()+"/"+calendarEntry.getMonthNumeric()+"/"+calendarEntry.getYear());
+            editTextDate.setTag(Long.toString(calendarEntry.getDate()));
+            editTextFrom.setText(calendarEntry.getTimeStart().substring(0,2)+":"+calendarEntry.getTimeStart().substring(2,4));
+            editTextTo.setText(calendarEntry.getTimeEnd().substring(0,2)+":"+calendarEntry.getTimeEnd().substring(2,4));
+        }
+
         //listeners
         editTextFrom.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,6 +93,14 @@ public class EventCreatePage extends AppCompatActivity {
                 final Calendar cldr = Calendar.getInstance();
                 int hour = cldr.get(Calendar.HOUR_OF_DAY);
                 int minutes = cldr.get(Calendar.MINUTE);
+                if(calendarEntry!=null) {
+                    try {
+                        hour = Integer.parseInt(calendarEntry.getTimeStart().substring(0,2));
+                        minutes = Integer.parseInt(calendarEntry.getTimeStart().substring(2,4));
+                    }catch (Exception e) {
+                        Toast.makeText(EventCreatePage.this,"Error While Parsing Time",Toast.LENGTH_SHORT);
+                    }
+                }
                 // time picker dialog
                 pickerTime = new TimePickerDialog(EventCreatePage.this,
                         new TimePickerDialog.OnTimeSetListener() {
@@ -104,6 +125,14 @@ public class EventCreatePage extends AppCompatActivity {
                 final Calendar cldr = Calendar.getInstance();
                 int hour = cldr.get(Calendar.HOUR_OF_DAY);
                 int minutes = cldr.get(Calendar.MINUTE);
+                if(calendarEntry!=null) {
+                    try {
+                        hour = Integer.parseInt(calendarEntry.getTimeEnd().substring(0,2));
+                        minutes = Integer.parseInt(calendarEntry.getTimeEnd().substring(2,4));
+                    }catch (Exception e) {
+                        Toast.makeText(EventCreatePage.this,"Error While Parsing Time",Toast.LENGTH_SHORT);
+                    }
+                }
                 // time picker dialog
                 pickerTime = new TimePickerDialog(EventCreatePage.this,
                         new TimePickerDialog.OnTimeSetListener() {
@@ -130,6 +159,15 @@ public class EventCreatePage extends AppCompatActivity {
                 int year = cldr.get(Calendar.YEAR);
                 int month = cldr.get(Calendar.MONTH);
                 int day = cldr.get(Calendar.DAY_OF_MONTH);
+                if(calendarEntry!=null) {
+                    try {
+                        year = Integer.parseInt(calendarEntry.getYear());
+                        month = Integer.parseInt(calendarEntry.getMonthNumeric());
+                        day = Integer.parseInt(calendarEntry.getDayOfMonth());
+                    }catch (Exception e) {
+                        Toast.makeText(EventCreatePage.this,"Error While Parsing Date",Toast.LENGTH_SHORT);
+                    }
+                }
                 // Date picker dialog
                 pickerDate = new DatePickerDialog(EventCreatePage.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
@@ -155,12 +193,9 @@ public class EventCreatePage extends AppCompatActivity {
             }
 
         });
-
     }
 
     public void checkCreate(View view) {
-
-
         //check if any of the fields are empty
         if (
                 editTextTitle.getText().toString().trim().length()==0 ||
@@ -175,8 +210,7 @@ public class EventCreatePage extends AppCompatActivity {
         }
         else
         {
-
-            CalendarEntry calendarEntry= new CalendarEntryBuilder()
+            CalendarEntry newCalendarEntry= new CalendarEntryBuilder()
                     .setTitle(editTextTitle.getText().toString())
                     .setDescription(editTextDescription.getText().toString())
                     .setTimeStart(editTextFrom.getText().toString().replace(":",""))
@@ -185,10 +219,27 @@ public class EventCreatePage extends AppCompatActivity {
                     .setDate(Long.parseLong(editTextDate.getTag().toString()))
                     .setRepeating(spinnerRepeat.getSelectedItemPosition())
                     .build();
-            DatabaseReference myRef = database.getReference("Users/"+currentUser.getUid()+"/Tasks/").push();
-            myRef.setValue(calendarEntry);
-            Intent intent = new Intent(getApplicationContext(),MainPage.class);
-            startActivity(intent);
+
+            if(calendarEntry==null) {
+                DatabaseReference myRef = database.getReference("Users/" + currentUser.getUid() + "/Tasks/").push();
+                myRef.setValue(newCalendarEntry);
+                finish();
+            }
+            else
+            {
+                if(calendarEntry.getDatabaseID().trim().length()!=0){
+                    DatabaseReference myRef = database.getReference("Users/" + currentUser.getUid() + "/Tasks/"+calendarEntry.getDatabaseID());
+                    myRef.setValue(newCalendarEntry);
+                    Intent intent=new Intent();
+                    newCalendarEntry.setDatabaseID(calendarEntry.getDatabaseID());
+                    intent.putExtra("calendarEntry",newCalendarEntry);
+                    setResult(2,intent);
+                    finish();
+                }
+                Toast.makeText(EventCreatePage.this,"There was an error ",Toast.LENGTH_SHORT);
+
+            }
+
 
         }
     }

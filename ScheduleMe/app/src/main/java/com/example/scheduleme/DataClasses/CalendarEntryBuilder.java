@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class CalendarEntryBuilder {
 
-    private String userID="";
+    private String databaseID="";
     private String title="";
     private String description="";
     private long date=0;
@@ -14,9 +14,9 @@ public class CalendarEntryBuilder {
     private boolean important=false;
     private int repeating;
 
-    public CalendarEntryBuilder(String userID,String title,String description,long date,String type,boolean important,String timeStart,String timeEnd,int repeating)
+    public CalendarEntryBuilder(String databaseID,String title,String description,long date,String type,boolean important,String timeStart,String timeEnd,int repeating)
     {
-        this.userID = userID;
+        this.databaseID = databaseID;
         this.title = title;
         this.description = description;
         this.date = date;
@@ -29,7 +29,7 @@ public class CalendarEntryBuilder {
     }
     public CalendarEntryBuilder()
     {
-        this.userID = userID;
+        this.databaseID = databaseID;
         this.title = title;
         this.description = description;
         this.date = date;
@@ -40,9 +40,9 @@ public class CalendarEntryBuilder {
         this.repeating=0;
 
     }
-    public CalendarEntryBuilder setUserID(String userID)
+    public CalendarEntryBuilder setDatabaseID(String databaseID)
     {
-        this.userID = userID;
+        this.databaseID = databaseID;
         return this;
     }
     public CalendarEntryBuilder setTitle(String title)
@@ -87,6 +87,6 @@ public class CalendarEntryBuilder {
     }
     public CalendarEntry build()
     {
-        return new CalendarEntry(userID,title,description,date,type,important,timeStart,timeEnd,repeating);
+        return new CalendarEntry(databaseID,title,description,date,type,important,timeStart,timeEnd,repeating);
     }
 }

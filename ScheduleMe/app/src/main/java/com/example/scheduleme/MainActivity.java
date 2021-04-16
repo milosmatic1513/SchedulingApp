@@ -40,9 +40,6 @@ public class MainActivity extends AppCompatActivity {
     static String HIDDEN_TAG_STRING = "hidden";
     SharedPreferences sharedPreferences;
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

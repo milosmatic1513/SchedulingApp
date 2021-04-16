@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.Locale;
 
 public class CalendarEntry implements Serializable {
-    private String userID;
+    private String databaseID;
     private String title;
     private String description;
     private long date;
@@ -16,9 +16,8 @@ public class CalendarEntry implements Serializable {
     private boolean important;
     private int repeating;
 
-    public CalendarEntry(String userID,String title,String description,long date,String type,boolean important,String timeStart,String timeEnd,int repeating)
-    {
-        this.userID = userID;
+    public CalendarEntry(String databaseID,String title,String description,long date,String type,boolean important,String timeStart,String timeEnd,int repeating) {
+        this.databaseID = databaseID;
         this.title = title;
         this.description = description;
         this.date = date;
@@ -29,9 +28,8 @@ public class CalendarEntry implements Serializable {
         this.repeating = repeating;
     }
 
-    public CalendarEntry()
-    {
-        this.userID = "";
+    public CalendarEntry() {
+        this.databaseID = "";
         this.title = "";
         this.description = "";
         this.date = 0;
@@ -42,12 +40,12 @@ public class CalendarEntry implements Serializable {
         this.repeating = 0;
     }
 
-    public String getUserID() {
-        return userID;
+    public String getDatabaseID() {
+        return databaseID;
     }
 
-    public void setUserID(String userID) {
-        this.userID = userID;
+    public void setDatabaseID(String databaseID) {
+        this.databaseID = databaseID;
     }
 
     public String getTitle() {
@@ -129,6 +127,12 @@ public class CalendarEntry implements Serializable {
 
     public String getMonth() {
         SimpleDateFormat dfmonth = new SimpleDateFormat("MMM", Locale.getDefault());
+        String formattedDateMonth = dfmonth.format(date);
+        return formattedDateMonth;
+    }
+
+    public String getMonthNumeric() {
+        SimpleDateFormat dfmonth = new SimpleDateFormat("MM", Locale.getDefault());
         String formattedDateMonth = dfmonth.format(date);
         return formattedDateMonth;
     }

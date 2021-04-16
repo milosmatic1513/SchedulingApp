@@ -19,7 +19,7 @@
         android:backgroundTint="#79c5e7"
         android:enabled="false"
         android:onClick="checkCreate"
-        android:text="Create"
+        android:text="Done"
         android:textAllCaps="false"
         android:textColor="#FBFBFB"
         android:textSize="30sp"

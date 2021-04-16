@@ -41,6 +41,7 @@ import java.util.stream.Collectors;
 
 public class MainPage extends AppCompatActivity {
 
+    static int VIEW_ACTIVITY_REQUEST=1;
     private FirebaseAuth mAuth;
     FirebaseUser currentUser;
     FirebaseDatabase database;
@@ -147,7 +148,9 @@ public class MainPage extends AppCompatActivity {
 
                     for(DataSnapshot dataSnapshotChild : dataSnapshot.getChildren())
                     {
-                        calendarEntries.add(dataSnapshotChild.getValue(CalendarEntry.class));
+                        CalendarEntry databaseCalendarEntry = dataSnapshotChild.getValue(CalendarEntry.class);
+                        databaseCalendarEntry.setDatabaseID(dataSnapshotChild.getRef().getKey());
+                        calendarEntries.add(databaseCalendarEntry);
 
                     }
 
@@ -270,7 +273,7 @@ public class MainPage extends AppCompatActivity {
                 {
                     Intent intent = new Intent(getApplicationContext(),EventDisplayPage.class);
                     intent.putExtra("CalendarEntry",calendarEntries.get(index));
-                    startActivityForResult(intent,2);
+                    startActivityForResult(intent,VIEW_ACTIVITY_REQUEST);
 
                 }
 
@@ -286,5 +289,6 @@ public class MainPage extends AppCompatActivity {
     public void onBackPressed() {
         this.moveTaskToBack(true);
     }
+
 
 } 

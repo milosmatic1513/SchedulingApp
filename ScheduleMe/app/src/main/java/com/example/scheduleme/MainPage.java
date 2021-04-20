@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.example.scheduleme.Adapters.CalendarEntitiesAdapter;
 import com.example.scheduleme.DataClasses.CalendarEntry;
+import com.example.scheduleme.Utilities.DatabaseFaker;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -46,6 +47,7 @@ public class MainPage extends AppCompatActivity {
     private boolean authenticated;
     private static int VIEW_ACTIVITY_REQUEST=1;
     private Date currentDate;
+    private CalendarEntry lastDeletedItem;
     //View Components
     TextView authenticatedTag;
     TextView textViewDateDay;
@@ -59,6 +61,7 @@ public class MainPage extends AppCompatActivity {
     List<CalendarEntry> calendarEntries;
     CalendarEntitiesAdapter adapter;
     ItemTouchHelper.SimpleCallback simpleItemTouchCallback;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,6 +137,15 @@ public class MainPage extends AppCompatActivity {
         else{
             //Get database ref
             DatabaseReference myRef = database.getReference("Users/"+currentUser.getUid()+"/Tasks/");
+
+            //=====Remove After Testing
+            DatabaseFaker dbFaker = new DatabaseFaker(currentUser,database,myRef);
+            dbFaker.generateData();
+            dbFaker.generateData();
+            dbFaker.generateData();
+            dbFaker.generateData();
+            dbFaker.generateData();
+            //======
             // Read from the database
             myRef.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -297,12 +309,23 @@ public class MainPage extends AppCompatActivity {
                 //Remove swiped item from list and notify the RecyclerView
                 int position = viewHolder.getAdapterPosition();
 
-                Log.e( "tag","Item " + adapter.getDatabaseID(position) +" Deleted ");
+
                 DatabaseReference myRef = database.getReference("Users/" + currentUser.getUid() + "/Tasks/"+adapter.getDatabaseID(position)
                 );
                 myRef.removeValue();
-                calendarEntries.remove(position);
-                updateRecyclerView(calendarEntries);
+
+                Snackbar snackbar = Snackbar.make(findViewById(R.id.coordinatorLayout),"Item " + calendarEntries.get(position).getTitle() +" Deleted ",Snackbar.LENGTH_SHORT);
+                snackbar.setAction("UNDO", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        myRef.setValue(lastDeletedItem);
+                        calendarEntries.add(lastDeletedItem);
+                        lastDeletedItem = null;
+
+                    }
+                });
+                lastDeletedItem = calendarEntries.remove(position);
+                snackbar.show();
 
             }
         };

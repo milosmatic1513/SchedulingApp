@@ -1,6 +1,7 @@
 package com.example.scheduleme.Adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,10 +95,15 @@ public class CalendarEntitiesAdapter extends RecyclerView.Adapter<CalendarEntiti
     public int getItemCount() {
         return calendarEntries.size();
     }
+
     public CalendarEntitiesAdapter(List<CalendarEntry> calendarEntries, MyOnClickListener listener) {
         this.calendarEntries = calendarEntries;
         this.listener = listener;
 
+    }
+
+    public String getDatabaseID(int position){
+        return calendarEntries.get(position).getDatabaseID();
     }
 
 }

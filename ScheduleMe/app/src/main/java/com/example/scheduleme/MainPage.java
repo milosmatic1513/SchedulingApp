@@ -1,27 +1,23 @@
 package com.example.scheduleme;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.scheduleme.Adapters.CalendarEntitiesAdapter;
 import com.example.scheduleme.DataClasses.CalendarEntry;
-import com.example.scheduleme.DataClasses.CalendarEntryBuilder;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -41,26 +37,28 @@ import java.util.stream.Collectors;
 
 public class MainPage extends AppCompatActivity {
 
-    static int VIEW_ACTIVITY_REQUEST=1;
+
+    //Database
     private FirebaseAuth mAuth;
     FirebaseUser currentUser;
     FirebaseDatabase database;
+    //Private variables
     private boolean authenticated;
+    private static int VIEW_ACTIVITY_REQUEST=1;
+    private Date currentDate;
+    //View Components
     TextView authenticatedTag;
-
     TextView textViewDateDay;
     TextView textViewDateMonth;
     TextView textViewDateYear;
-
     ImageView imageViewCalendar;
-
-    DatePickerDialog pickerDate;
-
-    List<CalendarEntry> calendarEntries;
     RecyclerView calendarEntryRecyclerView;
+    //Dialogs
+    DatePickerDialog pickerDate;
+    //Calendar View Components
+    List<CalendarEntry> calendarEntries;
     CalendarEntitiesAdapter adapter;
-
-    Date currentDate;
+    ItemTouchHelper.SimpleCallback simpleItemTouchCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,14 +67,12 @@ public class MainPage extends AppCompatActivity {
 
         //components Initialization
         authenticatedTag = findViewById(R.id.authenticatedTag);
-
         textViewDateDay  = findViewById(R.id.textViewDateDay);
         textViewDateMonth  = findViewById(R.id.textViewDateMonth);
         textViewDateYear  = findViewById(R.id.textViewDateYear);
-
         imageViewCalendar=findViewById(R.id.imageViewCalendar);
-
         calendarEntryRecyclerView = (RecyclerView) findViewById(R.id.calendarEntryRecyclerView);
+
         //Check if the user Is authenticated;
         Intent intent = getIntent();
         authenticated=intent.getBooleanExtra("Authenticated",false);
@@ -92,8 +88,8 @@ public class MainPage extends AppCompatActivity {
 
         //set Current selected Date
         currentDate = new Date(System.currentTimeMillis());
-        //set Listeners
 
+        //set Listeners
         imageViewCalendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -128,15 +124,15 @@ public class MainPage extends AppCompatActivity {
             }
         });
 
-
         // Check if user is signed in (non-null) and update UI accordingly.
         currentUser = mAuth.getCurrentUser();
         if(currentUser==null)
         {
+            //Redirect to main
             startActivity(new Intent(getApplicationContext(),MainActivity.class));
         }
         else{
-
+            //Get database ref
             DatabaseReference myRef = database.getReference("Users/"+currentUser.getUid()+"/Tasks/");
             // Read from the database
             myRef.addValueEventListener(new ValueEventListener() {
@@ -153,9 +149,9 @@ public class MainPage extends AppCompatActivity {
                         calendarEntries.add(databaseCalendarEntry);
 
                     }
-
+                    //update view according to results
                     updateRecyclerView(calendarEntries);
-
+                    //Update date With current date
                     SimpleDateFormat sdf= new SimpleDateFormat("dd/MM/yyyy HH:mm");
                     try {
                         Date dateParsed = sdf.parse(Calendar.getInstance().get(Calendar.DAY_OF_MONTH)+"/"+(Calendar.getInstance().get(Calendar.MONTH)+1)+"/" +Calendar.getInstance().get(Calendar.YEAR)+" 00:00");
@@ -176,6 +172,8 @@ public class MainPage extends AppCompatActivity {
             });
 
         }
+        //configure SimpleItemTouchCallback
+        setupSimpleItemTouchCallback();
     }
 
     public void logout(View view) {
@@ -184,15 +182,9 @@ public class MainPage extends AppCompatActivity {
 
     }
 
-    public void setAuthenticated(boolean authenticated)
-    {
-        this.authenticated = authenticated;
-    }
-
     public void createEvent(View view) {
         Intent intent = new Intent(getApplicationContext(),EventCreatePage.class);
         startActivity(intent);
-
     }
 
     public void idProcessor(View view) {
@@ -200,14 +192,11 @@ public class MainPage extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(),FacetecAuthentication.class);
         intent.putExtra("mode",3);
         startActivity(intent);
-        //Intent intent = new Intent(getApplicationContext(),FacetecIdScanner.class);
-        //startActivity(intent);
+
 
     }
 
     public void updateDate(Date date) {
-
-
         //set Day
         SimpleDateFormat dfday = new SimpleDateFormat("dd", Locale.getDefault());
         String formattedDateDay = dfday.format(date);
@@ -235,13 +224,13 @@ public class MainPage extends AppCompatActivity {
                 .filter(calendarEntry -> (calendarEntry.getDate()==date.getTime() || calendarEntry.getRepeating()==1)  && (calendarEntry.getRepeating()!=2 && calendarEntry.getRepeating()!=3) )
                 .collect(Collectors.toList())
         );
-
+        //Get repeating tasks
         List<CalendarEntry> calendarEntriesRepeating = new ArrayList<>();
         calendarEntriesRepeating.addAll(calendarEntries.stream()
                 .filter(calendarEntry -> calendarEntry.getRepeating()==2 || calendarEntry.getRepeating()==3  )
                 .collect(Collectors.toList())
         );
-        Date dateTemp =new Date();
+        //Set repeating tasks to calendar view if appropriate
         for(CalendarEntry entry:calendarEntriesRepeating )
         {
             //find weekly repeating tasks
@@ -260,7 +249,7 @@ public class MainPage extends AppCompatActivity {
     }
 
     public void updateRecyclerView(List<CalendarEntry> calendarEntries){
-
+        //create new adapter
         adapter = new CalendarEntitiesAdapter(  calendarEntries, new MyOnClickListener(){
             @Override
             public void onItemClicked(int index) {
@@ -280,14 +269,43 @@ public class MainPage extends AppCompatActivity {
             }
         });
 
+
         // Attach the adapter to the recyclerview to populate items
         calendarEntryRecyclerView.setAdapter(adapter);
         // Set layout manager to position the items
         calendarEntryRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        //attach itemTouch helper to adapter
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(calendarEntryRecyclerView);
     }
     @Override
     public void onBackPressed() {
         this.moveTaskToBack(true);
+    }
+
+    private void setupSimpleItemTouchCallback() {
+        simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT ) {
+
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+
+                //Remove swiped item from list and notify the RecyclerView
+                int position = viewHolder.getAdapterPosition();
+
+                Log.e( "tag","Item " + adapter.getDatabaseID(position) +" Deleted ");
+                DatabaseReference myRef = database.getReference("Users/" + currentUser.getUid() + "/Tasks/"+adapter.getDatabaseID(position)
+                );
+                myRef.removeValue();
+                calendarEntries.remove(position);
+                updateRecyclerView(calendarEntries);
+
+            }
+        };
     }
 
 

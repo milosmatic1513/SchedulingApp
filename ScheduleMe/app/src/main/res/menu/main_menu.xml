@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item android:title="Display">
+
+        <menu>
+
+            <group android:checkableBehavior="single">
+
+                <item
+                    android:id="@+id/daily"
+                    android:title="Daily" />
+
+                <item
+                    android:id="@+id/weekly"
+                    android:title="Weekly" />
+
+                <item
+                    android:id="@+id/monthly"
+                    android:title="Monthly" />
+            </group>
+        </menu>
+    </item>
+
+    <item android:title="Profile">
+
+        <menu>
+
+            <group android:checkableBehavior="single">
+
+                <item
+                    android:id="@+id/nav_profile"
+                    android:title="Profile" />
+
+                <item
+                    android:id="@+id/nav_logout"
+                    android:title="Logout" />
+            </group>
+        </menu>
+    </item>
+
+
+</menu>

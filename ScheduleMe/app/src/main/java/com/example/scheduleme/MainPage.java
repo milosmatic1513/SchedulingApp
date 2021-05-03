@@ -1,7 +1,15 @@
 package com.example.scheduleme;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+<<<<<<< Updated upstream
 import androidx.recyclerview.widget.ItemTouchHelper;
+=======
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+>>>>>>> Stashed changes
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -9,6 +17,8 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.ImageView;
@@ -17,8 +27,13 @@ import android.widget.Toast;
 
 import com.example.scheduleme.Adapters.CalendarEntitiesAdapter;
 import com.example.scheduleme.DataClasses.CalendarEntry;
+<<<<<<< Updated upstream
 import com.example.scheduleme.Utilities.DatabaseFaker;
 import com.google.android.material.snackbar.Snackbar;
+=======
+import com.example.scheduleme.DataClasses.CalendarEntryBuilder;
+import com.google.android.material.navigation.NavigationView;
+>>>>>>> Stashed changes
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -36,7 +51,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
-public class MainPage extends AppCompatActivity {
+public class MainPage extends AppCompatActivity implements  NavigationView.OnNavigationItemSelectedListener {
 
 
     //Database
@@ -63,6 +78,12 @@ public class MainPage extends AppCompatActivity {
     ItemTouchHelper.SimpleCallback simpleItemTouchCallback;
 
 
+    DrawerLayout drawerLayout;
+    NavigationView navigationView;
+    Toolbar toolbar;
+    Menu menu;
+
+    TextView message;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +94,14 @@ public class MainPage extends AppCompatActivity {
         textViewDateDay  = findViewById(R.id.textViewDateDay);
         textViewDateMonth  = findViewById(R.id.textViewDateMonth);
         textViewDateYear  = findViewById(R.id.textViewDateYear);
+<<<<<<< Updated upstream
+=======
+
+        drawerLayout=findViewById(R.id.drawer_layout);
+        navigationView=findViewById(R.id.nav_view);
+        toolbar=findViewById(R.id.toolbar);
+
+>>>>>>> Stashed changes
         imageViewCalendar=findViewById(R.id.imageViewCalendar);
         calendarEntryRecyclerView = (RecyclerView) findViewById(R.id.calendarEntryRecyclerView);
 
@@ -127,6 +156,17 @@ public class MainPage extends AppCompatActivity {
             }
         });
 
+<<<<<<< Updated upstream
+=======
+        //Nav bar initialization
+        navigationView.bringToFront();
+        ActionBarDrawerToggle toggle=new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.navigation_drawer_open,R.string.navigation_drawer_close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+        menu=navigationView.getMenu();
+        navigationView.setNavigationItemSelectedListener(this);
+
+>>>>>>> Stashed changes
         // Check if user is signed in (non-null) and update UI accordingly.
         currentUser = mAuth.getCurrentUser();
         if(currentUser==null)
@@ -184,16 +224,28 @@ public class MainPage extends AppCompatActivity {
             });
 
         }
+<<<<<<< Updated upstream
         //configure SimpleItemTouchCallback
         setupSimpleItemTouchCallback();
+=======
+
+>>>>>>> Stashed changes
     }
 
     public void logout(View view) {
+        logout();
+
+    }
+
+<<<<<<< Updated upstream
+=======
+    public void logout() {
         mAuth.signOut();
         finish();
 
     }
 
+>>>>>>> Stashed changes
     public void createEvent(View view) {
         Intent intent = new Intent(getApplicationContext(),EventCreatePage.class);
         startActivity(intent);
@@ -291,8 +343,32 @@ public class MainPage extends AppCompatActivity {
         itemTouchHelper.attachToRecyclerView(calendarEntryRecyclerView);
     }
     @Override
-    public void onBackPressed() {
-        this.moveTaskToBack(true);
+    public void onBackPressed(){
+
+        if(drawerLayout.isDrawerOpen(GravityCompat.START)){
+            drawerLayout.closeDrawer(GravityCompat.START);
+        }
+        else{
+            this.moveTaskToBack(true);
+        }
+
+    }
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.weekly:
+                break;
+            case R.id.daily:
+                break;
+            case R.id.monthly:
+                break;
+            case R.id.nav_logout:
+                logout();
+                break;
+
+        }
+        drawerLayout.closeDrawer(GravityCompat.START); return true;
+
     }
 
     private void setupSimpleItemTouchCallback() {

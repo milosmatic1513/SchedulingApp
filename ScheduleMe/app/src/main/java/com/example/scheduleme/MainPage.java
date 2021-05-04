@@ -1,18 +1,13 @@
 package com.example.scheduleme;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-<<<<<<< Updated upstream
 import androidx.recyclerview.widget.ItemTouchHelper;
-=======
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
->>>>>>> Stashed changes
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,16 +19,11 @@ import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.scheduleme.Adapters.CalendarEntitiesAdapter;
 import com.example.scheduleme.DataClasses.CalendarEntry;
-<<<<<<< Updated upstream
 import com.example.scheduleme.Utilities.DatabaseFaker;
 import com.google.android.material.snackbar.Snackbar;
-=======
-import com.example.scheduleme.DataClasses.CalendarEntryBuilder;
 import com.google.android.material.navigation.NavigationView;
->>>>>>> Stashed changes
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -41,7 +31,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -94,17 +83,17 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
         textViewDateDay  = findViewById(R.id.textViewDateDay);
         textViewDateMonth  = findViewById(R.id.textViewDateMonth);
         textViewDateYear  = findViewById(R.id.textViewDateYear);
-<<<<<<< Updated upstream
-=======
+
 
         drawerLayout=findViewById(R.id.drawer_layout);
         navigationView=findViewById(R.id.nav_view);
         toolbar=findViewById(R.id.toolbar);
 
->>>>>>> Stashed changes
+
         imageViewCalendar=findViewById(R.id.imageViewCalendar);
         calendarEntryRecyclerView = (RecyclerView) findViewById(R.id.calendarEntryRecyclerView);
 
+        message=findViewById(R.id.textView2);
         //Check if the user Is authenticated;
         Intent intent = getIntent();
         authenticated=intent.getBooleanExtra("Authenticated",false);
@@ -156,8 +145,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
             }
         });
 
-<<<<<<< Updated upstream
-=======
+
         //Nav bar initialization
         navigationView.bringToFront();
         ActionBarDrawerToggle toggle=new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.navigation_drawer_open,R.string.navigation_drawer_close);
@@ -166,7 +154,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
         menu=navigationView.getMenu();
         navigationView.setNavigationItemSelectedListener(this);
 
->>>>>>> Stashed changes
+
         // Check if user is signed in (non-null) and update UI accordingly.
         currentUser = mAuth.getCurrentUser();
         if(currentUser==null)
@@ -179,13 +167,13 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
             DatabaseReference myRef = database.getReference("Users/"+currentUser.getUid()+"/Tasks/");
 
             //=====Remove After Testing
-            DatabaseFaker dbFaker = new DatabaseFaker(currentUser,database,myRef);
+  /*          DatabaseFaker dbFaker = new DatabaseFaker(currentUser,database,myRef);
             dbFaker.generateData();
             dbFaker.generateData();
             dbFaker.generateData();
             dbFaker.generateData();
             dbFaker.generateData();
-            //======
+            //======*/
             // Read from the database
             myRef.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -204,14 +192,18 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
                     //update view according to results
                     updateRecyclerView(calendarEntries);
                     //Update date With current date
-                    SimpleDateFormat sdf= new SimpleDateFormat("dd/MM/yyyy HH:mm");
-                    try {
-                        Date dateParsed = sdf.parse(Calendar.getInstance().get(Calendar.DAY_OF_MONTH)+"/"+(Calendar.getInstance().get(Calendar.MONTH)+1)+"/" +Calendar.getInstance().get(Calendar.YEAR)+" 00:00");
-                        updateDate(dateParsed);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
+                    if(currentDate==null) {
+                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                        try {
+                            Date dateParsed = sdf.parse(Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + "/" + (Calendar.getInstance().get(Calendar.MONTH) + 1) + "/" + Calendar.getInstance().get(Calendar.YEAR) + " 00:00");
+                            updateDate(dateParsed);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
                     }
-
+                    else {
+                        updateDate(currentDate);
+                    }
 
                 }
 
@@ -224,12 +216,10 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
             });
 
         }
-<<<<<<< Updated upstream
+
         //configure SimpleItemTouchCallback
         setupSimpleItemTouchCallback();
-=======
 
->>>>>>> Stashed changes
     }
 
     public void logout(View view) {
@@ -237,15 +227,13 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
 
     }
 
-<<<<<<< Updated upstream
-=======
+
     public void logout() {
         mAuth.signOut();
         finish();
 
     }
 
->>>>>>> Stashed changes
     public void createEvent(View view) {
         Intent intent = new Intent(getApplicationContext(),EventCreatePage.class);
         startActivity(intent);
@@ -300,15 +288,14 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
             //find weekly repeating tasks
            if(entry.getRepeating()==2)
            {
-
-
                if(entry.getDayOfWeek().equals(formattedDateDayOfTheWeek))
                {
                    calendarEntriesForAdapter.add(entry);
                }
-
            }
         }
+        if(calendarEntriesRepeating.size() == 0 && calendarEntriesForAdapter.size()==0) message.setVisibility(View.VISIBLE);
+        else message.setVisibility(View.GONE);
         updateRecyclerView(calendarEntriesForAdapter);
     }
 
@@ -386,11 +373,11 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
                 int position = viewHolder.getAdapterPosition();
 
 
+
                 DatabaseReference myRef = database.getReference("Users/" + currentUser.getUid() + "/Tasks/"+adapter.getDatabaseID(position)
                 );
-                myRef.removeValue();
 
-                Snackbar snackbar = Snackbar.make(findViewById(R.id.coordinatorLayout),"Item " + calendarEntries.get(position).getTitle() +" Deleted ",Snackbar.LENGTH_SHORT);
+                Snackbar snackbar = Snackbar.make(findViewById(R.id.drawer_layout),"Item " + calendarEntries.get(position).getTitle() +" Deleted ",Snackbar.LENGTH_SHORT);
                 snackbar.setAction("UNDO", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -400,7 +387,8 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
 
                     }
                 });
-                lastDeletedItem = calendarEntries.remove(position);
+                lastDeletedItem = calendarEntries.get(position);
+                myRef.removeValue();
                 snackbar.show();
 
             }

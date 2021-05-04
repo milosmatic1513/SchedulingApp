@@ -15,20 +15,13 @@
         <activity
             android:name=".FacetecAuthentication"
             android:screenOrientation="portrait" />
-<<<<<<< Updated upstream
-        <activity android:name=".RegisterPage" />
-        <activity android:name=".MainPage" />
-        <activity android:name=".MainActivity" >
-=======
         <activity android:name=".RegisterPage"
             android:screenOrientation="portrait" />
         <activity android:name=".MainPage"/>
         <activity android:name=".MainActivity"
             android:screenOrientation="portrait">
->>>>>>> Stashed changes
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

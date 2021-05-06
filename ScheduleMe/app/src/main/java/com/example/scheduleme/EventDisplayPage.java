@@ -48,12 +48,10 @@ public class EventDisplayPage extends AppCompatActivity {
             repeatingTextView.setText("Repeating : "+items[calendarEntry.getRepeating()]);
         }
     }
-
-    public void done(View view)
-    {
+    @Override
+    public void onBackPressed() {
         finish();
     }
-
     public void edit(View view) {
         Intent intent = new Intent(this,EventCreatePage.class);
         intent.putExtra("task",calendarEntry);

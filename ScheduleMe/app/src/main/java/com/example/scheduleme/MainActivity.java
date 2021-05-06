@@ -14,14 +14,20 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.Toast;
 
+import com.example.scheduleme.DataClasses.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -31,6 +37,7 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
+    private FirebaseDatabase firebaseDatabase;
     private SQLiteDatabase database;
 
     EditText passwordEditText , emailEditText;
@@ -85,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Firebase Initialization
         mAuth = FirebaseAuth.getInstance();
+        firebaseDatabase= FirebaseDatabase.getInstance();
         mAuth.signOut();
         updateUI();
 
@@ -129,10 +137,31 @@ public class MainActivity extends AppCompatActivity {
 
                                 //Intent intent = new Intent(getApplicationContext(), FacetecAuthentication.class);
                                 //intent.putExtra("mode",1);
+                                FirebaseUser currentUser = mAuth.getCurrentUser();
+                                DatabaseReference myRef = firebaseDatabase.getReference("Users/" + currentUser.getUid());
+                                myRef.addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        User user = snapshot.getValue(User.class);
+                                        if (user.isLoginAuth())
+                                        {
+                                            Intent intent = new Intent(getApplicationContext(), FacetecAuthentication.class);
+                                            intent.putExtra("mode",1);
+                                            startActivity(intent);
+                                        }
+                                        else
+                                        {
+                                            Intent intent = new Intent(getApplicationContext(), MainPage.class);
+                                            startActivity(intent);
+                                        }
+                                    }
 
-                                Intent intent = new Intent(getApplicationContext(), MainPage.class);
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
 
-                                startActivity(intent);
+                                    }
+                                });
+
                                 //Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_SHORT).show();
 
                             }

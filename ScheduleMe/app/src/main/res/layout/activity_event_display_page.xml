@@ -10,13 +10,13 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout3"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="75dp"
         android:background="#FFFFFF"
         android:backgroundTint="#79c5e7"
         android:padding="10dp"
         android:paddingLeft="40dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -24,22 +24,22 @@
             android:id="@+id/textViewTitleDisplay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:text="Title"
             android:textColor="#FFFFFF"
-            android:textSize="40sp"
+            android:textSize="30sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.265" />
+            app:layout_constraintVertical_bias="0.542" />
 
         <ImageView
             android:id="@+id/imageView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/textViewTitleDisplay"
-            app:layout_constraintTop_toBottomOf="@+id/textViewTitleDisplay"
-            app:layout_constraintVertical_bias="0.09"
+            app:layout_constraintEnd_toStartOf="@+id/textViewTimeDisplay"
+            app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@android:drawable/ic_menu_recent_history"
             app:tint="#FFFFFF" />
 
@@ -47,56 +47,22 @@
             android:id="@+id/textViewTimeDisplay"
             android:layout_width="108dp"
             android:layout_height="30dp"
-            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
             android:gravity="center_horizontal|center_vertical"
             android:text="00:00 - 00:00 "
             android:textColor="#FFFFFF"
             android:textSize="18sp"
-            app:layout_constraintStart_toEndOf="@+id/imageView2"
-            app:layout_constraintTop_toBottomOf="@+id/textViewTitleDisplay" />
-
-        <Button
-            android:id="@+id/button8"
-            android:layout_width="69dp"
-            android:layout_height="59dp"
-            android:layout_marginEnd="16dp"
-            android:background="#00FFFFFF"
-            android:gravity="center_horizontal"
-            android:onClick="edit"
-            app:icon="@android:drawable/ic_menu_edit"
-            app:iconGravity="textStart"
-            app:iconTint="#FFFFFF"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.488" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <Button
-        android:id="@+id/createButton"
-        android:layout_width="310dp"
-        android:layout_height="78dp"
-
-        android:layout_marginStart="51dp"
-        android:layout_marginEnd="51dp"
-        android:layout_marginBottom="16dp"
-        android:backgroundTint="#79c5e7"
-        android:clickable="true"
-        android:enabled="true"
-        android:onClick="done"
-        android:text="DONE"
-        android:textAllCaps="false"
-        android:textColor="#FBFBFB"
-        android:textSize="30sp"
-        app:iconTint="#2980b9"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/createButton"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout3">
@@ -137,7 +103,22 @@
                 android:text="Repeating :"
                 android:textColor="@color/black"
                 android:textSize="18sp" />
+
         </LinearLayout>
     </ScrollView>
+
+    <Button
+        android:id="@+id/button8"
+        android:layout_width="69dp"
+        android:layout_height="59dp"
+        android:background="@drawable/round_button"
+        android:backgroundTint="#E11212"
+        android:gravity="center_horizontal"
+        android:onClick="edit"
+        app:icon="@android:drawable/ic_menu_edit"
+        app:iconGravity="textStart"
+        app:iconTint="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

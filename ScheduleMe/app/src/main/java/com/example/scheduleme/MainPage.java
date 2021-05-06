@@ -50,6 +50,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
     //Private variables
     private boolean authenticated;
     private static int VIEW_ACTIVITY_REQUEST=1;
+    private static int VIEW_ACTIVITY_REQUEST_PROFILE=2;
     private Date currentDate;
     private CalendarEntry lastDeletedItem;
     //View Components
@@ -84,16 +85,15 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
         textViewDateMonth  = findViewById(R.id.textViewDateMonth);
         textViewDateYear  = findViewById(R.id.textViewDateYear);
 
-
         drawerLayout=findViewById(R.id.drawer_layout);
         navigationView=findViewById(R.id.nav_view);
         toolbar=findViewById(R.id.toolbar);
-
 
         imageViewCalendar=findViewById(R.id.imageViewCalendar);
         calendarEntryRecyclerView = (RecyclerView) findViewById(R.id.calendarEntryRecyclerView);
 
         message=findViewById(R.id.textView2);
+
         //Check if the user Is authenticated;
         Intent intent = getIntent();
         authenticated=intent.getBooleanExtra("Authenticated",false);
@@ -108,7 +108,12 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
         database =FirebaseDatabase.getInstance();
 
         //set Current selected Date
-        currentDate = new Date(System.currentTimeMillis());
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        try {
+            currentDate = sdf.parse(Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + "/" + (Calendar.getInstance().get(Calendar.MONTH) + 1) + "/" + Calendar.getInstance().get(Calendar.YEAR) + " 00:00");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
         //set Listeners
         imageViewCalendar.setOnClickListener(new View.OnClickListener() {
@@ -192,16 +197,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
                     //update view according to results
                     updateRecyclerView(calendarEntries);
                     //Update date With current date
-                    if(currentDate==null) {
-                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-                        try {
-                            Date dateParsed = sdf.parse(Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + "/" + (Calendar.getInstance().get(Calendar.MONTH) + 1) + "/" + Calendar.getInstance().get(Calendar.YEAR) + " 00:00");
-                            updateDate(dateParsed);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    else {
+                    if(currentDate!=null) {
                         updateDate(currentDate);
                     }
 
@@ -226,7 +222,6 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
         logout();
 
     }
-
 
     public void logout() {
         mAuth.signOut();
@@ -351,6 +346,9 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
                 break;
             case R.id.nav_logout:
                 logout();
+                break;
+            case R.id.nav_profile:
+                startActivityForResult(new Intent(MainPage.this,ProfilePage.class),VIEW_ACTIVITY_REQUEST_PROFILE);
                 break;
 
         }

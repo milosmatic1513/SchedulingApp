@@ -10,7 +10,7 @@
     android:layout_marginRight="10dp"
     android:background="@drawable/background_rounded"
     android:clipToPadding="false"
-    android:elevation="8dp">
+    android:elevation="20dp">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"

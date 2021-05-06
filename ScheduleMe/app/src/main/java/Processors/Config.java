@@ -80,7 +80,7 @@ public class Config {
         FaceTecCancelButtonCustomization.ButtonLocation cancelButtonLocation = FaceTecCancelButtonCustomization.ButtonLocation.TOP_LEFT;
 
         // For image Customization
-        int yourAppLogoImage = R.drawable.facetec_internal_your_app_logo;
+        int yourAppLogoImage = com.example.scheduleme.R.drawable.logo;
         FaceTecSecurityWatermarkImage securityWatermarkImage = FaceTecSecurityWatermarkImage.FACETEC;
         
 

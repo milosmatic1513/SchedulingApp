@@ -3,6 +3,8 @@ package com.example.scheduleme.DataClasses;
 public class User {
     private String name;
 
+    private boolean loginAuth=false;
+
     public User() {
         this("");
     }
@@ -19,5 +21,12 @@ public class User {
         this.name = name;
     }
 
+    public boolean isLoginAuth() {
+        return loginAuth;
+    }
+
+    public void setLoginAuth(boolean loginAuth) {
+        this.loginAuth = loginAuth;
+    }
 
 }

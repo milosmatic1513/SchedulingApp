@@ -41,8 +41,6 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 
 public class MainPage extends AppCompatActivity implements  NavigationView.OnNavigationItemSelectedListener {
-
-
     //Database
     private FirebaseAuth mAuth;
     FirebaseUser currentUser;
@@ -137,8 +135,6 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
                             currentDate = dateParsed;
                             updateDate(currentDate);
 
-
-
                         } catch (ParseException e) {
                             Log.e("tag",e.getLocalizedMessage().toString());
                         }
@@ -180,7 +176,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
             dbFaker.generateData();
             //======*/
             // Read from the database
-            myRef.addValueEventListener(new ValueEventListener() {
+            myRef.addListenerForSingleValueEvent (new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     // This method is called once with the initial value and again
@@ -372,8 +368,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
 
 
 
-                DatabaseReference myRef = database.getReference("Users/" + currentUser.getUid() + "/Tasks/"+adapter.getDatabaseID(position)
-                );
+                DatabaseReference myRef = database.getReference("Users/" + currentUser.getUid() + "/Tasks/"+adapter.getDatabaseID(position));
 
                 Snackbar snackbar = Snackbar.make(findViewById(R.id.drawer_layout),"Item " + calendarEntries.get(position).getTitle() +" Deleted ",Snackbar.LENGTH_SHORT);
                 snackbar.setAction("UNDO", new View.OnClickListener() {

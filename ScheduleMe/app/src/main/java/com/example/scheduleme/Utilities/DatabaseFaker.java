@@ -28,7 +28,7 @@ public class DatabaseFaker {
                 .setTitle(wordList[random.nextInt(wordList.length)]+" "+wordList[random.nextInt(wordList.length)])
                 .setTimeStart(timeList[random.nextInt(timeList.length)])
                 .setTimeEnd(timeList[random.nextInt(timeList.length)])
-                .setDate(1618866000000l)
+                .setDate(1620248400000l)
                 .build()
         );
     }

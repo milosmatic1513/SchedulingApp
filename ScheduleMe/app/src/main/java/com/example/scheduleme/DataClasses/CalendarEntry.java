@@ -1,5 +1,7 @@
 package com.example.scheduleme.DataClasses;
 
+import android.graphics.Bitmap;
+
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -15,6 +17,7 @@ public class CalendarEntry implements Serializable {
     private String type;
     private boolean important;
     private int repeating;
+    private Bitmap image;
 
     public CalendarEntry(String databaseID,String title,String description,long date,String type,boolean important,String timeStart,String timeEnd,int repeating) {
         this.databaseID = databaseID;

@@ -1,5 +1,9 @@
 package com.example.scheduleme.DataClasses;
 
+import android.graphics.Bitmap;
+import android.util.Base64;
+
+import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -15,8 +19,9 @@ public class CalendarEntry implements Serializable {
     private String type;
     private boolean important;
     private int repeating;
+    private String base64Image;
 
-    public CalendarEntry(String databaseID,String title,String description,long date,String type,boolean important,String timeStart,String timeEnd,int repeating) {
+    public CalendarEntry(String databaseID,String title,String description,long date,String type,boolean important,String timeStart,String timeEnd,int repeating, String base64Image) {
         this.databaseID = databaseID;
         this.title = title;
         this.description = description;
@@ -26,6 +31,7 @@ public class CalendarEntry implements Serializable {
         this.timeStart = timeStart;
         this.timeEnd = timeEnd;
         this.repeating = repeating;
+        this.base64Image = base64Image;
     }
 
     public CalendarEntry() {
@@ -38,6 +44,7 @@ public class CalendarEntry implements Serializable {
         this.timeStart = "0000";
         this.timeEnd = "0000";
         this.repeating = 0;
+        this.base64Image = "";
     }
 
     public String getDatabaseID() {
@@ -112,6 +119,14 @@ public class CalendarEntry implements Serializable {
         this.repeating = repeating;
     }
 
+    public String getBase64Image() {
+        return base64Image;
+    }
+
+    public void setBase64Image(String base64Image) {
+        this.base64Image = base64Image;
+    }
+
     //Custom functions
     public String getDayOfMonth() {
         SimpleDateFormat dfday = new SimpleDateFormat("dd", Locale.getDefault());
@@ -142,4 +157,5 @@ public class CalendarEntry implements Serializable {
         String formattedDateYear = dfyear.format(date);
         return formattedDateYear;
     }
+
 }

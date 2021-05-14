@@ -1,5 +1,9 @@
 package com.example.scheduleme.DataClasses;
 
+import android.graphics.Bitmap;
+import android.util.Base64;
+
+import java.io.ByteArrayOutputStream;
 import java.util.Date;
 
 public class CalendarEntryBuilder {
@@ -13,8 +17,9 @@ public class CalendarEntryBuilder {
     private String type="";
     private boolean important=false;
     private int repeating;
+    private String base64Image;
 
-    public CalendarEntryBuilder(String databaseID,String title,String description,long date,String type,boolean important,String timeStart,String timeEnd,int repeating)
+    public CalendarEntryBuilder(String databaseID, String title, String description, long date, String type, boolean important, String timeStart, String timeEnd, int repeating, String base64Image)
     {
         this.databaseID = databaseID;
         this.title = title;
@@ -25,6 +30,7 @@ public class CalendarEntryBuilder {
         this.timeStart = timeStart;
         this.timeEnd = timeEnd;
         this.repeating=repeating;
+        this.base64Image = base64Image;
 
     }
     public CalendarEntryBuilder()
@@ -38,6 +44,7 @@ public class CalendarEntryBuilder {
         this.timeStart = "0000";
         this.timeEnd = "0000";
         this.repeating=0;
+        this.base64Image="";
 
     }
     public CalendarEntryBuilder setDatabaseID(String databaseID)
@@ -85,8 +92,14 @@ public class CalendarEntryBuilder {
         this.repeating = repeating;
         return this;
     }
+    public CalendarEntryBuilder setBase64Image(String base64Image)
+    {
+        this.base64Image = base64Image;
+        return this;
+    }
     public CalendarEntry build()
     {
-        return new CalendarEntry(databaseID,title,description,date,type,important,timeStart,timeEnd,repeating);
+        return new CalendarEntry(databaseID,title,description,date,type,important,timeStart,timeEnd,repeating,base64Image);
     }
+
 }

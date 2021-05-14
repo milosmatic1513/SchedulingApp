@@ -47,12 +47,8 @@ public class FacetecAuthentication extends AppCompatActivity {
         setContentView(R.layout.activity_facetec_authentication);
         //ComponentInitialization
         messageDisplay=findViewById(R.id.messageDisplay);
-
         //Firebase Initialization
         mAuth = FirebaseAuth.getInstance();
-
-
-
     }
 
     public void initializeFacetec() {
@@ -124,7 +120,6 @@ public class FacetecAuthentication extends AppCompatActivity {
     public void setLatestServerResult(JSONObject responseJSON) {
         this.latestServerResult = responseJSON;
     }
-
     // Perform Enrollment, generating a username each time to guarantee uniqueness.
     public void onEnrollUserPressed(View v) {
         getSessionToken(new SessionTokenCallback() {
@@ -229,9 +224,7 @@ public class FacetecAuthentication extends AppCompatActivity {
         }
     }
 
-
-    public void goToMain()
-    {
+    public void goToMain() {
         Intent intent = new Intent(getApplicationContext(), MainPage.class);
         intent.putExtra("Authenticated",isAuthenticated);
         startActivity(intent);

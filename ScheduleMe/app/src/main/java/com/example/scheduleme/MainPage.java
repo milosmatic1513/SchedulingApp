@@ -10,18 +10,25 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.scheduleme.Adapters.CalendarEntitiesAdapter;
 import com.example.scheduleme.DataClasses.CalendarEntry;
-import com.example.scheduleme.Utilities.DatabaseFaker;
+import com.example.scheduleme.Utilities.ImageUtilities;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -41,8 +48,8 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 
 public class MainPage extends AppCompatActivity implements  NavigationView.OnNavigationItemSelectedListener {
-
-
+    //Request codes
+    static int EDIT_ACTIVITY_REQUEST=2;
     //Database
     private FirebaseAuth mAuth;
     FirebaseUser currentUser;
@@ -57,22 +64,23 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
     TextView textViewDateDay;
     TextView textViewDateMonth;
     TextView textViewDateYear;
+    TextView message;
     ImageView imageViewCalendar;
+    //Layouts
     RecyclerView calendarEntryRecyclerView;
+    RelativeLayout loadingScreen;
     //Dialogs
     DatePickerDialog pickerDate;
     //Calendar View Components
     List<CalendarEntry> calendarEntries;
     CalendarEntitiesAdapter adapter;
     ItemTouchHelper.SimpleCallback simpleItemTouchCallback;
-
-
+    //Drawer layout
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     Toolbar toolbar;
     Menu menu;
 
-    TextView message;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,7 +91,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
         textViewDateDay  = findViewById(R.id.textViewDateDay);
         textViewDateMonth  = findViewById(R.id.textViewDateMonth);
         textViewDateYear  = findViewById(R.id.textViewDateYear);
-
+        loadingScreen = findViewById(R.id.loadingPanel);
 
         drawerLayout=findViewById(R.id.drawer_layout);
         navigationView=findViewById(R.id.nav_view);
@@ -93,7 +101,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
         imageViewCalendar=findViewById(R.id.imageViewCalendar);
         calendarEntryRecyclerView = (RecyclerView) findViewById(R.id.calendarEntryRecyclerView);
 
-        message=findViewById(R.id.textView2);
+        message=findViewById(R.id.message);
         //Check if the user Is authenticated;
         Intent intent = getIntent();
         authenticated=intent.getBooleanExtra("Authenticated",false);
@@ -107,15 +115,25 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
         mAuth = FirebaseAuth.getInstance();
         database =FirebaseDatabase.getInstance();
 
-        //set Current selected Date
-        currentDate = new Date(System.currentTimeMillis());
 
         //set Listeners
         imageViewCalendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final Calendar cldr = Calendar.getInstance();
-                cldr.setTime(currentDate);
+                if(currentDate==null) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                    try {
+                        Date dateParsed = sdf.parse(Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + "/" + (Calendar.getInstance().get(Calendar.MONTH) + 1) + "/" + Calendar.getInstance().get(Calendar.YEAR) + " 00:00");
+                        cldr.setTime(dateParsed);
+
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else {
+                    cldr.setTime(currentDate);
+                }
                 int year = cldr.get(Calendar.YEAR);
                 int month = cldr.get(Calendar.MONTH);
                 int day = cldr.get(Calendar.DAY_OF_MONTH);
@@ -124,8 +142,8 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
 
-                        String date = dayOfMonth+"/"+(month+1)+"/"+year +" 00:00";
 
+                        String date = dayOfMonth+"/"+(month+1)+"/"+year +" 00:00";
                         try {
                             SimpleDateFormat sdf= new SimpleDateFormat("dd/MM/yyyy HH:mm");
                             Date dateParsed = sdf.parse(date);
@@ -180,7 +198,12 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     // This method is called once with the initial value and again
                     // whenever data at this location is updated.
+
+                    //clear loading screen
+                    loadingScreen.setVisibility(View.GONE);
+
                     calendarEntries = new ArrayList<>();
+
 
                     for(DataSnapshot dataSnapshotChild : dataSnapshot.getChildren())
                     {
@@ -189,8 +212,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
                         calendarEntries.add(databaseCalendarEntry);
 
                     }
-                    //update view according to results
-                    updateRecyclerView(calendarEntries);
+
                     //Update date With current date
                     if(currentDate==null) {
                         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
@@ -226,7 +248,6 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
         logout();
 
     }
-
 
     public void logout() {
         mAuth.signOut();
@@ -286,13 +307,13 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
         for(CalendarEntry entry:calendarEntriesRepeating )
         {
             //find weekly repeating tasks
-           if(entry.getRepeating()==2)
-           {
-               if(entry.getDayOfWeek().equals(formattedDateDayOfTheWeek))
-               {
-                   calendarEntriesForAdapter.add(entry);
-               }
-           }
+            if(entry.getRepeating()==2)
+            {
+                if(entry.getDayOfWeek().equals(formattedDateDayOfTheWeek))
+                {
+                    calendarEntriesForAdapter.add(entry);
+                }
+            }
         }
         if(calendarEntriesRepeating.size() == 0 && calendarEntriesForAdapter.size()==0) message.setVisibility(View.VISIBLE);
         else message.setVisibility(View.GONE);
@@ -311,9 +332,10 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
                 }
                 else
                 {
-                    Intent intent = new Intent(getApplicationContext(),EventDisplayPage.class);
-                    intent.putExtra("CalendarEntry",calendarEntries.get(index));
-                    startActivityForResult(intent,VIEW_ACTIVITY_REQUEST);
+                    //Intent intent = new Intent(getApplicationContext(),EventDisplayPage.class);
+                    //intent.putExtra("CalendarEntry",calendarEntries.get(index));
+                    //startActivityForResult(intent,VIEW_ACTIVITY_REQUEST);
+                    setupBottomView(calendarEntries.get(index));
 
                 }
 
@@ -351,6 +373,9 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
                 break;
             case R.id.nav_logout:
                 logout();
+                break;
+            case R.id.nav_profile:
+                startActivityForResult(new Intent(getApplicationContext(),ProfilePage.class),2);
                 break;
 
         }
@@ -395,5 +420,87 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
         };
     }
 
+    private void setupBottomView(CalendarEntry calendarEntry) {
 
-} 
+        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(MainPage.this);
+        bottomSheetDialog.setContentView(R.layout.fragment_bottom_view_layout);
+        //components initialization
+        TextView textViewTitle = bottomSheetDialog.findViewById(R.id.titleBottomView);
+        TextView textViewDate = bottomSheetDialog.findViewById(R.id.dateViewBottomView);
+        TextView textViewTime = bottomSheetDialog.findViewById(R.id.timeBottomView);
+        TextView textViewRepeating = bottomSheetDialog.findViewById(R.id.repeatingBottomView);
+        TextView descriptionEditText = bottomSheetDialog.findViewById(R.id.descriptionEditText);
+
+        LinearLayout descriptionBox=bottomSheetDialog.findViewById(R.id.descriptionBoxBottomView);
+        LinearLayout imageBox=bottomSheetDialog.findViewById(R.id.imageBoxBottomView);
+
+        ImageView imageView = bottomSheetDialog.findViewById(R.id.imageBottomView);
+
+        ImageButton button = bottomSheetDialog.findViewById(R.id.editButtonBottomView);
+
+        bottomSheetDialog.show();
+        textViewTitle.setText(calendarEntry.getTitle());
+        textViewDate.setText("Date : "+calendarEntry.getDayOfMonth()+"/"+calendarEntry.getMonth()+"/"+calendarEntry.getYear());
+        textViewTime.setText(calendarEntry.getTimeStart().substring(0,2)+":"+calendarEntry.getTimeStart().substring(2,4)+"-"+calendarEntry.getTimeEnd().substring(0,2)+":"+calendarEntry.getTimeEnd().substring(2,4));
+        String [] items =getResources().getStringArray(R.array.spinnerItems);
+        textViewRepeating.setText("Repeating : "+items[calendarEntry.getRepeating()]);
+
+        if(calendarEntry.getDescription().length()==0)
+        {
+            descriptionBox.setVisibility(View.GONE);
+        }
+        else
+        {
+            descriptionEditText.setText(calendarEntry.getDescription());
+        }
+        if(calendarEntry.getBase64Image().length()==0)
+        {
+            imageBox.setVisibility(View.GONE);
+        }
+        else
+        {
+            Bitmap bitmap = ImageUtilities.base64ToBitmap(calendarEntry.getBase64Image());
+            if(bitmap!=null) {
+                imageView.setImageBitmap(bitmap);
+            }
+            else
+            {
+                //set error image
+                imageBox.setVisibility(View.GONE);
+            }
+        }
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bottomSheetDialog.dismiss();
+                Intent intent = new Intent(MainPage.this,EventCreatePage.class);
+                intent.putExtra("task",calendarEntry);
+                startActivityForResult(intent ,EDIT_ACTIVITY_REQUEST);
+
+            }
+        });
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // check if the request code is same as what is passed  here it is 2
+        if(requestCode==EDIT_ACTIVITY_REQUEST) {
+            CalendarEntry calendarEntry=null;
+            try {
+                calendarEntry=(CalendarEntry) data.getSerializableExtra("calendarEntry");
+            }catch (java.lang.NullPointerException e ){
+                Toast.makeText(getApplicationContext(),"Editing Canceled",Toast.LENGTH_SHORT);
+            }
+
+            if (calendarEntry==null)
+            {
+                Toast.makeText(getApplicationContext(),"There was an error loading the task", Toast.LENGTH_SHORT);
+            }
+            else
+            {
+                setupBottomView(calendarEntry);
+            }
+        }
+    }
+}

@@ -2,6 +2,7 @@ package com.example.scheduleme.DataClasses;
 
 public class User {
     private String name;
+    private boolean loginAuth;
 
     public User() {
         this("");
@@ -9,6 +10,7 @@ public class User {
 
     public User(String name) {
         this.name = name;
+
     }
 
     public String getName() {
@@ -18,6 +20,7 @@ public class User {
     public void setName(String name) {
         this.name = name;
     }
+
 
 
 }

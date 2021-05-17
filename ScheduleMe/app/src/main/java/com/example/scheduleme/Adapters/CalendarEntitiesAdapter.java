@@ -87,7 +87,7 @@ public class CalendarEntitiesAdapter extends RecyclerView.Adapter<CalendarEntiti
 
         if(!calendarEntry.isImportant())
         {
-            holder.importantTag.setVisibility(View.GONE);
+            holder.importantTag.setVisibility(View.INVISIBLE);
         }
 
     }

@@ -1,0 +1,150 @@
+package com.example.scheduleme;
+
+import android.content.Context;
+import android.os.Bundle;
+
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.example.scheduleme.Adapters.CalendarEntitiesAdapter;
+import com.example.scheduleme.DataClasses.CalendarEntry;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.database.DatabaseReference;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class DailyViewFragment extends Fragment {
+    CalendarEntitiesAdapter adapter;
+    public List<CalendarEntry> calendarEntryList;
+    List<CalendarEntry> calendarEntriesForAdapter;
+    RecyclerView calendarEntryRecyclerView;
+    TextView message;
+    MainPage parent;
+    ItemTouchHelper.SimpleCallback simpleItemTouchCallback;
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_daily_view, container, false);
+    }
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        // Setup any handles to view objects here
+        // EditText etFoo = (EditText) view.findViewById(R.id.etFoo);
+
+        parent= ((MainPage)getActivity());
+
+        message = view.findViewById(R.id.message);
+
+        calendarEntryRecyclerView = (RecyclerView) view.findViewById(R.id.recycler);
+        calendarEntryRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+
+        setupSimpleItemTouchCallback();
+         mListener.onComplete();
+    }
+
+    public void passData(List<CalendarEntry> calendarEntryList)
+    {
+        this.calendarEntryList = calendarEntryList;
+
+    }
+
+    public void updateRecyclerView(List<CalendarEntry> calendarEntriesForAdapter){
+        //create new adapter
+        adapter = new CalendarEntitiesAdapter(calendarEntriesForAdapter, new MyOnClickListener(){
+            @Override
+            public void onItemClicked(int index) {
+                parent.setupBottomView(calendarEntriesForAdapter.get(index));
+
+            }
+        });
+        if(calendarEntriesForAdapter.size()==0) {
+            message.setVisibility(View.VISIBLE);
+        }
+        else{
+            message.setVisibility(View.GONE);
+        }
+
+
+        // Attach the adapter to the recyclerview to populate items
+        calendarEntryRecyclerView.setAdapter(adapter);
+        // Set layout manager to position the items
+
+        //attach itemTouch helper to adapter
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(calendarEntryRecyclerView);
+    }
+
+    private void setupSimpleItemTouchCallback() {
+        simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT ) {
+
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+
+                parent.deleteFromDatabase(viewHolder.getAdapterPosition(),adapter.getDatabaseID(viewHolder.getAdapterPosition()),calendarEntriesForAdapter.get(viewHolder.getAdapterPosition()));
+
+            }
+    };
+    }
+
+    public void updateDate(Date date,String formattedDateDayOfTheWeek)
+    {
+        //update recycler view
+        calendarEntriesForAdapter=new ArrayList<>();
+        //Get non repeating Tasks
+        calendarEntriesForAdapter.addAll(calendarEntryList.stream()
+                .filter(calendarEntry -> (calendarEntry.getDate()==date.getTime() || calendarEntry.getRepeating()==1)  && (calendarEntry.getRepeating()!=2 && calendarEntry.getRepeating()!=3) )
+                .collect(Collectors.toList())
+        );
+        //Get repeating tasks
+        List<CalendarEntry> calendarEntriesRepeating = new ArrayList<>();
+        calendarEntriesRepeating.addAll(calendarEntryList.stream()
+                .filter(calendarEntry -> calendarEntry.getRepeating()==2 || calendarEntry.getRepeating()==3  )
+                .collect(Collectors.toList())
+        );
+        //Set repeating tasks to calendar view if appropriate
+        for(CalendarEntry entry:calendarEntriesRepeating )
+        {
+            //find weekly repeating tasks
+            if(entry.getRepeating()==2)
+            {
+                if(entry.getDayOfWeek().equals(formattedDateDayOfTheWeek))
+                {
+                    calendarEntriesForAdapter.add(entry);
+                }
+            }
+        }
+        updateRecyclerView(calendarEntriesForAdapter);
+    }
+
+    public static interface OnCompleteListener {
+        public abstract void onComplete();
+    }
+
+    private WeeklyViewFragment.OnCompleteListener mListener;
+
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            this.mListener = (WeeklyViewFragment.OnCompleteListener)context;
+        }
+        catch (final ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement OnCompleteListener");
+        }
+    }
+}

@@ -2,16 +2,15 @@ package com.example.scheduleme;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.core.widget.NestedScrollView;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -25,7 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.example.scheduleme.Adapters.CalendarEntitiesAdapter;
+
 import com.example.scheduleme.DataClasses.CalendarEntry;
 import com.example.scheduleme.Utilities.ImageUtilities;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -47,7 +46,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
-public class MainPage extends AppCompatActivity implements  NavigationView.OnNavigationItemSelectedListener {
+public class MainPage extends AppCompatActivity implements  NavigationView.OnNavigationItemSelectedListener ,WeeklyViewFragment.OnCompleteListener,DailyViewFragment.OnCompleteListener {
     //Request codes
     static int EDIT_ACTIVITY_REQUEST=2;
     //Database
@@ -57,7 +56,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
     //Private variables
     private boolean authenticated;
     private static int VIEW_ACTIVITY_REQUEST=1;
-    private Date currentDate;
+    public Date currentDate;
     private CalendarEntry lastDeletedItem;
     //View Components
     TextView authenticatedTag;
@@ -67,20 +66,22 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
     TextView message;
     ImageView imageViewCalendar;
     //Layouts
-    RecyclerView calendarEntryRecyclerView;
     RelativeLayout loadingScreen;
     //Dialogs
     DatePickerDialog pickerDate;
     //Calendar View Components
     List<CalendarEntry> calendarEntries;
-    CalendarEntitiesAdapter adapter;
-    ItemTouchHelper.SimpleCallback simpleItemTouchCallback;
+
     //Drawer layout
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     Toolbar toolbar;
     Menu menu;
+    //Fragments
+    DailyViewFragment dailyViewFragment;
+    WeeklyViewFragment weeklyViewFragment;
 
+    int selectedViewMode;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,7 +100,6 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
 
 
         imageViewCalendar=findViewById(R.id.imageViewCalendar);
-        calendarEntryRecyclerView = (RecyclerView) findViewById(R.id.calendarEntryRecyclerView);
 
         message=findViewById(R.id.message);
         //Check if the user Is authenticated;
@@ -150,8 +150,6 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
                             currentDate = dateParsed;
                             updateDate(currentDate);
 
-
-
                         } catch (ParseException e) {
                             Log.e("tag",e.getLocalizedMessage().toString());
                         }
@@ -185,7 +183,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
             DatabaseReference myRef = database.getReference("Users/"+currentUser.getUid()+"/Tasks/");
 
             //=====Remove After Testing
-  /*          DatabaseFaker dbFaker = new DatabaseFaker(currentUser,database,myRef);
+            /*          DatabaseFaker dbFaker = new DatabaseFaker(currentUser,database,myRef);
             dbFaker.generateData();
             dbFaker.generateData();
             dbFaker.generateData();
@@ -239,8 +237,18 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
 
         }
 
-        //configure SimpleItemTouchCallback
-        setupSimpleItemTouchCallback();
+        calendarEntries = new ArrayList<>();
+
+        // Begin the transaction
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        // Replace the contents of the container with the new fragment
+        selectedViewMode=R.id.daily;
+        dailyViewFragment = new DailyViewFragment();
+        weeklyViewFragment = new WeeklyViewFragment();
+        ft.replace(R.id.frameLayout, dailyViewFragment);
+        // or ft.add(R.id.your_placeholder, new FooFragment());
+        // Complete the changes added above
+        ft.commit();
 
     }
 
@@ -289,68 +297,21 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
         SimpleDateFormat dfdayOfTheWeek = new SimpleDateFormat("E", Locale.getDefault());
         String formattedDateDayOfTheWeek = dfdayOfTheWeek .format(date);
 
-        //update recycler view
-        List<CalendarEntry> calendarEntriesForAdapter=new ArrayList<>();
 
-        //Get non repeating Tasks
-        calendarEntriesForAdapter.addAll(calendarEntries.stream()
-                .filter(calendarEntry -> (calendarEntry.getDate()==date.getTime() || calendarEntry.getRepeating()==1)  && (calendarEntry.getRepeating()!=2 && calendarEntry.getRepeating()!=3) )
-                .collect(Collectors.toList())
-        );
-        //Get repeating tasks
-        List<CalendarEntry> calendarEntriesRepeating = new ArrayList<>();
-        calendarEntriesRepeating.addAll(calendarEntries.stream()
-                .filter(calendarEntry -> calendarEntry.getRepeating()==2 || calendarEntry.getRepeating()==3  )
-                .collect(Collectors.toList())
-        );
-        //Set repeating tasks to calendar view if appropriate
-        for(CalendarEntry entry:calendarEntriesRepeating )
-        {
-            //find weekly repeating tasks
-            if(entry.getRepeating()==2)
-            {
-                if(entry.getDayOfWeek().equals(formattedDateDayOfTheWeek))
-                {
-                    calendarEntriesForAdapter.add(entry);
-                }
-            }
+        if(selectedViewMode==R.id.daily) {
+            dailyViewFragment.passData(calendarEntries);
+            dailyViewFragment.updateDate(date,formattedDateDayOfTheWeek);
+
         }
-        if(calendarEntriesRepeating.size() == 0 && calendarEntriesForAdapter.size()==0) message.setVisibility(View.VISIBLE);
-        else message.setVisibility(View.GONE);
-        updateRecyclerView(calendarEntriesForAdapter);
+        else{
+            weeklyViewFragment.passData(calendarEntries);
+            weeklyViewFragment.updateDate(date);
+            textViewDateDay.setText("");
+        }
+
+
     }
 
-    public void updateRecyclerView(List<CalendarEntry> calendarEntries){
-        //create new adapter
-        adapter = new CalendarEntitiesAdapter(  calendarEntries, new MyOnClickListener(){
-            @Override
-            public void onItemClicked(int index) {
-                if(!authenticated && calendarEntries.get(index).isImportant()) {
-                    Intent intent = new Intent(getApplicationContext(), FacetecAuthentication.class);
-                    intent.putExtra("mode",1);
-                    startActivityForResult(intent,1);
-                }
-                else
-                {
-                    //Intent intent = new Intent(getApplicationContext(),EventDisplayPage.class);
-                    //intent.putExtra("CalendarEntry",calendarEntries.get(index));
-                    //startActivityForResult(intent,VIEW_ACTIVITY_REQUEST);
-                    setupBottomView(calendarEntries.get(index));
-
-                }
-
-            }
-        });
-
-
-        // Attach the adapter to the recyclerview to populate items
-        calendarEntryRecyclerView.setAdapter(adapter);
-        // Set layout manager to position the items
-        calendarEntryRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        //attach itemTouch helper to adapter
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
-        itemTouchHelper.attachToRecyclerView(calendarEntryRecyclerView);
-    }
     @Override
     public void onBackPressed(){
 
@@ -364,10 +325,29 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
     }
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+
         switch (item.getItemId()) {
+
             case R.id.weekly:
+                selectedViewMode=R.id.weekly;
+
+
+                ft.replace(R.id.frameLayout, weeklyViewFragment);
+                // or ft.add(R.id.your_placeholder, new FooFragment());
+                // Complete the changes added above
+                ft.commit();
+
                 break;
             case R.id.daily:
+                selectedViewMode=R.id.daily;
+
+                ft.replace(R.id.frameLayout, dailyViewFragment);
+                // or ft.add(R.id.your_placeholder, new FooFragment());
+                // Complete the changes added above
+                ft.commit();
+
+
                 break;
             case R.id.monthly:
                 break;
@@ -379,48 +359,12 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
                 break;
 
         }
-        drawerLayout.closeDrawer(GravityCompat.START); return true;
+        drawerLayout.closeDrawer(GravityCompat.START);
+        return true;
 
     }
 
-    private void setupSimpleItemTouchCallback() {
-        simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT ) {
-
-            @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-
-                //Remove swiped item from list and notify the RecyclerView
-                int position = viewHolder.getAdapterPosition();
-
-
-
-                DatabaseReference myRef = database.getReference("Users/" + currentUser.getUid() + "/Tasks/"+adapter.getDatabaseID(position)
-                );
-
-                Snackbar snackbar = Snackbar.make(findViewById(R.id.drawer_layout),"Item " + calendarEntries.get(position).getTitle() +" Deleted ",Snackbar.LENGTH_SHORT);
-                snackbar.setAction("UNDO", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        myRef.setValue(lastDeletedItem);
-                        calendarEntries.add(lastDeletedItem);
-                        lastDeletedItem = null;
-
-                    }
-                });
-                lastDeletedItem = calendarEntries.get(position);
-                myRef.removeValue();
-                snackbar.show();
-
-            }
-        };
-    }
-
-    private void setupBottomView(CalendarEntry calendarEntry) {
+    public void setupBottomView(CalendarEntry calendarEntry) {
 
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(MainPage.this);
         bottomSheetDialog.setContentView(R.layout.fragment_bottom_view_layout);
@@ -433,53 +377,73 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
 
         LinearLayout descriptionBox=bottomSheetDialog.findViewById(R.id.descriptionBoxBottomView);
         LinearLayout imageBox=bottomSheetDialog.findViewById(R.id.imageBoxBottomView);
+        LinearLayout authenticateLayout=bottomSheetDialog.findViewById(R.id.authenticateLayout);
 
+        NestedScrollView nestedScrollView  = bottomSheetDialog.findViewById(R.id.nestedScrollView);
         ImageView imageView = bottomSheetDialog.findViewById(R.id.imageBottomView);
-
         ImageButton button = bottomSheetDialog.findViewById(R.id.editButtonBottomView);
+
+        Button authenticateButton = bottomSheetDialog.findViewById(R.id.authenticateButton);
 
         bottomSheetDialog.show();
         textViewTitle.setText(calendarEntry.getTitle());
-        textViewDate.setText("Date : "+calendarEntry.getDayOfMonth()+"/"+calendarEntry.getMonth()+"/"+calendarEntry.getYear());
-        textViewTime.setText(calendarEntry.getTimeStart().substring(0,2)+":"+calendarEntry.getTimeStart().substring(2,4)+"-"+calendarEntry.getTimeEnd().substring(0,2)+":"+calendarEntry.getTimeEnd().substring(2,4));
-        String [] items =getResources().getStringArray(R.array.spinnerItems);
-        textViewRepeating.setText("Repeating : "+items[calendarEntry.getRepeating()]);
+        if(!calendarEntry.isImportant() || authenticated) {
 
-        if(calendarEntry.getDescription().length()==0)
-        {
-            descriptionBox.setVisibility(View.GONE);
-        }
-        else
-        {
-            descriptionEditText.setText(calendarEntry.getDescription());
-        }
-        if(calendarEntry.getBase64Image().length()==0)
-        {
-            imageBox.setVisibility(View.GONE);
-        }
-        else
-        {
-            Bitmap bitmap = ImageUtilities.base64ToBitmap(calendarEntry.getBase64Image());
-            if(bitmap!=null) {
-                imageView.setImageBitmap(bitmap);
+            authenticateLayout.setVisibility(View.GONE);
+            authenticateButton.setVisibility(View.GONE);
+            nestedScrollView.setVisibility(View.VISIBLE);
+            button.setVisibility(View.VISIBLE);
+
+
+            textViewDate.setText("Date : " + calendarEntry.getDayOfMonth() + "/" + calendarEntry.getMonth() + "/" + calendarEntry.getYear());
+            textViewTime.setText(calendarEntry.getTimeStart().substring(0, 2) + ":" + calendarEntry.getTimeStart().substring(2, 4) + "-" + calendarEntry.getTimeEnd().substring(0, 2) + ":" + calendarEntry.getTimeEnd().substring(2, 4));
+            String[] items = getResources().getStringArray(R.array.spinnerItems);
+            textViewRepeating.setText("Repeating : " + items[calendarEntry.getRepeating()]);
+
+            if (calendarEntry.getDescription().length() == 0) {
+                descriptionBox.setVisibility(View.GONE);
+            } else {
+                descriptionEditText.setText(calendarEntry.getDescription());
             }
-            else
-            {
-                //set error image
+            if (calendarEntry.getBase64Image().length() == 0) {
                 imageBox.setVisibility(View.GONE);
+            } else {
+                Bitmap bitmap = ImageUtilities.base64ToBitmap(calendarEntry.getBase64Image());
+                if (bitmap != null) {
+                    imageView.setImageBitmap(bitmap);
+                } else {
+                    //set error image
+                    imageBox.setVisibility(View.GONE);
+                }
             }
+
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    bottomSheetDialog.dismiss();
+                    Intent intent = new Intent(MainPage.this, EventCreatePage.class);
+                    intent.putExtra("task", calendarEntry);
+                    startActivityForResult(intent, EDIT_ACTIVITY_REQUEST);
+
+                }
+            });
+
         }
+        else{
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                bottomSheetDialog.dismiss();
-                Intent intent = new Intent(MainPage.this,EventCreatePage.class);
-                intent.putExtra("task",calendarEntry);
-                startActivityForResult(intent ,EDIT_ACTIVITY_REQUEST);
-
-            }
-        });
+            authenticateLayout.setVisibility(View.VISIBLE);
+            authenticateButton.setVisibility(View.VISIBLE);
+            nestedScrollView.setVisibility(View.GONE);
+            button.setVisibility(View.GONE);
+            authenticateButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getApplicationContext(), FacetecAuthentication.class);
+                    intent.putExtra("mode",1);
+                    startActivityForResult(intent,1);
+                }
+            });
+        }
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -501,6 +465,46 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
             {
                 setupBottomView(calendarEntry);
             }
+        }
+
+    }
+    //fragment functions
+    public void deleteFromDatabase(int position , String databaseId,CalendarEntry calendarEntry){
+        //Remove swiped item from list and notify the RecyclerView
+
+        lastDeletedItem = calendarEntry;
+        DatabaseReference myRef = database.getReference("Users/" + currentUser.getUid() + "/Tasks/"+databaseId
+        );
+
+        Snackbar snackbar = Snackbar.make(findViewById(R.id.drawer_layout),"Item " + calendarEntries.get(position).getTitle() +" Deleted ",Snackbar.LENGTH_SHORT);
+        snackbar.setAction("UNDO", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                myRef.setValue(lastDeletedItem);
+                calendarEntries.add(lastDeletedItem);
+                lastDeletedItem = null;
+
+            }
+        });
+
+        myRef.removeValue();
+        snackbar.show();
+
+    }
+
+    @Override
+    public void onComplete() {
+        if(currentDate==null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+            try {
+                Date dateParsed = sdf.parse(Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + "/" + (Calendar.getInstance().get(Calendar.MONTH) + 1) + "/" + Calendar.getInstance().get(Calendar.YEAR) + " 00:00");
+                updateDate(dateParsed);
+            } catch (ParseException e) {
+                Toast.makeText(MainPage.this,"Something went wrong",Toast.LENGTH_SHORT).show();
+            }
+        }
+        else {
+            updateDate(currentDate);
         }
     }
 }

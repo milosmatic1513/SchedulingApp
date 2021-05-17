@@ -21,24 +21,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <Button
+            android:id="@+id/moreInfoButton"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:backgroundTint="#004056A1"
+            android:textAllCaps="false"
+            android:textColor="#F8F5F5"
+            android:textSize="14sp" />
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="5dp">
-
-            <Button
-                android:id="@+id/moreInfoButton"
-                android:layout_width="86dp"
-                android:layout_height="40dp"
-                android:layout_marginEnd="4dp"
-                android:backgroundTint="#4056a1"
-                android:text="@string/more_info"
-                android:textAllCaps="false"
-                android:textColor="#F8F5F5"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/eventNameText" />
 
             <TextView
                 android:id="@+id/eventNameText"
@@ -65,6 +61,7 @@
                 android:text="Important"
                 android:textColor="#FFFFFF"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/eventNameText"
                 app:layout_constraintTop_toBottomOf="@+id/eventNameText" />
 

@@ -32,22 +32,29 @@
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="${mapsApiKey}" />
 
-        <activity android:name=".FacetecIdScanner" />
-        <activity android:name=".EventDisplayPage" />
-        <activity android:name=".EventCreatePage" />
+        <activity
+            android:name=".FacetecIdScanner"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".EventDisplayPage"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".EventCreatePage"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".FacetecAuthentication"
             android:screenOrientation="portrait" />
         <activity
             android:name=".RegisterPage"
             android:screenOrientation="portrait" />
-        <activity android:name=".MainPage" />
+        <activity
+            android:name=".MainPage"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

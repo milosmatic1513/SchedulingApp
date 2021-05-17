@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".WeeklyViewFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@color/background_color"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical"
+                        android:paddingTop="5dp">
+
+
+                        <TextView
+                            android:id="@+id/dateMonday"
+                            android:layout_width="30dp"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/round_button"
+                            android:backgroundTint="@color/background_color"
+                            android:padding="5dp"
+                            android:text="X"
+                            android:textAlignment="center" />
+
+
+                        <TextView
+                            android:id="@+id/Monday"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="10dp"
+                            android:text="Monday"
+                            android:textAlignment="center"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/monRecyclerView"
+                            android:layout_width="135dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="20dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/Monday">
+
+                        </androidx.recyclerview.widget.RecyclerView>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical"
+                        android:paddingTop="5dp">
+
+                        <TextView
+                            android:id="@+id/dateTuesday"
+                            android:layout_width="30dp"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/round_button"
+                            android:backgroundTint="@color/background_color"
+                            android:padding="5dp"
+                            android:text="X"
+                            android:textAlignment="center" />
+
+                        <TextView
+                            android:id="@+id/Tuesday"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="10dp"
+                            android:text="Tuesday"
+                            android:textAlignment="center"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/tueRecyclerView"
+                            android:layout_width="135dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="20dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/Tuesday">
+
+                        </androidx.recyclerview.widget.RecyclerView>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical"
+                        android:paddingTop="5dp">
+
+                        <TextView
+                            android:id="@+id/dateWednesday"
+                            android:layout_width="30dp"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/round_button"
+                            android:backgroundTint="@color/background_color"
+                            android:padding="5dp"
+                            android:text="X"
+                            android:textAlignment="center" />
+
+                        <TextView
+                            android:id="@+id/Wednesday"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="10dp"
+                            android:text="Wednesday"
+                            android:textAlignment="center" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/wedRecyclerView"
+                            android:layout_width="135dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="20dp">
+
+                        </androidx.recyclerview.widget.RecyclerView>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical"
+                        android:paddingTop="5dp">
+
+                        <TextView
+                            android:id="@+id/dateThursday"
+                            android:layout_width="30dp"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/round_button"
+                            android:padding="5dp"
+                            android:text="X"
+                            android:textAlignment="center"
+                            android:backgroundTint="@color/background_color" />
+
+                        <TextView
+                            android:id="@+id/Thursday"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="10dp"
+                            android:text="Thursday"
+                            android:textAlignment="center"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/thuRecyclerView"
+                            android:layout_width="135dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="20dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/Thursday">
+
+                        </androidx.recyclerview.widget.RecyclerView>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical"
+                        android:paddingTop="5dp">
+
+                        <TextView
+                            android:id="@+id/dateFriday"
+                            android:layout_width="30dp"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/round_button"
+                            android:backgroundTint="@color/background_color"
+                            android:padding="5dp"
+                            android:text="X"
+                            android:textAlignment="center" />
+
+                        <TextView
+                            android:id="@+id/Friday"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="10dp"
+                            android:text="Friday"
+                            android:textAlignment="center"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/friRecyclerView"
+                            android:layout_width="135dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="20dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/Friday">
+
+                        </androidx.recyclerview.widget.RecyclerView>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical"
+                        android:paddingTop="5dp">
+
+                        <TextView
+                            android:id="@+id/dateSaturday"
+                            android:layout_width="30dp"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/round_button"
+                            android:backgroundTint="@color/background_color"
+                            android:padding="5dp"
+                            android:text="X"
+                            android:textAlignment="center" />
+                        <TextView
+                            android:id="@+id/Saturday"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="10dp"
+                            android:text="Saturday"
+                            android:textAlignment="center"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/satRecyclerView"
+                            android:layout_width="135dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="20dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/Saturday">
+
+                        </androidx.recyclerview.widget.RecyclerView>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical"
+                        android:paddingTop="5dp">
+
+                        <TextView
+                            android:id="@+id/dateSunday"
+                            android:layout_width="30dp"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/round_button"
+                            android:backgroundTint="@color/background_color"
+                            android:padding="5dp"
+                            android:text="X"
+                            android:textAlignment="center" />
+
+                        <TextView
+                            android:id="@+id/Sunday"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="10dp"
+                            android:text="Sunday"
+                            android:textAlignment="center"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/sunRecyclerView"
+                            android:layout_width="135dp"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/Sunday"
+                            android:layout_marginBottom="20dp">
+
+                        </androidx.recyclerview.widget.RecyclerView>
+                    </LinearLayout>
+                </LinearLayout>
+            </HorizontalScrollView>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</FrameLayout>

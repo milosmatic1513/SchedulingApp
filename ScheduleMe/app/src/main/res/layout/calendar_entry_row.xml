@@ -40,7 +40,7 @@
                 android:id="@+id/eventNameText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Event Name"
+                android:text="@string/event_name"
                 android:textAlignment="center"
                 android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="parent"

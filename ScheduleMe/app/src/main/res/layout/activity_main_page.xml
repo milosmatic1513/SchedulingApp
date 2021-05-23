@@ -138,7 +138,6 @@
         </RelativeLayout>
 
 
-
         <TextView
             android:id="@+id/authenticatedTag"
             android:layout_width="128dp"
@@ -149,7 +148,7 @@
             android:backgroundTint="#4056a1"
             android:elevation="21dp"
             android:padding="5dp"
-            android:text="Authenticated"
+            android:text="@string/authenticated"
             android:textAlignment="center"
             android:textColor="#FFFFFF"
             android:textSize="18sp"
@@ -172,6 +171,20 @@
             android:textSize="24sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/currentDateButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/round_button"
+            android:backgroundTint="#4056a1"
+            android:gravity="center|center_vertical|fill_vertical"
+            android:text="10"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="@+id/button6"
+            app:layout_constraintEnd_toStartOf="@+id/button6" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

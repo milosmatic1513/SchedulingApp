@@ -54,6 +54,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class EventCreatePage extends AppCompatActivity implements OnMapReadyCallback  {
     //firebase
@@ -78,6 +79,7 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
     Switch locationSwitch;
 
     CalendarEntry calendarEntry;
+    Date date;
 
     Button createButton;
     Button takeImageButton;
@@ -121,6 +123,7 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
         takeImageButton=findViewById(R.id.takeImageButton);
         loadImageButton = findViewById(R.id.loadImageButton);
         calendarEntry = (CalendarEntry) getIntent().getSerializableExtra("task");
+        date = (Date) getIntent().getSerializableExtra("Date");
         locationSwitch = findViewById(R.id.locationSwitch);
         mapLayout = findViewById(R.id.mapLayout);
 
@@ -163,6 +166,28 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
             editTextDate.setTag(Long.toString(calendarEntry.getDate()));
             editTextFrom.setText(calendarEntry.getTimeStart().substring(0,2)+":"+calendarEntry.getTimeStart().substring(2,4));
             editTextTo.setText(calendarEntry.getTimeEnd().substring(0,2)+":"+calendarEntry.getTimeEnd().substring(2,4));
+        }
+        else{
+            if (date!=null) {
+
+                //set Day
+                SimpleDateFormat dfday = new SimpleDateFormat("dd", Locale.getDefault());
+                String formattedDateDay = dfday.format(date);
+
+
+                //set Month
+                SimpleDateFormat dfmonth = new SimpleDateFormat("MM", Locale.getDefault());
+                String formattedDateMonth = dfmonth.format(date);
+
+
+                //set Year
+                SimpleDateFormat dfyear = new SimpleDateFormat("yyyy", Locale.getDefault());
+                String formattedDateYear = dfyear.format(date);
+
+                editTextDate.setTag(Long.toString(date.getTime()));
+
+                editTextDate.setText(formattedDateDay + "/" +formattedDateMonth + "/" + formattedDateYear);
+            }
         }
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -311,7 +336,7 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
                             editTextDate.setTag(Long.toString(millis));
                             Log.e("date",Long.toString(millis));
                         } catch (ParseException e) {
-                            Log.e("tag",e.getLocalizedMessage().toString());
+                            Log.e("tag",e.getLocalizedMessage ().toString());
                         }
 
                     }

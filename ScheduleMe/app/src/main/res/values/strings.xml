@@ -2,27 +2,6 @@
     <!-- App -->
     <string name="app_name">ScheduleMe</string>
 
-
-    <string name="anonymous_user">Anonymous User</string>
-    <string name="email">Email</string>
-    <string name="password">Password</string>
-    <string name="name">Name</string>
-    <string name="profile">Profile</string>
-    <string name="logout">Logout</string>
-    <string name="add_review">Add Review</string>
-    <string name="events">Events</string>
-    <string name="reviews">Reviews</string>
-    <string name="rating">Rating</string>
-    <string name="description">Review</string>
-    <string name="more_info">Details</string>
-    <string name="favorite">Favorite</string>
-
-    <string name="all_locations">All locations</string>
-    <string name="within_3">In 3 km</string>
-    <string name="within_5">In 5 km</string>
-    <string name="favourites">Favorites</string>
-
-    <string name="alreadyReviewed">You have already reviewed this location today</string>
     <!-- Main Activity -->
     <string name="authentication_failed">Authentication failed</string>
     <string name="login">Login</string>
@@ -30,71 +9,87 @@
     <string name="toast_incorrect_info_warning">Invalid login information</string>
     <string name="title_activity_maps">Map</string>
 
-    <!-- Events Activity -->
-    <string name="dialog_event_title">Event Information</string>
-    <string name="dialog_event_name">Name</string>
-    <string name="dialog_event_time">Time and Day</string>
-    <string name="dialog_event_details">Details</string>
-    <string name="dialog_event_today">Today!</string>
+    <!-- Register Page -->
+    <string name="title">Title</string>
+    <string name="create_task_page">Create Task Page</string>
+    <string name="password_match_error">Passwords do not match</string>
+    <string name="register_page">Register Page</string>
+    <string name="toast_fill_warning">Please fill out all the information</string>
+    <string name="repeat_password">Password confirmation</string>
+    <string name="time_from">Time From</string>
+    <string name="time_to">Time To</string>
+    <string name="date">Date</string>
+    <string name="description">Description</string>
+    <string name="image">Image</string>
+    <string name="location">Location</string>
+    <string name="done">Done</string>
 
-    <!-- Location Reviews Activity -->
-    <string name="dialog_review_title">Add Review</string>
-    <string name="dialog_review_message">Add Details</string>
-    <string name="dialog_review_post">Post</string>
-    <string name="dialog_review_missing_info">Please fill out all the information</string>
+    <!-- Facetec strings -->
+    <string name="message">Message</string>
+    <string name="initializing_face_scanner">Initializing Face Scanner ... </string>
 
-    <!-- Main PAge -->
-    <string name="current_location">My location</string>
-    <string name="locations_list">Locations List</string>
+    <!-- Activity Main -->
+    <string name="authenticated">Authenticated</string>
 
-    <!-- Profile Activity -->
-    <string name="deleted_account">Your account has been deleted</string>
-    <string name="failure_deleted_account">Your account has not been deleted</string>
+    <!-- Activity Profile -->
+    <string name="profile">Profile</string>
+    <string name="name">Name</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="logout">Logout</string>
+    <string name="language">Language</string>
+    <string name="require_login_auth">Require Login Auth</string>
+    <string name="save_changes">Save Changes</string>
     <string name="failure_image_loading">Did not load the image</string>
     <string name="failure_pick_image">Did not pick an image</string>
-    <string name="delete_account">Delete Account</string>
-    <string name="favorites_list">Favorite Locations</string>
-
-    <string name="dialog_delete_title">Delete Account</string>
-    <string name="dialog_delete_message">Are you sure you want to delete your account ?\n\nYour reviews WILL NOT be deleted, but will be displayed from an Anonymous User</string>
     <string name="dialog_delete_yes">Yes</string>
     <string name="dialog_delete_no">No</string>
-
     <string name="dialog_change_name_title">Change Name</string>
     <string name="dialog_change_name_message">New Name</string>
     <string name="dialog_change_name_missing_info">Please fill out all the information</string>
     <string name="dialog_change_name_post">Change</string>
-
-    <string name="error_opening_camera">The camera couldn\'t be opened</string>
-    <string name="failure_taking_picture">You didn\'t take a picture</string>
-
-    <!-- Register Page -->
-    <string name="password_match_error">Passwords do not match</string>
-    <string name="signup_message">Register Page</string>
-    <string name="toast_fill_warning">Please fill out all the information</string>
-    <string name="repeat_password">Password confirmation</string>
-
+    <!-- Event View -->
+    <string name="event_name">Event Name</string>
+    <string name="event_date">Date :</string>
+    <string name="event_repeating">Repeating :</string>
+    <string name="event_description">Description</string>
     <!-- Spinner Values -->
-
     <string-array name="spinnerItems">
         <item>None</item>
         <item>Daily</item>
         <item>Weekly</item>
         <item>Yearly</item>
     </string-array>
+    <!-- Day Values -->
+    <string name="monday">Monday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="thursday">Thursday</string>
+    <string name="friday">Friday</string>
+    <string name="saturday">Saturday</string>
+    <string name="sunday">Sunday</string>
+    <!-- Side Bar -->
+    <string name="schedule_your_day">Schedule your Day</string>
+
     <string name="title_activity_temp">temp</string>
     <string name="nav_header_title">Android Studio</string>
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
-
-    <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
+    <string name="display">Display</string>
+    <string name="weekly">Weekly</string>
+    <string name="daily">Daily"</string>
 
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="enroll_first">Enroll First</string>
+    <string name="error_opening_camera">Error Opening Camera</string>
+    <string name="failure_taking_picture">Failure Taking Picture</string>
+
+    <!-- dialog change language-->
+    <string name="dialog_change_language_title">Change language to english</string>
+    <string name="dialog_change_language_message">The app needs to be restarted.Are you sure?</string>
+
+
 
 </resources>

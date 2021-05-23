@@ -18,7 +18,10 @@ import com.example.scheduleme.DataClasses.CalendarEntry;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DatabaseReference;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,6 +34,19 @@ public class DailyViewFragment extends Fragment {
     TextView message;
     MainPage parent;
     ItemTouchHelper.SimpleCallback simpleItemTouchCallback;
+    Date currentDate;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        try {
+            currentDate = sdf.parse(Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + "/" + (Calendar.getInstance().get(Calendar.MONTH) + 1) + "/" + Calendar.getInstance().get(Calendar.YEAR) + " 00:00");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -130,6 +146,13 @@ public class DailyViewFragment extends Fragment {
             }
         }
         updateRecyclerView(calendarEntriesForAdapter);
+        if(date.getTime()!=currentDate.getTime()) {
+            parent.showDateButton(currentDate);
+        }
+        else{
+            parent.hideDateButton();
+
+        }
     }
 
     public static interface OnCompleteListener {

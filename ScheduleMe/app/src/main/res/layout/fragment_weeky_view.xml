@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".WeeklyViewFragment">
 
-    <!-- TODO: Update blank fragment layout -->
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -51,8 +50,10 @@
                             android:id="@+id/Monday"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:padding="10dp"
-                            android:text="Monday"
+                            android:layout_margin="10dp"
+                            android:background="@drawable/background_rounded"
+                            android:backgroundTint="@color/background_color"
+                            android:text="@string/monday"
                             android:textAlignment="center"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
@@ -91,8 +92,10 @@
                             android:id="@+id/Tuesday"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:padding="10dp"
-                            android:text="Tuesday"
+                            android:layout_margin="10dp"
+                            android:background="@drawable/background_rounded"
+                            android:backgroundTint="@color/background_color"
+                            android:text="@string/tuesday"
                             android:textAlignment="center"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
@@ -131,8 +134,10 @@
                             android:id="@+id/Wednesday"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:padding="10dp"
-                            android:text="Wednesday"
+                            android:layout_margin="10dp"
+                            android:background="@drawable/background_rounded"
+                            android:backgroundTint="@color/background_color"
+                            android:text="@string/wednesday"
                             android:textAlignment="center" />
 
                         <androidx.recyclerview.widget.RecyclerView
@@ -165,8 +170,10 @@
                             android:id="@+id/Thursday"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:padding="10dp"
-                            android:text="Thursday"
+                            android:layout_margin="10dp"
+                            android:background="@drawable/background_rounded"
+                            android:backgroundTint="@color/background_color"
+                            android:text="@string/thursday"
                             android:textAlignment="center"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
@@ -205,12 +212,14 @@
                             android:id="@+id/Friday"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:padding="10dp"
-                            android:text="Friday"
+                            android:background="@drawable/background_rounded"
+                            android:backgroundTint="@color/background_color"
+                            android:text="@string/friday"
                             android:textAlignment="center"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toTopOf="parent"
+                            android:layout_margin="10dp" />
 
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/friRecyclerView"
@@ -241,12 +250,15 @@
                             android:padding="5dp"
                             android:text="X"
                             android:textAlignment="center" />
+
                         <TextView
                             android:id="@+id/Saturday"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:padding="10dp"
-                            android:text="Saturday"
+                            android:layout_margin="10dp"
+                            android:background="@drawable/background_rounded"
+                            android:backgroundTint="@color/background_color"
+                            android:text="@string/saturday"
                             android:textAlignment="center"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
@@ -285,8 +297,10 @@
                             android:id="@+id/Sunday"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:padding="10dp"
-                            android:text="Sunday"
+                            android:layout_margin="10dp"
+                            android:background="@drawable/background_rounded"
+                            android:backgroundTint="@color/background_color"
+                            android:text="@string/sunday"
                             android:textAlignment="center"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"

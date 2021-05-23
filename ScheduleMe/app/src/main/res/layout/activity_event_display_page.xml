@@ -52,8 +52,8 @@
 
         <ImageView
             android:id="@+id/imageView7"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="17dp"
+            android:layout_height="23dp"
             android:layout_marginStart="4dp"
             android:onClick="done"
             app:layout_constraintBottom_toBottomOf="parent"

@@ -23,7 +23,9 @@
         android:roundIcon="@mipmap/logo_icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.ScheduleMe">
-        <activity android:name=".ProfilePage"></activity>
+        <activity android:name=".ProfilePage"
+            android:screenOrientation="portrait">
+        </activity>
 
         <meta-data
             android:name="com.google.android.gms.version"

@@ -10,6 +10,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.scheduleme.DataClasses.CalendarEntry;
+import com.example.scheduleme.DataClasses.Preferences;
 import com.example.scheduleme.Utilities.ImageUtilities;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
@@ -49,6 +52,7 @@ import java.util.stream.Collectors;
 public class MainPage extends AppCompatActivity implements  NavigationView.OnNavigationItemSelectedListener ,WeeklyViewFragment.OnCompleteListener,DailyViewFragment.OnCompleteListener {
     //Request codes
     static int EDIT_ACTIVITY_REQUEST=2;
+    static int PROFILE_ACTIVITY_REQUEST=3;
     //Database
     private FirebaseAuth mAuth;
     FirebaseUser currentUser;
@@ -56,6 +60,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
     //Private variables
     private boolean authenticated;
     private static int VIEW_ACTIVITY_REQUEST=1;
+    int selectedViewMode;
     public Date currentDate;
     private CalendarEntry lastDeletedItem;
     //View Components
@@ -65,13 +70,14 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
     TextView textViewDateYear;
     TextView message;
     ImageView imageViewCalendar;
+    //Buttons
+    Button currentDateButton;
     //Layouts
     RelativeLayout loadingScreen;
     //Dialogs
     DatePickerDialog pickerDate;
     //Calendar View Components
     List<CalendarEntry> calendarEntries;
-
     //Drawer layout
     DrawerLayout drawerLayout;
     NavigationView navigationView;
@@ -81,7 +87,6 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
     DailyViewFragment dailyViewFragment;
     WeeklyViewFragment weeklyViewFragment;
 
-    int selectedViewMode;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,11 +98,11 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
         textViewDateMonth  = findViewById(R.id.textViewDateMonth);
         textViewDateYear  = findViewById(R.id.textViewDateYear);
         loadingScreen = findViewById(R.id.loadingPanel);
+        currentDateButton=findViewById(R.id.currentDateButton);
 
         drawerLayout=findViewById(R.id.drawer_layout);
         navigationView=findViewById(R.id.nav_view);
         toolbar=findViewById(R.id.toolbar);
-
 
         imageViewCalendar=findViewById(R.id.imageViewCalendar);
 
@@ -147,8 +152,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
                         try {
                             SimpleDateFormat sdf= new SimpleDateFormat("dd/MM/yyyy HH:mm");
                             Date dateParsed = sdf.parse(date);
-                            currentDate = dateParsed;
-                            updateDate(currentDate);
+                            updateDate(dateParsed);
 
                         } catch (ParseException e) {
                             Log.e("tag",e.getLocalizedMessage().toString());
@@ -173,8 +177,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
 
         // Check if user is signed in (non-null) and update UI accordingly.
         currentUser = mAuth.getCurrentUser();
-        if(currentUser==null)
-        {
+        if(currentUser==null) {
             //Redirect to main
             startActivity(new Intent(getApplicationContext(),MainActivity.class));
         }
@@ -246,15 +249,12 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
         dailyViewFragment = new DailyViewFragment();
         weeklyViewFragment = new WeeklyViewFragment();
         ft.replace(R.id.frameLayout, dailyViewFragment);
-        // or ft.add(R.id.your_placeholder, new FooFragment());
-        // Complete the changes added above
         ft.commit();
 
     }
 
     public void logout(View view) {
         logout();
-
     }
 
     public void logout() {
@@ -265,6 +265,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
 
     public void createEvent(View view) {
         Intent intent = new Intent(getApplicationContext(),EventCreatePage.class);
+        intent.putExtra("Date",getDate());
         startActivity(intent);
     }
 
@@ -297,7 +298,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
         SimpleDateFormat dfdayOfTheWeek = new SimpleDateFormat("E", Locale.getDefault());
         String formattedDateDayOfTheWeek = dfdayOfTheWeek .format(date);
 
-
+        currentDate = date;
         if(selectedViewMode==R.id.daily) {
             dailyViewFragment.passData(calendarEntries);
             dailyViewFragment.updateDate(date,formattedDateDayOfTheWeek);
@@ -311,7 +312,6 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
 
 
     }
-
     @Override
     public void onBackPressed(){
 
@@ -331,33 +331,24 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
 
             case R.id.weekly:
                 selectedViewMode=R.id.weekly;
-
-
                 ft.replace(R.id.frameLayout, weeklyViewFragment);
                 // or ft.add(R.id.your_placeholder, new FooFragment());
                 // Complete the changes added above
                 ft.commit();
-
                 break;
             case R.id.daily:
                 selectedViewMode=R.id.daily;
-
                 ft.replace(R.id.frameLayout, dailyViewFragment);
                 // or ft.add(R.id.your_placeholder, new FooFragment());
                 // Complete the changes added above
                 ft.commit();
-
-
-                break;
-            case R.id.monthly:
                 break;
             case R.id.nav_logout:
                 logout();
                 break;
             case R.id.nav_profile:
-                startActivityForResult(new Intent(getApplicationContext(),ProfilePage.class),2);
+                startActivityForResult(new Intent(getApplicationContext(),ProfilePage.class),PROFILE_ACTIVITY_REQUEST);
                 break;
-
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
@@ -466,6 +457,28 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
                 setupBottomView(calendarEntry);
             }
         }
+        else if(requestCode==PROFILE_ACTIVITY_REQUEST)
+        {
+            boolean restart =false;
+            try {
+                restart = data.getBooleanExtra("restart",false);
+            }catch (java.lang.NullPointerException e ){
+                Toast.makeText(getApplicationContext(),"Editing Canceled",Toast.LENGTH_SHORT).show();
+            }
+            if (restart){
+
+                String currentLocale = Preferences.getLanguage(this);
+                Locale locale = new Locale(currentLocale);
+                Locale.setDefault(locale);
+                Resources resources = MainPage.this.getResources();
+                Configuration config = resources.getConfiguration();
+                config.setLocale(locale);
+                resources.updateConfiguration(config, resources.getDisplayMetrics());
+                Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }
+        }
 
     }
     //fragment functions
@@ -507,4 +520,38 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
             updateDate(currentDate);
         }
     }
+
+    public void showDateButton(Date date) {
+        SimpleDateFormat dfday = new SimpleDateFormat("dd", Locale.getDefault());
+        String formattedDateDay = dfday.format(date);
+        currentDateButton.setText(formattedDateDay);
+        currentDateButton.setVisibility(View.VISIBLE);
+        currentDateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateDate(date);
+            }
+        });
+    }
+
+    public void hideDateButton() {
+        currentDateButton.setVisibility(View.GONE);
+    }
+
+    public Date getDate() {
+        if(currentDate==null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+            try {
+                Date dateParsed = sdf.parse(Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + "/" + (Calendar.getInstance().get(Calendar.MONTH) + 1) + "/" + Calendar.getInstance().get(Calendar.YEAR) + " 00:00");
+                return dateParsed;
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return currentDate;
+    }
+
+
+
 }

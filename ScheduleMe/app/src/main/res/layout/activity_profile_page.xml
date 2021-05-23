@@ -14,21 +14,34 @@
         android:background="#79c5e7"
         android:elevation="20dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imageView7"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="16dp"
+            android:onClick="exit"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="?attr/homeAsUpIndicator"
+            app:tint="#FFFFFF" />
 
         <TextView
             android:id="@+id/textView10"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="40dp"
-            android:text="Profile"
+            android:layout_marginStart="8dp"
+            android:text="@string/profile"
             android:textColor="#FFFFFF"
-            android:textSize="30sp"
+            android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imageView7"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.542" />
+            app:layout_constraintVertical_bias="0.49" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ScrollView
@@ -66,20 +79,30 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp">
 
                     <TextView
                         android:id="@+id/nameTextView"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
                         android:text="..."
-                        android:textColor="#938A8A"
-                        android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/imageButton"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageButton
+                        android:id="@+id/imageButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="#00FFFFFF"
+                        android:onClick="editName"
+                        android:padding="5dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@android:drawable/ic_menu_edit" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -123,18 +146,20 @@
                         android:layout_width="151dp"
                         android:layout_height="wrap_content"
                         android:layout_margin="10dp"
-                        android:text="Language"
+                        android:text="@string/language"
                         android:textColor="#938A8A"
                         android:textSize="14sp" />
 
                     <Spinner
-                        android:id="@+id/spinner2"
+                        android:id="@+id/spinnerProfile"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_margin="10dp"
                         android:layout_weight="1"
                         android:background="@drawable/background_rounded"
-                        android:backgroundTint="#CCBCBC" />
+                        android:backgroundTint="#CCBCBC"
+                        android:padding="2dp"
+                        android:textAlignment="center" />
 
                 </LinearLayout>
 
@@ -152,5 +177,26 @@
 
         </LinearLayout>
     </ScrollView>
+
+    <Button
+        android:id="@+id/saveChangesButton"
+        android:layout_width="310dp"
+        android:layout_height="wrap_content"
+
+        android:layout_marginBottom="32dp"
+        android:backgroundTint="#2980b9"
+        android:elevation="20dp"
+        android:enabled="false"
+        android:onClick="saveChanges"
+        android:text="@string/save_changes"
+        android:textAllCaps="false"
+        android:textColor="#FBFBFB"
+        android:textSize="30sp"
+        app:iconTint="#2980b9"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

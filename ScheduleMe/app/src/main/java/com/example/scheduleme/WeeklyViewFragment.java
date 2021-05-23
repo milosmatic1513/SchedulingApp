@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.scheduleme.Adapters.CalendarEntitiesAdapter;
 import com.example.scheduleme.DataClasses.CalendarEntry;
@@ -38,7 +39,8 @@ public class WeeklyViewFragment extends Fragment {
     public List<CalendarEntry> calendarEntryList;
     //add to resources
     private String daysOfTheWeek[]= {"Mon","Tue","Wed","Thu","Fri","Sat","Sun"};
-
+    Date currentDate;
+    List<Date> dates;
     List<RecyclerView> weekdaysRecyclerView;
     List<TextView> weekdaysTextView;
     List<TextView> weekdaysDateTextView;
@@ -48,7 +50,12 @@ public class WeeklyViewFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        try {
+            currentDate = sdf.parse(Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + "/" + (Calendar.getInstance().get(Calendar.MONTH) + 1) + "/" + Calendar.getInstance().get(Calendar.YEAR) + " 00:00");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -56,6 +63,8 @@ public class WeeklyViewFragment extends Fragment {
         // EditText etFoo = (EditText) view.findViewById(R.id.etFoo);
 
         parent= ((MainPage)getActivity());
+
+        dates = new ArrayList<Date>() ;
 
         weekdaysRecyclerView = new ArrayList<RecyclerView>();
 
@@ -89,41 +98,58 @@ public class WeeklyViewFragment extends Fragment {
         weekdaysTextView.add(view.findViewById(R.id.Saturday));
         weekdaysTextView.add(view.findViewById(R.id.Sunday));
 
+        View.OnClickListener listener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch(v.getId()){
+                    case R.id.dateMonday:
+                        parent.updateDate(dates.get(0));
+                        break;
+                    case R.id.dateTuesday:
+                        parent.updateDate(dates.get(1));
+                        break;
+                    case R.id.dateWednesday:
+                        parent.updateDate(dates.get(2));
+                        break;
+                    case R.id.dateThursday:
+                        parent.updateDate(dates.get(3));
+                        break;
+                    case R.id.dateFriday:
+                        parent.updateDate(dates.get(4));
+                        break;
+                    case R.id.dateSaturday:
+                        parent.updateDate(dates.get(5));
+                        break;
+                    case R.id.dateSunday:
+                        parent.updateDate(dates.get(6));
+                        break;
+                }
+            }
+        };
+
         weekdaysDateTextView=new ArrayList<TextView>();
         weekdaysDateTextView.add(view.findViewById(R.id.dateMonday));
+        weekdaysDateTextView.get(weekdaysDateTextView.size() - 1).setOnClickListener(listener);
         weekdaysDateTextView.add(view.findViewById(R.id.dateTuesday));
+        weekdaysDateTextView.get(weekdaysDateTextView.size() - 1).setOnClickListener(listener);
         weekdaysDateTextView.add(view.findViewById(R.id.dateWednesday));
+        weekdaysDateTextView.get(weekdaysDateTextView.size() - 1).setOnClickListener(listener);
         weekdaysDateTextView.add(view.findViewById(R.id.dateThursday));
+        weekdaysDateTextView.get(weekdaysDateTextView.size() - 1).setOnClickListener(listener);
         weekdaysDateTextView.add(view.findViewById(R.id.dateFriday));
+        weekdaysDateTextView.get(weekdaysDateTextView.size() - 1).setOnClickListener(listener);
         weekdaysDateTextView.add(view.findViewById(R.id.dateSaturday));
+        weekdaysDateTextView.get(weekdaysDateTextView.size() - 1).setOnClickListener(listener);
         weekdaysDateTextView.add(view.findViewById(R.id.dateSunday));
+        weekdaysDateTextView.get(weekdaysDateTextView.size() - 1).setOnClickListener(listener);
 
-        setupSimpleItemTouchCallback();
         mListener.onComplete();
 
     }
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_weeky_view, container, false);
-    }
-    private void setupSimpleItemTouchCallback() {
-
-        simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT ) {
-
-            @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-
-                parent.deleteFromDatabase(viewHolder.getAdapterPosition(),adapter.getDatabaseID(viewHolder.getAdapterPosition()),calendarEntryList.get(viewHolder.getAdapterPosition()));
-
-            }
-        };
     }
 
     public void passData(List<CalendarEntry> calendarEntryList) {
@@ -131,6 +157,7 @@ public class WeeklyViewFragment extends Fragment {
     }
 
     public void updateDate(Date date) {
+        boolean currentDayInWeek=false;
         //set Day
         SimpleDateFormat dfday = new SimpleDateFormat("dd", Locale.getDefault());
         String formattedDateDay = dfday.format(date);
@@ -139,41 +166,44 @@ public class WeeklyViewFragment extends Fragment {
         SimpleDateFormat dfdayOfTheWeek = new SimpleDateFormat("E", Locale.getDefault());
         String formattedDateDayOfTheWeek = dfdayOfTheWeek.format(date);
 
-        int dayOfTheWeek = 0;
 
+        int index=java.util.Arrays.asList(daysOfTheWeek).indexOf(formattedDateDayOfTheWeek);
+        dates = new ArrayList<Date>() ;
         for (int i = 0; i < daysOfTheWeek.length; i++) {
-           if(formattedDateDayOfTheWeek.equalsIgnoreCase(daysOfTheWeek[i])) {
-
-               weekdaysDateTextView.get(i).setText(formattedDateDay);
-               dayOfTheWeek=i;
-               populateRecycler(date, formattedDateDayOfTheWeek,dayOfTheWeek);
-
-               weekdaysDateTextView.get(i).setBackgroundColor(Color.parseColor("#4056a1"));
-               weekdaysDateTextView.get(i).setTextColor(ContextCompat.getColor(parent, R.color.white));
-           }
-        }
-
-        Date dateTemp = new Date();
-        dateTemp.setTime(date.getTime());
-        for(int i = dayOfTheWeek+1; i < daysOfTheWeek.length; i++) {
-            dateTemp.setTime(dateTemp.getTime()+86400000);
+            Date dateTemp=new Date();
+            dateTemp.setTime(date.getTime()-(index-i)*86400000);
+            dates.add(dateTemp);
+            populateRecycler(dateTemp, daysOfTheWeek[i],i);
             weekdaysDateTextView.get(i).setText(dfday.format(dateTemp));
-            populateRecycler(dateTemp,daysOfTheWeek[i],i);
-            weekdaysDateTextView.get(i).setBackgroundColor(ContextCompat.getColor(parent, R.color.background_color));
+            if(currentDate.getTime()==dateTemp.getTime()) {
+                weekdaysTextView.get(i).getBackground().setTint(Color.parseColor("#4056a1"));
+                weekdaysTextView.get(i).setTextColor(ContextCompat.getColor(parent, R.color.white));
+                currentDayInWeek=true;
+            }
+            else{
+                weekdaysTextView.get(i).getBackground().setTint(ContextCompat.getColor(parent, R.color.background_color));
+                weekdaysTextView.get(i).setTextColor(ContextCompat.getColor(parent,android.R.color.secondary_text_light));
+
+            }
+
+
+            //Unselect all days
+            weekdaysDateTextView.get(i).getBackground().setTint(ContextCompat.getColor(parent, R.color.background_color));
             weekdaysDateTextView.get(i).setTextColor(ContextCompat.getColor(parent,android.R.color.secondary_text_light));
 
         }
+        //setSelectedDay
+        weekdaysDateTextView.get(index).getBackground().setTint(Color.parseColor("#4056a1"));
+        weekdaysDateTextView.get(index).setTextColor(ContextCompat.getColor(parent, R.color.white));
 
-        dateTemp = new Date();
-        dateTemp.setTime(date.getTime());
-        for(int i = dayOfTheWeek-1; i >=0; i--) {
-            dateTemp.setTime(dateTemp.getTime()-86400000);
-            weekdaysDateTextView.get(i).setText(dfday.format(dateTemp));
-            populateRecycler(dateTemp,daysOfTheWeek[i],i);
-            weekdaysDateTextView.get(i).setBackgroundColor(ContextCompat.getColor(parent, R.color.background_color));
-            weekdaysDateTextView.get(i).setTextColor(ContextCompat.getColor(parent,android.R.color.secondary_text_light));
+
+        if(!currentDayInWeek) {
+            parent.showDateButton(currentDate);
         }
+        else{
+            parent.hideDateButton();
 
+        }
     }
 
     public void populateRecycler(Date date,String weekday,int recyclerIndex) {
@@ -217,11 +247,7 @@ public class WeeklyViewFragment extends Fragment {
 
         // Attach the adapter to the recyclerview to populate items
         weekdaysRecyclerView.get(weekday).setAdapter(adapter);
-        // Set layout manager to position the items
 
-        //attach itemTouch helper to adapter
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
-        itemTouchHelper.attachToRecyclerView(weekdaysRecyclerView.get(weekday));
     }
 
     public static interface OnCompleteListener {

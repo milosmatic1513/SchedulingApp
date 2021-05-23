@@ -8,6 +8,22 @@
     android:backgroundTint="#79c5e7"
     tools:context=".MainActivity">
 
+    <ProgressBar
+        android:id="@+id/progressBarMainPage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:foregroundTint="#EDE6E6"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/white"
+        android:progressBackgroundTint="@color/background_color"
+        android:progressTint="@color/black"
+        android:secondaryProgressTint="#1B1616"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView5" />
+
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="320dp"
@@ -21,9 +37,10 @@
         android:paddingEnd="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView5"
-        app:layout_constraintVertical_bias="0.33">
+        app:layout_constraintTop_toBottomOf="@+id/progressBarMainPage"
+        app:layout_constraintVertical_bias="0.319">
 
         <EditText
             android:id="@+id/emailEditText"
@@ -124,7 +141,7 @@
         android:id="@+id/imageView5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"

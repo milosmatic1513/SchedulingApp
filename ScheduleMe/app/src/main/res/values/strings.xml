@@ -53,12 +53,14 @@
     <string name="event_date">Date :</string>
     <string name="event_repeating">Repeating :</string>
     <string name="event_description">Description</string>
+    <string name="important_description">To view this event you will need to authenticate your self with the FACETEC scanner</string>
+    <string name="photoID_description">To view this event you will need to provide a Photo ID</string>
+
     <!-- Spinner Values -->
     <string-array name="spinnerItems">
         <item>None</item>
         <item>Daily</item>
         <item>Weekly</item>
-        <item>Yearly</item>
     </string-array>
     <!-- Day Values -->
     <string name="monday">Monday</string>
@@ -89,6 +91,8 @@
     <!-- dialog change language-->
     <string name="dialog_change_language_title">Change language to english</string>
     <string name="dialog_change_language_message">The app needs to be restarted.Are you sure?</string>
+    <!-- Snackbar -->
+    <string name="snackbar_important_warning">You must be authenticated to delete this item</string>
 
 
 

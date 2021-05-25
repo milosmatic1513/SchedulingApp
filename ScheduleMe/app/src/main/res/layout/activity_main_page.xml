@@ -29,6 +29,17 @@
         tools:context=".MainPage">
 
 
+        <ImageView
+            android:id="@+id/authenticatedTag"
+            android:layout_width="52dp"
+            android:layout_height="51dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/round_button"
+            android:backgroundTint="#4056a1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/facetec_static_success_foreground_vector_drawable" />
+
         <FrameLayout
             android:id="@+id/frameLayout"
             android:layout_width="match_parent"
@@ -136,24 +147,6 @@
                 android:layout_height="wrap_content"
                 android:indeterminate="true" />
         </RelativeLayout>
-
-
-        <TextView
-            android:id="@+id/authenticatedTag"
-            android:layout_width="128dp"
-            android:layout_height="33dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/background_rounded"
-            android:backgroundTint="#4056a1"
-            android:elevation="21dp"
-            android:padding="5dp"
-            android:text="@string/authenticated"
-            android:textAlignment="center"
-            android:textColor="#FFFFFF"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
 
 
         <androidx.appcompat.widget.AppCompatButton

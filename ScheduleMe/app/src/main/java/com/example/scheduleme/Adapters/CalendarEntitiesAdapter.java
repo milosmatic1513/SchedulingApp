@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -31,6 +32,7 @@ public class CalendarEntitiesAdapter extends RecyclerView.Adapter<CalendarEntiti
         public Button   moreInfoButton;
         public TextView timeTextView;
         public TextView importantTag;
+        public ImageView idImageView;
         private WeakReference<MyOnClickListener> listenerRef;
 
 
@@ -45,7 +47,7 @@ public class CalendarEntitiesAdapter extends RecyclerView.Adapter<CalendarEntiti
             moreInfoButton = (Button) itemView.findViewById(R.id.moreInfoButton);
             timeTextView = (TextView) itemView.findViewById(R.id.timeTextView);
             importantTag = (TextView) itemView.findViewById(R.id.importantMarker);
-
+            idImageView =(ImageView) itemView.findViewById(R.id.idImageView);
             listenerRef = new WeakReference<>(listener);
             // OnClickListeners to trigger the Listener given in the constructor
             moreInfoButton.setOnClickListener((view)->{
@@ -67,8 +69,6 @@ public class CalendarEntitiesAdapter extends RecyclerView.Adapter<CalendarEntiti
         // Return a new holder instance
         ViewHolder viewHolder = new ViewHolder(contactView,listener);
 
-
-
         return viewHolder;
     }
 
@@ -88,6 +88,10 @@ public class CalendarEntitiesAdapter extends RecyclerView.Adapter<CalendarEntiti
         if(!calendarEntry.isImportant())
         {
             holder.importantTag.setVisibility(View.INVISIBLE);
+        }
+        if(!calendarEntry.isRequireIdScan())
+        {
+            holder.idImageView.setVisibility(View.INVISIBLE);
         }
 
     }

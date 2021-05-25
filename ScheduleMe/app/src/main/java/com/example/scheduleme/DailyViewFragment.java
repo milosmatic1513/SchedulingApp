@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.scheduleme.Adapters.CalendarEntitiesAdapter;
 import com.example.scheduleme.DataClasses.CalendarEntry;
@@ -81,7 +82,6 @@ public class DailyViewFragment extends Fragment {
             @Override
             public void onItemClicked(int index) {
                 parent.setupBottomView(calendarEntriesForAdapter.get(index));
-
             }
         });
         if(calendarEntriesForAdapter.size()==0) {
@@ -103,16 +103,21 @@ public class DailyViewFragment extends Fragment {
 
     private void setupSimpleItemTouchCallback() {
         simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT ) {
-
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
                 return false;
             }
-
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-
-                parent.deleteFromDatabase(viewHolder.getAdapterPosition(),adapter.getDatabaseID(viewHolder.getAdapterPosition()),calendarEntriesForAdapter.get(viewHolder.getAdapterPosition()));
+                if(calendarEntriesForAdapter.get(viewHolder.getAdapterPosition()).isImportant() && !parent.isAuthenticated())
+                {
+                    Snackbar snackbar = Snackbar.make(parent.findViewById(R.id.drawer_layout),getString(R.string.snackbar_important_warning) ,Snackbar.LENGTH_SHORT);
+                    snackbar.show();
+                    parent.updateDate(currentDate);
+                }
+                else{
+                    parent.deleteFromDatabase(viewHolder.getAdapterPosition(),adapter.getDatabaseID(viewHolder.getAdapterPosition()),calendarEntriesForAdapter.get(viewHolder.getAdapterPosition()));
+                }
 
             }
     };

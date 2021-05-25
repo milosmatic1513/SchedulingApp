@@ -64,7 +64,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
     public Date currentDate;
     private CalendarEntry lastDeletedItem;
     //View Components
-    TextView authenticatedTag;
+    ImageView authenticatedTag;
     TextView textViewDateDay;
     TextView textViewDateMonth;
     TextView textViewDateYear;
@@ -378,7 +378,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
 
         bottomSheetDialog.show();
         textViewTitle.setText(calendarEntry.getTitle());
-        if(!calendarEntry.isImportant() || authenticated) {
+        if((!calendarEntry.isImportant() || authenticated) ) {
 
             authenticateLayout.setVisibility(View.GONE);
             authenticateButton.setVisibility(View.GONE);
@@ -429,9 +429,16 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
             authenticateButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(getApplicationContext(), FacetecAuthentication.class);
-                    intent.putExtra("mode",1);
-                    startActivityForResult(intent,1);
+                    if(!calendarEntry.isRequireIdScan()) {
+                        Intent intent = new Intent(getApplicationContext(), FacetecAuthentication.class);
+                        intent.putExtra("mode", 1);
+                        startActivityForResult(intent, 1);
+                    }else {
+                        Intent intent = new Intent(getApplicationContext(), FacetecAuthentication.class);
+                        intent.putExtra("mode", 3);
+                        startActivityForResult(intent, 3);
+                    }
+
                 }
             });
         }
@@ -552,6 +559,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
         return currentDate;
     }
 
-
-
+    public boolean isAuthenticated() {
+        return authenticated;
+    }
 }

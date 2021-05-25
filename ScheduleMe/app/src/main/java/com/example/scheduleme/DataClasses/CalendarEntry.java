@@ -18,16 +18,18 @@ public class CalendarEntry implements Serializable {
     private String timeEnd;
     private String type;
     private boolean important;
+    private boolean requireIdScan;
     private int repeating;
     private String base64Image;
 
-    public CalendarEntry(String databaseID,String title,String description,long date,String type,boolean important,String timeStart,String timeEnd,int repeating, String base64Image) {
+    public CalendarEntry(String databaseID,String title,String description,long date,String type,boolean important,boolean requireIdScan,String timeStart,String timeEnd,int repeating, String base64Image) {
         this.databaseID = databaseID;
         this.title = title;
         this.description = description;
         this.date = date;
         this.type = type;
         this.important = important;
+        this.requireIdScan = requireIdScan;
         this.timeStart = timeStart;
         this.timeEnd = timeEnd;
         this.repeating = repeating;
@@ -41,6 +43,7 @@ public class CalendarEntry implements Serializable {
         this.date = 0;
         this.type = "";
         this.important = false;
+        this.requireIdScan = false;
         this.timeStart = "0000";
         this.timeEnd = "0000";
         this.repeating = 0;
@@ -94,6 +97,15 @@ public class CalendarEntry implements Serializable {
     public void setImportant(boolean important) {
         this.important = important;
     }
+
+    public boolean isRequireIdScan() {
+        return requireIdScan;
+    }
+
+    public void setRequireIdScan(boolean requireIdScan) {
+        this.requireIdScan = requireIdScan;
+    }
+
 
     public String getTimeStart() {
         return timeStart;

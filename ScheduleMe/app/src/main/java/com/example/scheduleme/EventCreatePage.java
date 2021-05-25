@@ -73,7 +73,7 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
 
     Spinner spinnerRepeat;
     Switch switchImportant;
-
+    Switch switchPhotoId;
     Switch descriptionSwitch;
     Switch imageSwitch;
     Switch locationSwitch;
@@ -95,6 +95,11 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
 
     LocationManager locationManager;
 
+    //timeValues
+    int hourFrom = 0;
+    int minuteFrom = 0;
+    int hourTo= 0;
+    int minuteTo = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -115,6 +120,7 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
         editTextDate=(EditText)findViewById(R.id.editTextDate);
         editTextDate.setInputType(InputType.TYPE_NULL);
         switchImportant=(Switch)findViewById(R.id.switchImportant);
+        switchPhotoId=(Switch)findViewById(R.id.switchPhotoId);
         createButton = (Button)findViewById(R.id.createButton);
         spinnerRepeat = (Spinner)findViewById(R.id.spinner);
         descriptionSwitch = findViewById(R.id.descriptionSwitch);
@@ -127,75 +133,21 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
         locationSwitch = findViewById(R.id.locationSwitch);
         mapLayout = findViewById(R.id.mapLayout);
 
-        if(calendarEntry != null){
-            editTextTitle.setText(calendarEntry.getTitle());
-            if(calendarEntry.getDescription().length()!=0){
-                editTextDescription.setText(calendarEntry.getDescription());
-                editTextDescription.setVisibility(View.VISIBLE);
-                descriptionSwitch.setChecked(true);
-            }
-            if(calendarEntry.getBase64Image().length()!=0){
 
-                Bitmap bitmap = ImageUtilities.base64ToBitmap(calendarEntry.getBase64Image());
-                if(bitmap!=null) {
-                    imageView.setImageBitmap(bitmap);
-                    imageBitmap=bitmap;
-                    loadImageButton.setVisibility(View.VISIBLE);
-                    imageView.setVisibility(View.VISIBLE);
-                    takeImageButton.setVisibility(View.VISIBLE);
-                    imageSwitch.setChecked(true);
-                }
-                else {
-                    //set error image
-                    imageSwitch.setChecked(false);
-                    loadImageButton.setVisibility(View.GONE);
-                    imageView.setVisibility(View.GONE);
-                    takeImageButton.setVisibility(View.GONE);
-                }
-            }
-            else
-            {
-                imageSwitch.setChecked(false);
-                loadImageButton.setVisibility(View.GONE);
-                imageView.setVisibility(View.GONE);
-                takeImageButton.setVisibility(View.GONE);
-            }
-            switchImportant.setChecked(calendarEntry.isImportant());
-            spinnerRepeat.setSelection(calendarEntry.getRepeating());
-            editTextDate.setText(calendarEntry.getDayOfMonth()+"/"+calendarEntry.getMonthNumeric()+"/"+calendarEntry.getYear());
-            editTextDate.setTag(Long.toString(calendarEntry.getDate()));
-            editTextFrom.setText(calendarEntry.getTimeStart().substring(0,2)+":"+calendarEntry.getTimeStart().substring(2,4));
-            editTextTo.setText(calendarEntry.getTimeEnd().substring(0,2)+":"+calendarEntry.getTimeEnd().substring(2,4));
-        }
-        else{
-            if (date!=null) {
-
-                //set Day
-                SimpleDateFormat dfday = new SimpleDateFormat("dd", Locale.getDefault());
-                String formattedDateDay = dfday.format(date);
-
-
-                //set Month
-                SimpleDateFormat dfmonth = new SimpleDateFormat("MM", Locale.getDefault());
-                String formattedDateMonth = dfmonth.format(date);
-
-
-                //set Year
-                SimpleDateFormat dfyear = new SimpleDateFormat("yyyy", Locale.getDefault());
-                String formattedDateYear = dfyear.format(date);
-
-                editTextDate.setTag(Long.toString(date.getTime()));
-
-                editTextDate.setText(formattedDateDay + "/" +formattedDateMonth + "/" + formattedDateYear);
-            }
-        }
-
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
         //listeners
+        switchImportant.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked) {
+                    switchPhotoId.setEnabled(true);
 
+                }
+                else{
+                    switchPhotoId.setEnabled(false);
+                    switchPhotoId.setChecked(false);
+                }
+            }
+        });
         descriptionSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -258,6 +210,8 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
                         new TimePickerDialog.OnTimeSetListener() {
                             @Override
                             public void onTimeSet(TimePicker tp, int sHour, int sMinute) {
+                                hourFrom=sHour;
+                                minuteFrom=sMinute;
                                 if(sHour<10 && sMinute<10)
                                 { editTextFrom.setText("0"+sHour + ":0" + sMinute);}
                                 else if(sMinute<10)
@@ -271,6 +225,7 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
                 pickerTime.show();
             }
         });
+
         editTextTo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -290,19 +245,27 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
                         new TimePickerDialog.OnTimeSetListener() {
                             @Override
                             public void onTimeSet(TimePicker tp, int sHour, int sMinute) {
-                                if(sHour<10 && sMinute<10)
-                                { editTextTo.setText("0"+sHour + ":0" + sMinute);}
-                                else if(sMinute<10)
-                                { editTextTo.setText(sHour + ":0" + sMinute);}
-                                else if(sHour<10)
-                                { editTextTo.setText("0"+sHour + ":" + sMinute);}
-                                else
-                                { editTextTo.setText(sHour + ":" + sMinute);}
+                                hourTo=sHour;
+                                minuteTo=sMinute;
+
+                                if(sHour<10 && sMinute<10) {
+                                    editTextTo.setText("0"+sHour + ":0" + sMinute);
+                                }
+                                else if(sMinute<10) {
+                                    editTextTo.setText(sHour + ":0" + sMinute);
+                                }
+                                else if(sHour<10) {
+                                    editTextTo.setText("0"+sHour + ":" + sMinute);
+                                }
+                                else {
+                                    editTextTo.setText(sHour + ":" + sMinute);
+                                }
                             }
                         }, hour, minutes, true);
                 pickerTime.show();
             }
         });
+
         editTextDate.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v)
@@ -334,7 +297,8 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
                             Date dateParsed = sdf.parse(date);
                             long millis = dateParsed.getTime();
                             editTextDate.setTag(Long.toString(millis));
-                            Log.e("date",Long.toString(millis));
+
+
                         } catch (ParseException e) {
                             Log.e("tag",e.getLocalizedMessage ().toString());
                         }
@@ -346,13 +310,81 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
 
         });
 
+        if(calendarEntry != null){
+            editTextTitle.setText(calendarEntry.getTitle());
+            if(calendarEntry.getDescription().length()!=0){
+                editTextDescription.setText(calendarEntry.getDescription());
+                editTextDescription.setVisibility(View.VISIBLE);
+                descriptionSwitch.setChecked(true);
+            }
+            if(calendarEntry.getBase64Image().length()!=0){
+
+                Bitmap bitmap = ImageUtilities.base64ToBitmap(calendarEntry.getBase64Image());
+                if(bitmap!=null) {
+                    imageView.setImageBitmap(bitmap);
+                    imageBitmap=bitmap;
+                    loadImageButton.setVisibility(View.VISIBLE);
+                    imageView.setVisibility(View.VISIBLE);
+                    takeImageButton.setVisibility(View.VISIBLE);
+                    imageSwitch.setChecked(true);
+                }
+                else {
+                    //set error image
+                    imageSwitch.setChecked(false);
+                    loadImageButton.setVisibility(View.GONE);
+                    imageView.setVisibility(View.GONE);
+                    takeImageButton.setVisibility(View.GONE);
+                }
+            }
+            else
+            {
+                imageSwitch.setChecked(false);
+                loadImageButton.setVisibility(View.GONE);
+                imageView.setVisibility(View.GONE);
+                takeImageButton.setVisibility(View.GONE);
+            }
+            switchImportant.setChecked(calendarEntry.isImportant());
+            switchPhotoId.setChecked(calendarEntry.isRequireIdScan());
+            spinnerRepeat.setSelection(calendarEntry.getRepeating());
+            editTextDate.setText(calendarEntry.getDayOfMonth()+"/"+calendarEntry.getMonthNumeric()+"/"+calendarEntry.getYear());
+            editTextDate.setTag(Long.toString(calendarEntry.getDate()));
+            editTextFrom.setText(calendarEntry.getTimeStart().substring(0,2)+":"+calendarEntry.getTimeStart().substring(2,4));
+            editTextTo.setText(calendarEntry.getTimeEnd().substring(0,2)+":"+calendarEntry.getTimeEnd().substring(2,4));
+        }
+        else{
+            if (date!=null) {
+
+                //set Day
+                SimpleDateFormat dfday = new SimpleDateFormat("dd", Locale.getDefault());
+                String formattedDateDay = dfday.format(date);
+
+
+                //set Month
+                SimpleDateFormat dfmonth = new SimpleDateFormat("MM", Locale.getDefault());
+                String formattedDateMonth = dfmonth.format(date);
+
+
+                //set Year
+                SimpleDateFormat dfyear = new SimpleDateFormat("yyyy", Locale.getDefault());
+                String formattedDateYear = dfyear.format(date);
+
+                editTextDate.setTag(Long.toString(date.getTime()));
+
+                editTextDate.setText(formattedDateDay + "/" +formattedDateMonth + "/" + formattedDateYear);
+            }
+        }
+
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+
         //location manager initialization
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
     }
 
     public void checkCreate(View view) {
         //check if any of the fields are empty
-
         if (
                 editTextTitle.getText().toString().trim().length()==0 ||
                         editTextFrom.getText().toString().trim().length()==0  ||
@@ -365,12 +397,19 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
         }
         else
         {
+            Long dateMillis = Long.parseLong(editTextDate.getTag().toString());
+
+
+            //Long timeFromMillis = (hourFrom*60+minuteFrom)*60000l;
+            //Long timeToMillis = (hourTo*60+minuteTo)*60000l;
+
             CalendarEntry newCalendarEntry= new CalendarEntryBuilder()
                     .setTitle(editTextTitle.getText().toString())
                     .setTimeStart(editTextFrom.getText().toString().replace(":",""))
                     .setTimeEnd(editTextTo.getText().toString().replace(":",""))
                     .setImportant(switchImportant.isChecked())
-                    .setDate(Long.parseLong(editTextDate.getTag().toString()))
+                    .setRequireIdScan(switchPhotoId.isChecked())
+                    .setDate(dateMillis)
                     .setRepeating(spinnerRepeat.getSelectedItemPosition())
                     .build();
             //description Checkbox
@@ -381,7 +420,6 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
             //image Checkbox
             if(imageBitmap!=null && imageSwitch.isChecked())
             {
-
                 Log.e("tag",ImageUtilities.bitmapToBase64(imageBitmap));
                 newCalendarEntry.setBase64Image(ImageUtilities.bitmapToBase64(imageBitmap));
             }
@@ -480,7 +518,6 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
                 mMap.clear();
                 mMap.addMarker(new MarkerOptions().position(latLng).title("New Custom Marker"));
             }
-
         });
 
     }

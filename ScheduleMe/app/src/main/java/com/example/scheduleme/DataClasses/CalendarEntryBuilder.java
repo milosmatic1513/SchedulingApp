@@ -16,10 +16,11 @@ public class CalendarEntryBuilder {
     private String timeEnd;
     private String type="";
     private boolean important=false;
+    private boolean requireIdScan=false;
     private int repeating;
     private String base64Image;
-
-    public CalendarEntryBuilder(String databaseID, String title, String description, long date, String type, boolean important, String timeStart, String timeEnd, int repeating, String base64Image)
+    private int protectionLevel=0;
+    public CalendarEntryBuilder(String databaseID, String title, String description, long date, String type, boolean important,boolean requireIdScan, String timeStart, String timeEnd, int repeating, String base64Image)
     {
         this.databaseID = databaseID;
         this.title = title;
@@ -27,6 +28,7 @@ public class CalendarEntryBuilder {
         this.date = date;
         this.type = type;
         this.important = important;
+        this.requireIdScan = requireIdScan;
         this.timeStart = timeStart;
         this.timeEnd = timeEnd;
         this.repeating=repeating;
@@ -41,6 +43,7 @@ public class CalendarEntryBuilder {
         this.date = date;
         this.type = type;
         this.important = important;
+        this.requireIdScan = requireIdScan;
         this.timeStart = "0000";
         this.timeEnd = "0000";
         this.repeating=0;
@@ -87,6 +90,11 @@ public class CalendarEntryBuilder {
         this.important = important;
         return this;
     }
+    public CalendarEntryBuilder setRequireIdScan(boolean requireIdScan)
+    {
+        this.requireIdScan = requireIdScan;
+        return this;
+    }
     public CalendarEntryBuilder setRepeating(int repeating)
     {
         this.repeating = repeating;
@@ -99,7 +107,7 @@ public class CalendarEntryBuilder {
     }
     public CalendarEntry build()
     {
-        return new CalendarEntry(databaseID,title,description,date,type,important,timeStart,timeEnd,repeating,base64Image);
+        return new CalendarEntry(databaseID,title,description,date,type,important,requireIdScan,timeStart,timeEnd,repeating,base64Image);
     }
 
 }

@@ -202,6 +202,30 @@
                     android:text="Important"
                     android:textSize="14sp" />
 
+                <TextView
+                    android:id="@+id/textView13"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:text="@string/important_description" />
+
+                <Switch
+                    android:id="@+id/switchPhotoId"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:text="ID Authentication"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/textView14"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:text="@string/photoID_description" />
+
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">

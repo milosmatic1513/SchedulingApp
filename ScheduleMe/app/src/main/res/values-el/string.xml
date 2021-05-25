@@ -54,6 +54,8 @@
     <string name="event_date">Ημερομήνια :</string>
     <string name="event_repeating">Επανάληψη :</string>
     <string name="event_description">Περιγραφή</string>
+    <string name="important_description">Για να δείτε το γεγονός αυτο πρέπει να αυθεντικοποιηθείτε με το FACETEC scanner</string>
+    <string name="photoID_description">Για να δείτε το γεγονός αυτο πρέπει να παρουσιάσετε ενα εγραφό ταυτότητας</string>
     <!-- Spinner Values -->
     <string-array name="spinnerItems">
         <item>Καθολόυ</item>
@@ -90,4 +92,6 @@
     <!-- dialog change language-->
     <string name="dialog_change_language_title">Αλλαγή Γλώσσας</string>
     <string name="dialog_change_language_message">Η εφαρμογή πρέπει να κάνει επανακίνση.Είστε σίγουρος: </string>
+    <!-- Snackbar -->
+    <string name="snackbar_important_warning">Πρέπει να είστε αυθεντικοποιημένος για να διαγράψετε το γεγονός</string>
 </resources>

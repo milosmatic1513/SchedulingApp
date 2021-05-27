@@ -214,7 +214,6 @@ public class FacetecAuthentication extends AppCompatActivity {
         {
             String UID =currentUser.getUid();
             latestExternalDatabaseRefID = "schedule_me_"+UID;
-            Log.d("UID",latestExternalDatabaseRefID );
             initializeFacetec();
         }
         else
@@ -224,9 +223,13 @@ public class FacetecAuthentication extends AppCompatActivity {
     }
 
      public void goToMain() {
-        Intent intent = new Intent(getApplicationContext(), MainPage.class);
+
+        Intent intent=new Intent();
         intent.putExtra("Authenticated",isAuthenticated);
-        startActivity(intent);
+        intent.putExtra("CalendarEntry",getIntent().getSerializableExtra("CalendarEntry"));
+        intent.putExtra("Mode",getIntent().getIntExtra("mode",0));
+        setResult(4,intent);
+        finish();
     }
     @Override
     protected void onResume() {

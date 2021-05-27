@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,6 +83,10 @@ public class DailyViewFragmentAlternative extends Fragment {
     }
 
     public void updateRecyclerView(List<CalendarEntry> calendarEntriesForAdapter){
+
+        //get scale of view
+        final float scale = view.getResources().getDisplayMetrics().density;
+
         //sort Entries in RecyclerViews
 
         //initialize list of recyclerViews to put tasks in
@@ -109,12 +114,13 @@ public class DailyViewFragmentAlternative extends Fragment {
         }
 
         LinearLayout.LayoutParams params=new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        parent.getDisplay().getRealMetrics(displayMetrics);
         if(recyclerViewTasks.size()<=3) {
-            params.width = 900 / recyclerViewTasks.size();
+            params.width = (displayMetrics.widthPixels-(int) (50 * scale + 0.5f)) / recyclerViewTasks.size();
         }
         else{
-            params.width = 900 / 3;
+            params.width = (displayMetrics.widthPixels-(int) (50* scale + 0.5f))  / 3;
         }
         linearLayoutAlternative.removeAllViewsInLayout();
 
@@ -139,8 +145,7 @@ public class DailyViewFragmentAlternative extends Fragment {
             linearLayoutAlternative.addView(recyclerView);
         }
 
-        //get scale of view
-        final float scale = view.getResources().getDisplayMetrics().density;
+
 
         //calculate pixels to get to first task if it exists
 

@@ -55,6 +55,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
     //Request codes
     static int EDIT_ACTIVITY_REQUEST=2;
     static int PROFILE_ACTIVITY_REQUEST=3;
+    static int FACETEC_ACTIVITY_REQUEST=4;
     //Database
     private FirebaseAuth mAuth;
     FirebaseUser currentUser;
@@ -123,7 +124,6 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
         mAuth = FirebaseAuth.getInstance();
         database =FirebaseDatabase.getInstance();
 
-
         //set Listeners
         imageViewCalendar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -167,7 +167,6 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
                 pickerDate.show();
             }
         });
-
 
         //Nav bar initialization
         navigationView.bringToFront();
@@ -267,6 +266,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
         //Redirect to home page
         Intent intent = new Intent(getApplicationContext(),FacetecAuthentication.class);
         intent.putExtra("mode",3);
+
         startActivity(intent);
 
 
@@ -361,7 +361,11 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
 
     }
 
-    public void setupBottomView(CalendarEntry calendarEntry) {
+    public void setupBottomView(CalendarEntry calendarEntry)
+    {
+        setupBottomView(calendarEntry,false );
+    }
+    public void setupBottomView(CalendarEntry calendarEntry,boolean photoIdAuth) {
 
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(MainPage.this);
         bottomSheetDialog.setContentView(R.layout.bottom_view_layout);
@@ -384,7 +388,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
 
         bottomSheetDialog.show();
         textViewTitle.setText(calendarEntry.getTitle());
-        if((!calendarEntry.isImportant() || authenticated) ) {
+        if((!calendarEntry.isImportant() || authenticated) && (!calendarEntry.isRequireIdScan() || photoIdAuth)) {
 
             authenticateLayout.setVisibility(View.GONE);
             authenticateButton.setVisibility(View.GONE);
@@ -434,14 +438,17 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
             authenticateButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    bottomSheetDialog.dismiss();
                     if(!calendarEntry.isRequireIdScan()) {
                         Intent intent = new Intent(getApplicationContext(), FacetecAuthentication.class);
                         intent.putExtra("mode", 1);
-                        startActivityForResult(intent, 1);
+                        intent.putExtra("CalendarEntry",calendarEntry);
+                        startActivityForResult(intent, FACETEC_ACTIVITY_REQUEST);
                     }else {
                         Intent intent = new Intent(getApplicationContext(), FacetecAuthentication.class);
                         intent.putExtra("mode", 3);
-                        startActivityForResult(intent, 3);
+                        intent.putExtra("CalendarEntry",calendarEntry);
+                        startActivityForResult(intent, FACETEC_ACTIVITY_REQUEST);
                     }
 
                 }
@@ -491,6 +498,35 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
                 startActivity(intent);
             }
         }
+        else if(requestCode==FACETEC_ACTIVITY_REQUEST) {
+            try {
+                authenticated=data.getBooleanExtra("Authenticated",false);
+                CalendarEntry calendarEntry=(CalendarEntry) data.getSerializableExtra("CalendarEntry");
+                int mode = data.getIntExtra("Mode",0);
+                if(authenticated) {
+                    authenticatedTag.setVisibility(View.VISIBLE);
+                }
+                else{
+                    authenticatedTag.setVisibility(View.GONE);
+                }
+
+                if(calendarEntry!=null)
+                {
+                    if(mode==3)
+                    {
+                        setupBottomView(calendarEntry,true);
+                    }
+                    else{
+                    setupBottomView(calendarEntry);}
+                }
+            }
+            catch (java.lang.NullPointerException e ){
+                Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_SHORT).show();
+            }
+
+        }
+
+
 
     }
     //fragment functions

@@ -1,5 +1,9 @@
 package com.example.scheduleme.DataClasses;
 
+import android.graphics.Bitmap;
+import android.util.Base64;
+
+import java.io.ByteArrayOutputStream;
 import java.util.Date;
 
 public class CalendarEntryBuilder {
@@ -8,13 +12,15 @@ public class CalendarEntryBuilder {
     private String title="";
     private String description="";
     private long date=0;
-    private String timeStart;
-    private String timeEnd;
+    private long timeStart;
+    private long timeEnd;
     private String type="";
     private boolean important=false;
+    private boolean requireIdScan=false;
     private int repeating;
-
-    public CalendarEntryBuilder(String databaseID,String title,String description,long date,String type,boolean important,String timeStart,String timeEnd,int repeating)
+    private String base64Image;
+    private int protectionLevel=0;
+    public CalendarEntryBuilder(String databaseID, String title, String description, long date, String type, boolean important,boolean requireIdScan, long timeStart, long timeEnd, int repeating, String base64Image)
     {
         this.databaseID = databaseID;
         this.title = title;
@@ -22,9 +28,11 @@ public class CalendarEntryBuilder {
         this.date = date;
         this.type = type;
         this.important = important;
+        this.requireIdScan = requireIdScan;
         this.timeStart = timeStart;
         this.timeEnd = timeEnd;
         this.repeating=repeating;
+        this.base64Image = base64Image;
 
     }
     public CalendarEntryBuilder()
@@ -35,9 +43,11 @@ public class CalendarEntryBuilder {
         this.date = date;
         this.type = type;
         this.important = important;
-        this.timeStart = "0000";
-        this.timeEnd = "0000";
+        this.requireIdScan = requireIdScan;
+        this.timeStart = 0;
+        this.timeEnd = 0;
         this.repeating=0;
+        this.base64Image="";
 
     }
     public CalendarEntryBuilder setDatabaseID(String databaseID)
@@ -60,12 +70,12 @@ public class CalendarEntryBuilder {
         this.date = date;
         return this;
     }
-    public CalendarEntryBuilder setTimeStart(String timeStart)
+    public CalendarEntryBuilder setTimeStart(long timeStart)
     {
         this.timeStart = timeStart;
         return this;
     }
-    public CalendarEntryBuilder setTimeEnd(String timeEnd)
+    public CalendarEntryBuilder setTimeEnd(long timeEnd)
     {
         this.timeEnd = timeEnd;
         return this;
@@ -80,13 +90,24 @@ public class CalendarEntryBuilder {
         this.important = important;
         return this;
     }
+    public CalendarEntryBuilder setRequireIdScan(boolean requireIdScan)
+    {
+        this.requireIdScan = requireIdScan;
+        return this;
+    }
     public CalendarEntryBuilder setRepeating(int repeating)
     {
         this.repeating = repeating;
         return this;
     }
+    public CalendarEntryBuilder setBase64Image(String base64Image)
+    {
+        this.base64Image = base64Image;
+        return this;
+    }
     public CalendarEntry build()
     {
-        return new CalendarEntry(databaseID,title,description,date,type,important,timeStart,timeEnd,repeating);
+        return new CalendarEntry(databaseID,title,description,date,type,important,requireIdScan,timeStart,timeEnd,repeating,base64Image);
     }
+
 }

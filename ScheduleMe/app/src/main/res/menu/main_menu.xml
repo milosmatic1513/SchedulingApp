@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
 
-    <item android:title="Display">
+    <item android:title="@string/display">
 
         <menu>
 
@@ -10,20 +10,21 @@
 
                 <item
                     android:id="@+id/daily"
-                    android:title="Daily" />
+                    android:title="@string/daily" />
 
                 <item
                     android:id="@+id/weekly"
-                    android:title="Weekly" />
+                    android:title="@string/weekly" />
 
                 <item
-                    android:id="@+id/monthly"
-                    android:title="Monthly" />
+                    android:id="@+id/dailyAlt"
+                    android:title="@string/dailyAlt" />
+
             </group>
         </menu>
     </item>
 
-    <item android:title="Profile">
+    <item android:title="@string/profile">
 
         <menu>
 
@@ -31,11 +32,11 @@
 
                 <item
                     android:id="@+id/nav_profile"
-                    android:title="Profile" />
+                    android:title="@string/profile" />
 
                 <item
                     android:id="@+id/nav_logout"
-                    android:title="Logout" />
+                    android:title="@string/logout" />
             </group>
         </menu>
     </item>

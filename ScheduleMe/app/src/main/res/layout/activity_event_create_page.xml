@@ -19,11 +19,10 @@
         android:backgroundTint="#79c5e7"
         android:enabled="false"
         android:onClick="checkCreate"
-        android:text="Done"
+        android:text="@string/done"
         android:textAllCaps="false"
         android:textColor="#FBFBFB"
         android:textSize="30sp"
-        app:iconTint="#2980b9"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -37,7 +36,7 @@
         android:elevation="8dp"
         android:padding="20dp"
         android:paddingStart="40dp"
-        android:text="Create Task Page"
+        android:text="@string/create_task_page"
         android:textColor="@color/white"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -60,9 +59,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:orientation="vertical"
-            android:padding="30dp"
-            android:paddingStart="30dp"
-            android:paddingEnd="30dp">
+            android:padding="30dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -79,7 +76,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingTop="10dp"
-                    android:text="Title"
+                    android:text="@string/title"
                     android:textColor="@color/black"
                     android:textSize="14sp" />
 
@@ -92,7 +89,7 @@
                     android:background="@drawable/background_rounded"
                     android:backgroundTint="@color/background_color"
                     android:ems="10"
-                    android:hint="Title"
+                    android:hint="@string/title"
                     android:inputType="text"
 
                     android:padding="10dp"
@@ -108,7 +105,7 @@
                         android:layout_height="52dp"
                         android:paddingTop="10dp"
                         android:paddingBottom="10dp"
-                        android:text="Time From"
+                        android:text="@string/time_from"
                         android:textColor="@color/black"
                         android:textSize="14sp"
                         app:layout_constraintStart_toStartOf="parent"
@@ -120,7 +117,7 @@
                         android:layout_height="49dp"
                         android:paddingTop="10dp"
                         android:paddingBottom="10dp"
-                        android:text="Time To"
+                        android:text="@string/time_to"
                         android:textColor="@color/black"
                         android:textSize="14sp"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -166,7 +163,7 @@
                     android:layout_height="wrap_content"
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp"
-                    android:text="Date"
+                    android:text="@string/date"
                     android:textColor="@color/black"
                     android:textSize="14sp" />
 
@@ -193,7 +190,8 @@
                 android:elevation="8dp"
                 android:orientation="vertical"
                 android:padding="10dp"
-                android:paddingStart="20dp">
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp">
 
                 <Switch
                     android:id="@+id/switchImportant"
@@ -203,6 +201,30 @@
                     android:paddingBottom="10dp"
                     android:text="Important"
                     android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/textView13"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:text="@string/important_description" />
+
+                <Switch
+                    android:id="@+id/switchPhotoId"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:text="ID Authentication"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/textView14"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:text="@string/photoID_description" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -253,7 +275,7 @@
                     android:id="@+id/descriptionSwitch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Description" />
+                    android:text="@string/description" />
 
                 <EditText
                     android:id="@+id/editTextDescription"
@@ -277,6 +299,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/ImageLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="20dp"
@@ -292,7 +315,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Image" />
+                    android:text="@string/image" />
 
                 <ImageView
                     android:id="@+id/imageViewTaskPage"
@@ -302,15 +325,38 @@
                     android:visibility="gone"
                     app:srcCompat="@drawable/ic_menu_camera" />
 
-                <Button
-                    android:id="@+id/takeImageButton"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:backgroundTint="#2956FA"
-                    android:onClick="takePicture"
-                    android:text="Take picture"
-                    android:visibility="gone" />
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/takeImageButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="#2956FA"
+                        android:onClick="takePicture"
+                        android:padding="10dp"
+                        android:text="Take picture"
+                        android:textColor="@color/white"
+                        android:visibility="gone" />
+
+                    <Button
+                        android:id="@+id/loadImageButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="#2956FA"
+                        android:onClick="selectImage"
+                        android:padding="10dp"
+                        android:text="Upload picture"
+                        android:textColor="@color/white"
+                        android:visibility="gone" />
+                </LinearLayout>
 
             </LinearLayout>
 
@@ -331,14 +377,26 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Location" />
+                    android:text="@string/location" />
 
-                <com.google.android.gms.maps.MapView
-                    android:id="@+id/mapView"
+                <LinearLayout
+                    android:id="@+id/mapLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:visibility="gone" />
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <fragment
+                        android:id="@+id/map"
+                        android:name="com.google.android.gms.maps.SupportMapFragment"
+                        android:layout_width="match_parent"
+
+
+                        android:layout_height="200dp" />
+                </LinearLayout>
+
+
             </LinearLayout>
 
         </LinearLayout>

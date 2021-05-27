@@ -1,34 +1,39 @@
 package com.example.scheduleme.DataClasses;
 
 import android.graphics.Bitmap;
+import android.util.Base64;
 
+import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class CalendarEntry implements Serializable {
+public class CalendarEntry implements Serializable ,Comparable<CalendarEntry> {
     private String databaseID;
     private String title;
     private String description;
     private long date;
-    private String timeStart;
-    private String timeEnd;
+    private long timeStart;
+    private long timeEnd;
     private String type;
     private boolean important;
+    private boolean requireIdScan;
     private int repeating;
-    private Bitmap image;
+    private String base64Image;
 
-    public CalendarEntry(String databaseID,String title,String description,long date,String type,boolean important,String timeStart,String timeEnd,int repeating) {
+    public CalendarEntry(String databaseID,String title,String description,long date,String type,boolean important,boolean requireIdScan,long timeStart,long timeEnd,int repeating, String base64Image) {
         this.databaseID = databaseID;
         this.title = title;
         this.description = description;
         this.date = date;
         this.type = type;
         this.important = important;
+        this.requireIdScan = requireIdScan;
         this.timeStart = timeStart;
         this.timeEnd = timeEnd;
         this.repeating = repeating;
+        this.base64Image = base64Image;
     }
 
     public CalendarEntry() {
@@ -38,9 +43,11 @@ public class CalendarEntry implements Serializable {
         this.date = 0;
         this.type = "";
         this.important = false;
-        this.timeStart = "0000";
-        this.timeEnd = "0000";
+        this.requireIdScan = false;
+        this.timeStart = 0;
+        this.timeEnd = 0;
         this.repeating = 0;
+        this.base64Image = "";
     }
 
     public String getDatabaseID() {
@@ -91,19 +98,28 @@ public class CalendarEntry implements Serializable {
         this.important = important;
     }
 
-    public String getTimeStart() {
+    public boolean isRequireIdScan() {
+        return requireIdScan;
+    }
+
+    public void setRequireIdScan(boolean requireIdScan) {
+        this.requireIdScan = requireIdScan;
+    }
+
+
+    public long getTimeStart() {
         return timeStart;
     }
 
-    public void setTimeStart(String timeStart) {
+    public void setTimeStart(long timeStart) {
         this.timeStart = timeStart;
     }
 
-    public String getTimeEnd() {
+    public long getTimeEnd() {
         return timeEnd;
     }
 
-    public void setTimeEnd(String timeEnd) {
+    public void setTimeEnd(long timeEnd) {
         this.timeEnd = timeEnd;
     }
 
@@ -113,6 +129,14 @@ public class CalendarEntry implements Serializable {
 
     public void setRepeating(int repeating) {
         this.repeating = repeating;
+    }
+
+    public String getBase64Image() {
+        return base64Image;
+    }
+
+    public void setBase64Image(String base64Image) {
+        this.base64Image = base64Image;
     }
 
     //Custom functions
@@ -144,5 +168,55 @@ public class CalendarEntry implements Serializable {
         SimpleDateFormat dfyear = new SimpleDateFormat("yyyy", Locale.getDefault());
         String formattedDateYear = dfyear.format(date);
         return formattedDateYear;
+    }
+
+    public String calculateHourFrom()
+    {
+        SimpleDateFormat dfHourFrom = new SimpleDateFormat("k", Locale.getDefault());
+        String formattedHourFrom = dfHourFrom.format(date+timeStart);
+
+        if(formattedHourFrom.length()==1) formattedHourFrom="0"+formattedHourFrom;
+
+        if(formattedHourFrom.equalsIgnoreCase("24"))formattedHourFrom="00";
+
+        return formattedHourFrom;
+    }
+    public String calculateMinuteFrom()
+    {
+        SimpleDateFormat dfMinuteFrom = new SimpleDateFormat("m", Locale.getDefault());
+        String formattedMinuteFrom = dfMinuteFrom.format(date+timeStart);
+        if(formattedMinuteFrom.length()==1) formattedMinuteFrom="0"+formattedMinuteFrom;
+
+        return formattedMinuteFrom;
+    }
+    public String calculateHourTo()
+    {
+        SimpleDateFormat dfHourTo = new SimpleDateFormat("k", Locale.getDefault());
+        String formattedHourTo = dfHourTo.format(date+timeEnd);
+
+        if(formattedHourTo.length()==1) formattedHourTo="0"+formattedHourTo;
+
+        if(formattedHourTo.equalsIgnoreCase("24"))formattedHourTo="00";
+
+        return formattedHourTo;
+    }
+    public String calculateMinuteTo()
+    {
+        SimpleDateFormat dfMinuteTo = new SimpleDateFormat("m", Locale.getDefault());
+        String formattedMinuteTo = dfMinuteTo.format(date+timeEnd);
+
+        if(formattedMinuteTo.length()==1) formattedMinuteTo="0"+formattedMinuteTo;
+
+        return formattedMinuteTo;
+    }
+
+    @Override
+    public int compareTo(CalendarEntry ce) {
+        if(getTimeStart()==ce.getTimeStart())
+            return 0;
+        else if(getTimeStart()<ce.getTimeStart())
+            return 1;
+        else
+            return -1;
     }
 }

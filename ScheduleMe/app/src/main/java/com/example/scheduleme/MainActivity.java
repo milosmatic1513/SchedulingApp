@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -14,9 +16,10 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.Switch;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.scheduleme.DataClasses.Preferences;
 import com.example.scheduleme.DataClasses.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -37,20 +40,23 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
-    private FirebaseDatabase firebaseDatabase;
-    private SQLiteDatabase database;
+    private FirebaseDatabase database;
 
     EditText passwordEditText , emailEditText;
     CheckBox rememberMeCheckbox;
 
-
+    ProgressBar progressBar;
     static String HIDDEN_TAG_STRING = "hidden";
     SharedPreferences sharedPreferences;
 
+    String currentLocale;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //Get and set Language
+        currentLocale = Preferences.getLanguage(this);
+        Preferences.setLocale(this, currentLocale);
 
         //Shared Preferences Instantiation
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -59,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
         emailEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
         rememberMeCheckbox=findViewById(R.id.rememberMeCheckBox);
+        progressBar = findViewById(R.id.progressBarMainPage);
+        progressBar.setVisibility(View.INVISIBLE);
 
         //listeners
         rememberMeCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -91,8 +99,8 @@ public class MainActivity extends AppCompatActivity {
         passwordEditText.setTag(HIDDEN_TAG_STRING);
 
         //Firebase Initialization
+        database = FirebaseDatabase.getInstance();
         mAuth = FirebaseAuth.getInstance();
-        firebaseDatabase= FirebaseDatabase.getInstance();
         mAuth.signOut();
         updateUI();
 
@@ -133,36 +141,39 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
+                                progressBar.setVisibility(View.VISIBLE);
                                 // Sign in success, update UI with the signed-in user's information
-
-                                //Intent intent = new Intent(getApplicationContext(), FacetecAuthentication.class);
-                                //intent.putExtra("mode",1);
-                                FirebaseUser currentUser = mAuth.getCurrentUser();
-                                DatabaseReference myRef = firebaseDatabase.getReference("Users/" + currentUser.getUid());
-                                myRef.addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                        User user = snapshot.getValue(User.class);
-                                        if (user.isLoginAuth())
-                                        {
-                                            Intent intent = new Intent(getApplicationContext(), FacetecAuthentication.class);
-                                            intent.putExtra("mode",1);
-                                            startActivity(intent);
+                                FirebaseUser currentUser;
+                                currentUser = mAuth.getCurrentUser();
+                                if(currentUser!=null) {
+                                    DatabaseReference myRef = database.getReference("Users/" + currentUser.getUid() + "/UserInfo");
+                                    myRef.addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            progressBar.setVisibility(View.INVISIBLE);
+                                            User user = snapshot.getValue(User.class);
+                                            if(user!=null)
+                                            {
+                                                if (user.isLoginAuth())
+                                                {
+                                                    Intent intent = new Intent(getApplicationContext(), FacetecAuthentication.class);
+                                                    intent.putExtra("mode",1);
+                                                    startActivity(intent);
+                                                }
+                                                else {
+                                                    Intent intent = new Intent(getApplicationContext(), MainPage.class);
+                                                    startActivity(intent);
+                                                }
+                                            }
                                         }
-                                        else
-                                        {
-                                            Intent intent = new Intent(getApplicationContext(), MainPage.class);
-                                            startActivity(intent);
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+                                            progressBar.setVisibility(View.INVISIBLE);
                                         }
-                                    }
-
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError error) {
-
-                                    }
-                                });
-
-                                //Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_SHORT).show();
+                                    });
+                                    //Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_SHORT).show();
+                                }
 
                             }
                             else {

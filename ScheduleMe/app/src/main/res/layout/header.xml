@@ -38,7 +38,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Schedule your Day"
+                android:text="@string/schedule_your_day"
                 android:textColor="#FFFFFF"
                 android:textSize="14sp" />
 

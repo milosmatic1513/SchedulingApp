@@ -22,26 +22,26 @@
         app:menu="@menu/main_menu" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayoutMain"
         android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/background_color"
-    tools:context=".MainPage">
+        android:layout_height="match_parent"
+        android:background="@color/background_color"
+        tools:context=".MainPage">
 
 
-        <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/calendarEntryRecyclerView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout3" >
+        <FrameLayout
+            android:id="@+id/frameLayout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayout3"
+            tools:layout_editor_absoluteX="206dp">
 
-    </androidx.recyclerview.widget.RecyclerView>
+        </FrameLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout3"
-            android:layout_width="412dp"
+            android:layout_width="0dp"
             android:layout_height="75dp"
             android:background="@color/background_color"
             android:backgroundTint="#79c5e7"
@@ -53,7 +53,7 @@
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
-                android:layout_width="412dp"
+                android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:background="#79c5e7"
                 android:elevation="0dp"
@@ -61,6 +61,7 @@
                 android:minHeight="?attr/actionBarSize"
                 android:theme="?attr/actionBarTheme"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0"
@@ -73,7 +74,6 @@
                 android:layout_marginStart="48dp"
                 android:elevation="20dp"
                 android:padding="0dp"
-                android:text="03"
                 android:textAlignment="center"
                 android:textColor="@color/white"
                 android:textSize="55sp"
@@ -83,6 +83,7 @@
                 app:layout_constraintVertical_bias="0.0" />
 
             <LinearLayout
+                android:id="@+id/linearLayout3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
@@ -91,12 +92,12 @@
                 app:layout_constraintStart_toEndOf="@+id/textViewDateDay"
                 app:layout_constraintTop_toTopOf="parent">
 
+
                 <TextView
                     android:id="@+id/textViewDateMonth"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:elevation="20dp"
-                    android:text="Apr"
                     android:textColor="#FBFBFB"
                     android:textSize="18sp" />
 
@@ -105,7 +106,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:elevation="20dp"
-                    android:text="2021"
                     android:textColor="#FFFFFF"
                     android:textSize="24sp" />
 
@@ -122,55 +122,104 @@
                 app:layout_constraintVertical_bias="0.538"
                 app:srcCompat="@android:drawable/ic_menu_month" />
 
+            <ImageView
+                android:id="@+id/authenticatedTag"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_margin="10dp"
+                android:layout_marginStart="16dp"
+                android:background="@drawable/round_button"
+                android:backgroundTint="#4056a1"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/linearLayout3"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/facetec_static_success_foreground_vector_drawable" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <Button
-        android:id="@+id/button6"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/round_button"
-        android:backgroundTint="#EA1E1E"
-        android:elevation="8dp"
-        android:gravity="center|center_vertical|fill_vertical"
-        android:onClick="createEvent"
-        android:padding="0dp"
-        android:paddingTop="0dp"
-        android:text="+"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="48dp"
-            android:text="You have nothing planned for today"
-            android:textSize="18sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/calendarEntryRecyclerView" />
-
-        <TextView
-            android:id="@+id/authenticatedTag"
-            android:layout_width="128dp"
-            android:layout_height="33dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/background_rounded"
-            android:backgroundTint="#4056a1"
-            android:elevation="21dp"
-            android:padding="5dp"
-            android:text="Authenticated"
-            android:textAlignment="center"
-            android:textColor="#FFFFFF"
-            android:textSize="18sp"
+        <RelativeLayout
+            android:id="@+id/loadingPanel"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:gravity="center"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayout3">
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminate="true" />
+        </RelativeLayout>
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/button6"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/round_button"
+            android:backgroundTint="@color/white"
+            android:gravity="center|center_vertical|fill_vertical"
+            android:onClick="createEvent"
+            android:text="+"
+            android:textColor="#4056a1"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/currentDateButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/round_button"
+            android:backgroundTint="#4056a1"
+            android:gravity="center|center_vertical|fill_vertical"
+            android:text="10"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="@+id/button6"
+            app:layout_constraintEnd_toStartOf="@+id/button6" />
+
+        <LinearLayout
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:background="@drawable/background_rounded"
+            android:elevation="20dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="@+id/button6"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/button6">
+
+            <ImageButton
+                android:id="@+id/imageButton2"
+                style="@style/Widget.AppCompat.ImageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="@color/white"
+                android:onClick="previousDate"
+                android:tint="#4056a1"
+                app:srcCompat="@drawable/abc_vector_test" />
+
+            <ImageButton
+                android:id="@+id/imageButton3"
+                style="@style/Widget.AppCompat.ImageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="@color/white"
+                android:onClick="nextDate"
+                android:rotation="180"
+                android:tint="#4056a1"
+                app:srcCompat="@drawable/abc_vector_test" />
+
+        </LinearLayout>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 </androidx.drawerlayout.widget.DrawerLayout>

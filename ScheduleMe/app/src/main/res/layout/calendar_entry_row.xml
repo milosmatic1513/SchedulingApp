@@ -13,7 +13,7 @@
     android:elevation="20dp">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardView"
+        android:id="@+id/cardViewAlternative"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:cardCornerRadius="10dp"
@@ -21,30 +21,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <Button
+            android:id="@+id/moreInfoButton"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:backgroundTint="#004056A1"
+            android:textAllCaps="false"
+            android:textColor="#F8F5F5"
+            android:textSize="14sp" />
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="5dp">
 
-            <Button
-                android:id="@+id/moreInfoButton"
-                android:layout_width="86dp"
-                android:layout_height="40dp"
-                android:layout_marginEnd="4dp"
-                android:backgroundTint="#4056a1"
-                android:text="@string/more_info"
-                android:textAllCaps="false"
-                android:textColor="#F8F5F5"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/eventNameText" />
-
             <TextView
-                android:id="@+id/eventNameText"
+                android:id="@+id/eventNameTextAlternative"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Event Name"
+                android:text="@string/event_name"
                 android:textAlignment="center"
                 android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -55,7 +51,7 @@
                 app:layout_constraintVertical_bias="0.125" />
 
             <TextView
-                android:id="@+id/importantMarker"
+                android:id="@+id/importantMarkerAlternative"
                 android:layout_width="90dp"
                 android:layout_height="30dp"
                 android:background="@drawable/background_rounded"
@@ -65,8 +61,9 @@
                 android:text="Important"
                 android:textColor="#FFFFFF"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/eventNameText"
-                app:layout_constraintTop_toBottomOf="@+id/eventNameText" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/eventNameTextAlternative"
+                app:layout_constraintTop_toBottomOf="@+id/eventNameTextAlternative" />
 
             <ImageView
                 android:id="@+id/imageView"
@@ -86,6 +83,16 @@
                 app:layout_constraintEnd_toEndOf="@+id/imageView"
                 app:layout_constraintStart_toStartOf="@+id/imageView"
                 app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+            <ImageView
+                android:id="@+id/idImageView"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="4dp"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/imageView"
+                app:srcCompat="@drawable/id_image" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

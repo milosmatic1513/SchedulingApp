@@ -92,7 +92,7 @@ public class RegisterPage extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
 
                             // Add other user data to database
-                            DatabaseReference myRef = database.getReference("Users/" + user.getUid());
+                            DatabaseReference myRef = database.getReference("Users/" + user.getUid()+"/UserInfo");
                             myRef.setValue(
                                     new User(nameText.getText().toString())
                             );

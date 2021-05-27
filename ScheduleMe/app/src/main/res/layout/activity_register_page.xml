@@ -9,7 +9,7 @@
     tools:context=".RegisterPage">
 
     <Button
-        android:id="@+id/sendButton2"
+        android:id="@+id/saveChangesButton"
         android:layout_width="310dp"
         android:layout_height="78dp"
 
@@ -36,7 +36,7 @@
         android:elevation="20dp"
         android:gravity="center_vertical"
         android:paddingLeft="40dp"
-        android:text="@string/signup_message"
+        android:text="@string/register_page"
         android:textColor="@android:color/white"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -47,7 +47,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:padding="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/sendButton2"
+        app:layout_constraintBottom_toTopOf="@+id/saveChangesButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView8">

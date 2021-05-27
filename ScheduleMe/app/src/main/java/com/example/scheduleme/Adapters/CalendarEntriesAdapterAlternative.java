@@ -1,15 +1,18 @@
 package com.example.scheduleme.Adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.scheduleme.DataClasses.CalendarEntry;
@@ -19,21 +22,21 @@ import com.example.scheduleme.R;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-public class CalendarEntitiesAdapter extends RecyclerView.Adapter<CalendarEntitiesAdapter.ViewHolder> {
+public class CalendarEntriesAdapterAlternative extends RecyclerView.Adapter<CalendarEntriesAdapterAlternative.ViewHolder> {
 
 
     private List<CalendarEntry> calendarEntries;
     private MyOnClickListener listener;
 
+    int currentTime = 0;
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
         public TextView taskTextView;
-        public Button   moreInfoButton;
-        public TextView timeTextView;
+        public Button moreInfoButton;
         public TextView importantTag;
-        public ImageView idImageView;
-        public CardView cardView;
+        public ConstraintLayout constraintLayout;
         private WeakReference<MyOnClickListener> listenerRef;
 
 
@@ -43,12 +46,10 @@ public class CalendarEntitiesAdapter extends RecyclerView.Adapter<CalendarEntiti
             // Stores the itemView in a public final member variable that can be used
             // to access the context from any ViewHolder instance.
             super(itemView);
-            cardView = (CardView)itemView.findViewById(R.id.cardViewAlternative);
+            constraintLayout = (ConstraintLayout)itemView.findViewById(R.id.constaintLayoutAlternative);
             taskTextView = (TextView) itemView.findViewById(R.id.eventNameTextAlternative);
             moreInfoButton = (Button) itemView.findViewById(R.id.moreInfoButton);
-            timeTextView = (TextView) itemView.findViewById(R.id.timeTextView);
             importantTag = (TextView) itemView.findViewById(R.id.importantMarkerAlternative);
-            idImageView =(ImageView) itemView.findViewById(R.id.idImageView);
             listenerRef = new WeakReference<>(listener);
             // OnClickListeners to trigger the Listener given in the constructor
             moreInfoButton.setOnClickListener((view)->{
@@ -60,21 +61,21 @@ public class CalendarEntitiesAdapter extends RecyclerView.Adapter<CalendarEntiti
     }
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public CalendarEntriesAdapterAlternative.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
         // Inflate the custom layout
-        View contactView = inflater.inflate(R.layout.calendar_entry_row, parent, false);
+        View contactView = inflater.inflate(R.layout.calendar_entry_row_alternative, parent, false);
 
         // Return a new holder instance
-        ViewHolder viewHolder = new ViewHolder(contactView,listener);
+        CalendarEntriesAdapterAlternative.ViewHolder viewHolder = new CalendarEntriesAdapterAlternative.ViewHolder(contactView,listener);
 
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull CalendarEntriesAdapterAlternative.ViewHolder holder, int position) {
         // Get the data model based on position
         CalendarEntry calendarEntry = calendarEntries.get(position);
 
@@ -83,25 +84,39 @@ public class CalendarEntitiesAdapter extends RecyclerView.Adapter<CalendarEntiti
         // Set item views based on your views and data model
         TextView titleTextView = holder.taskTextView;
         titleTextView.setText(calendarEntry.getTitle());
-        TextView timeTextView =holder.timeTextView;
 
-        timeTextView.setText(calendarEntry.calculateHourFrom()+":"+calendarEntry.calculateMinuteFrom()+"-"+calendarEntry.calculateHourTo()+":"+calendarEntry.calculateMinuteTo());
-
-        if(!calendarEntry.isImportant())
-        {
+        if(!calendarEntry.isImportant()) {
             holder.importantTag.setVisibility(View.INVISIBLE);
         }
-        if(!calendarEntry.isRequireIdScan())
+
+        //calculate hours
+        int size =(int) (calendarEntry.getTimeEnd()-calendarEntry.getTimeStart())/1800000;
+        final float scale = holder.itemView.getResources().getDisplayMetrics().density;;
+        int pixels = (int) (60 * scale + 0.5f);
+        if(size<1)
         {
-            holder.idImageView.setVisibility(View.INVISIBLE);
+            size=1;
+            holder.constraintLayout.getLayoutParams().height=pixels;
+        }else{
+            holder.constraintLayout.getLayoutParams().height=pixels*size;
+
         }
+        int timeStart=(int) calendarEntry.getTimeStart()/1800000;
+        int timeEnd=(int) calendarEntry.getTimeEnd()/1800000;
+
+        RecyclerView.LayoutParams params = (RecyclerView.LayoutParams)holder.constraintLayout.getLayoutParams();
+        params.setMargins((int)(10 * scale + 0.5f), (int)(5 * scale + 0.5f)+(int)((timeStart-currentTime)*60*scale+0.5f), (int)(10 * scale + 0.5f), 0); //substitute parameters for left, top, right, bottom
+        holder.constraintLayout.setLayoutParams(params);
+
+        currentTime=timeEnd;
     }
     @Override
     public int getItemCount() {
         return calendarEntries.size();
     }
 
-    public CalendarEntitiesAdapter(List<CalendarEntry> calendarEntries, MyOnClickListener listener) {
+    public CalendarEntriesAdapterAlternative(List<CalendarEntry> calendarEntries, MyOnClickListener listener) {
+        currentTime = 0;
         this.calendarEntries = calendarEntries;
         this.listener = listener;
 

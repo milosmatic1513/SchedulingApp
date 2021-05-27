@@ -24,12 +24,12 @@ public class DatabaseFaker {
     public void generateData()
     {
 
-        reference.push().setValue(new CalendarEntryBuilder()
+       /* reference.push().setValue(new CalendarEntryBuilder()
                 .setTitle(wordList[random.nextInt(wordList.length)]+" "+wordList[random.nextInt(wordList.length)])
                 .setTimeStart(timeList[random.nextInt(timeList.length)])
                 .setTimeEnd(timeList[random.nextInt(timeList.length)])
                 .setDate(1618866000000l)
                 .build()
-        );
+        );*/
     }
 }

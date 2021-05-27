@@ -1,4 +1,4 @@
-package com.example.scheduleme;
+package com.example.scheduleme.FragmentControllers;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -12,17 +12,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.scheduleme.Adapters.CalendarEntitiesAdapter;
 import com.example.scheduleme.DataClasses.CalendarEntry;
+import com.example.scheduleme.FragmentControllers.WeeklyViewFragment;
+import com.example.scheduleme.MainPage;
+import com.example.scheduleme.MyOnClickListener;
+import com.example.scheduleme.R;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.database.DatabaseReference;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -72,8 +75,9 @@ public class DailyViewFragment extends Fragment {
 
     public void passData(List<CalendarEntry> calendarEntryList)
     {
+        Collections.sort(calendarEntryList);
+        Collections.reverse(calendarEntryList);
         this.calendarEntryList = calendarEntryList;
-
     }
 
     public void updateRecyclerView(List<CalendarEntry> calendarEntriesForAdapter){

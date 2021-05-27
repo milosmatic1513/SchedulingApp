@@ -53,7 +53,7 @@ public class EventDisplayPage extends AppCompatActivity {
         else
         {
             titleTextView.setText(calendarEntry.getTitle());
-            timeTextView.setText("Date : "+calendarEntry.getTimeStart().substring(0,2)+":"+calendarEntry.getTimeStart().substring(2,4)+"-"+calendarEntry.getTimeEnd().substring(0,2)+":"+calendarEntry.getTimeEnd().substring(2,4));
+            timeTextView.setText("Date : "+calendarEntry.calculateHourFrom()+":"+calendarEntry.calculateMinuteFrom()+"-"+calendarEntry.calculateHourTo()+":"+calendarEntry.calculateMinuteTo());
             dateTextView.setText(calendarEntry.getDayOfMonth()+"/"+calendarEntry.getMonth()+"/"+calendarEntry.getYear());
 
             if(calendarEntry.getDescription().length()==0)
@@ -115,7 +115,7 @@ public class EventDisplayPage extends AppCompatActivity {
             else
             {
                 titleTextView.setText(calendarEntry.getTitle());
-                timeTextView.setText(calendarEntry.getTimeStart().substring(0,2)+":"+calendarEntry.getTimeStart().substring(2,4)+"-"+calendarEntry.getTimeEnd().substring(0,2)+":"+calendarEntry.getTimeEnd().substring(2,4));
+                timeTextView.setText(calendarEntry.calculateHourFrom()+":"+calendarEntry.calculateMinuteFrom()+"-"+calendarEntry.calculateHourTo()+":"+calendarEntry.calculateMinuteTo());
                 if(calendarEntry.getDescription().length()==0)
                 {
                     descriptionBox.setVisibility(View.GONE);

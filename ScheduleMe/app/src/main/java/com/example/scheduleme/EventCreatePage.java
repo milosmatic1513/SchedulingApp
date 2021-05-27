@@ -199,8 +199,10 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
                 int minutes = cldr.get(Calendar.MINUTE);
                 if(calendarEntry!=null) {
                     try {
-                        hour = Integer.parseInt(calendarEntry.getTimeStart().substring(0,2));
-                        minutes = Integer.parseInt(calendarEntry.getTimeStart().substring(2,4));
+                        hour = Integer.parseInt(calendarEntry.calculateHourFrom());
+                        hourFrom = hour;
+                        minutes = Integer.parseInt(calendarEntry.calculateMinuteFrom());
+                        minuteFrom=minutes;
                     }catch (Exception e) {
                         Toast.makeText(EventCreatePage.this,"Error While Parsing Time",Toast.LENGTH_SHORT);
                     }
@@ -210,16 +212,27 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
                         new TimePickerDialog.OnTimeSetListener() {
                             @Override
                             public void onTimeSet(TimePicker tp, int sHour, int sMinute) {
-                                hourFrom=sHour;
-                                minuteFrom=sMinute;
-                                if(sHour<10 && sMinute<10)
-                                { editTextFrom.setText("0"+sHour + ":0" + sMinute);}
-                                else if(sMinute<10)
-                                { editTextFrom.setText(sHour + ":0" + sMinute);}
-                                else if(sHour<10)
-                                { editTextFrom.setText("0"+sHour + ":" + sMinute);}
-                                else
-                                { editTextFrom.setText(sHour + ":" + sMinute);}
+
+                                int timeInMinutesFrom = (sHour*60)+sMinute;
+                                int timeInMinutesTo= (hourTo*60)+minuteTo;
+                                Log.e("Time","Time from : "+timeInMinutesFrom +" Time to:"+timeInMinutesTo);
+
+                                if((timeInMinutesFrom < timeInMinutesTo) ||editTextTo.getText().length()==0) {
+                                    hourFrom=sHour;
+                                    minuteFrom=sMinute;
+                                    if (sHour < 10 && sMinute < 10) {
+                                        editTextFrom.setText("0" + sHour + ":0" + sMinute);
+                                    } else if (sMinute < 10) {
+                                        editTextFrom.setText(sHour + ":0" + sMinute);
+                                    } else if (sHour < 10) {
+                                        editTextFrom.setText("0" + sHour + ":" + sMinute);
+                                    } else {
+                                        editTextFrom.setText(sHour + ":" + sMinute);
+                                    }
+                                }
+                                else{
+                                    Toast.makeText(EventCreatePage.this,getString(R.string.time_warning),Toast.LENGTH_SHORT).show();
+                                }
                             }
                         }, hour, minutes, true);
                 pickerTime.show();
@@ -234,8 +247,10 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
                 int minutes = cldr.get(Calendar.MINUTE);
                 if(calendarEntry!=null) {
                     try {
-                        hour = Integer.parseInt(calendarEntry.getTimeEnd().substring(0,2));
-                        minutes = Integer.parseInt(calendarEntry.getTimeEnd().substring(2,4));
+                        hour = Integer.parseInt(calendarEntry.calculateHourTo());
+                        hourTo = hour;
+                        minutes = Integer.parseInt(calendarEntry.calculateMinuteTo());
+                        minuteTo=minutes;
                     }catch (Exception e) {
                         Toast.makeText(EventCreatePage.this,"Error While Parsing Time",Toast.LENGTH_SHORT);
                     }
@@ -245,20 +260,28 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
                         new TimePickerDialog.OnTimeSetListener() {
                             @Override
                             public void onTimeSet(TimePicker tp, int sHour, int sMinute) {
-                                hourTo=sHour;
-                                minuteTo=sMinute;
 
-                                if(sHour<10 && sMinute<10) {
-                                    editTextTo.setText("0"+sHour + ":0" + sMinute);
+
+
+
+                                int timeInMinutesFrom = (hourFrom*60)+minuteFrom;
+                                int timeInMinutesTo= (sHour*60)+sMinute;
+                                Log.e("Time","Time from : "+timeInMinutesFrom +" Time to:"+timeInMinutesTo);
+                                if((timeInMinutesFrom < timeInMinutesTo) ||editTextFrom.getText().length()==0) {
+                                    hourTo=sHour;
+                                    minuteTo=sMinute;
+                                    if (sHour < 10 && sMinute < 10) {
+                                        editTextTo.setText("0" + sHour + ":0" + sMinute);
+                                    } else if (sMinute < 10) {
+                                        editTextTo.setText(sHour + ":0" + sMinute);
+                                    } else if (sHour < 10) {
+                                        editTextTo.setText("0" + sHour + ":" + sMinute);
+                                    } else {
+                                        editTextTo.setText(sHour + ":" + sMinute);
+                                    }
                                 }
-                                else if(sMinute<10) {
-                                    editTextTo.setText(sHour + ":0" + sMinute);
-                                }
-                                else if(sHour<10) {
-                                    editTextTo.setText("0"+sHour + ":" + sMinute);
-                                }
-                                else {
-                                    editTextTo.setText(sHour + ":" + sMinute);
+                                else{
+                                    Toast.makeText(EventCreatePage.this,getString(R.string.time_warning),Toast.LENGTH_SHORT).show();
                                 }
                             }
                         }, hour, minutes, true);
@@ -348,8 +371,12 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
             spinnerRepeat.setSelection(calendarEntry.getRepeating());
             editTextDate.setText(calendarEntry.getDayOfMonth()+"/"+calendarEntry.getMonthNumeric()+"/"+calendarEntry.getYear());
             editTextDate.setTag(Long.toString(calendarEntry.getDate()));
-            editTextFrom.setText(calendarEntry.getTimeStart().substring(0,2)+":"+calendarEntry.getTimeStart().substring(2,4));
-            editTextTo.setText(calendarEntry.getTimeEnd().substring(0,2)+":"+calendarEntry.getTimeEnd().substring(2,4));
+            editTextFrom.setText(calendarEntry.calculateHourFrom()+":"+calendarEntry.calculateMinuteFrom());
+            hourFrom=Integer.parseInt(calendarEntry.calculateHourFrom());
+            minuteFrom=Integer.parseInt(calendarEntry.calculateMinuteFrom());
+            editTextTo.setText(calendarEntry.calculateHourTo()+":"+calendarEntry.calculateMinuteTo());
+            hourTo=Integer.parseInt(calendarEntry.calculateHourTo());
+            minuteTo=Integer.parseInt(calendarEntry.calculateMinuteTo());
         }
         else{
             if (date!=null) {
@@ -400,13 +427,13 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
             Long dateMillis = Long.parseLong(editTextDate.getTag().toString());
 
 
-            //Long timeFromMillis = (hourFrom*60+minuteFrom)*60000l;
-            //Long timeToMillis = (hourTo*60+minuteTo)*60000l;
+            Long timeFromMillis = (hourFrom*60+minuteFrom)*60000l;
+            Long timeToMillis = (hourTo*60+minuteTo)*60000l;
 
             CalendarEntry newCalendarEntry= new CalendarEntryBuilder()
                     .setTitle(editTextTitle.getText().toString())
-                    .setTimeStart(editTextFrom.getText().toString().replace(":",""))
-                    .setTimeEnd(editTextTo.getText().toString().replace(":",""))
+                    .setTimeStart(timeFromMillis)
+                    .setTimeEnd(timeToMillis)
                     .setImportant(switchImportant.isChecked())
                     .setRequireIdScan(switchPhotoId.isChecked())
                     .setDate(dateMillis)

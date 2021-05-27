@@ -16,6 +16,10 @@
                     android:id="@+id/weekly"
                     android:title="@string/weekly" />
 
+                <item
+                    android:id="@+id/dailyAlt"
+                    android:title="@string/dailyAlt" />
+
             </group>
         </menu>
     </item>

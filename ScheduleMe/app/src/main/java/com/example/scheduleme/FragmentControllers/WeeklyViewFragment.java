@@ -1,4 +1,4 @@
-package com.example.scheduleme;
+package com.example.scheduleme.FragmentControllers;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -20,6 +20,9 @@ import android.widget.Toast;
 
 import com.example.scheduleme.Adapters.CalendarEntitiesAdapter;
 import com.example.scheduleme.DataClasses.CalendarEntry;
+import com.example.scheduleme.MainPage;
+import com.example.scheduleme.MyOnClickListener;
+import com.example.scheduleme.R;
 
 import org.w3c.dom.Text;
 
@@ -28,6 +31,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -153,6 +157,8 @@ public class WeeklyViewFragment extends Fragment {
     }
 
     public void passData(List<CalendarEntry> calendarEntryList) {
+        Collections.sort(calendarEntryList);
+        Collections.reverse(calendarEntryList);
         this.calendarEntryList=calendarEntryList;
     }
 

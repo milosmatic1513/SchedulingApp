@@ -12,15 +12,15 @@ public class CalendarEntryBuilder {
     private String title="";
     private String description="";
     private long date=0;
-    private String timeStart;
-    private String timeEnd;
+    private long timeStart;
+    private long timeEnd;
     private String type="";
     private boolean important=false;
     private boolean requireIdScan=false;
     private int repeating;
     private String base64Image;
     private int protectionLevel=0;
-    public CalendarEntryBuilder(String databaseID, String title, String description, long date, String type, boolean important,boolean requireIdScan, String timeStart, String timeEnd, int repeating, String base64Image)
+    public CalendarEntryBuilder(String databaseID, String title, String description, long date, String type, boolean important,boolean requireIdScan, long timeStart, long timeEnd, int repeating, String base64Image)
     {
         this.databaseID = databaseID;
         this.title = title;
@@ -44,8 +44,8 @@ public class CalendarEntryBuilder {
         this.type = type;
         this.important = important;
         this.requireIdScan = requireIdScan;
-        this.timeStart = "0000";
-        this.timeEnd = "0000";
+        this.timeStart = 0;
+        this.timeEnd = 0;
         this.repeating=0;
         this.base64Image="";
 
@@ -70,12 +70,12 @@ public class CalendarEntryBuilder {
         this.date = date;
         return this;
     }
-    public CalendarEntryBuilder setTimeStart(String timeStart)
+    public CalendarEntryBuilder setTimeStart(long timeStart)
     {
         this.timeStart = timeStart;
         return this;
     }
-    public CalendarEntryBuilder setTimeEnd(String timeEnd)
+    public CalendarEntryBuilder setTimeEnd(long timeEnd)
     {
         this.timeEnd = timeEnd;
         return this;

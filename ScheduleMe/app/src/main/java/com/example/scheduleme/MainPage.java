@@ -29,6 +29,9 @@ import android.widget.Toast;
 
 import com.example.scheduleme.DataClasses.CalendarEntry;
 import com.example.scheduleme.DataClasses.Preferences;
+import com.example.scheduleme.FragmentControllers.DailyViewFragment;
+import com.example.scheduleme.FragmentControllers.DailyViewFragmentAlternative;
+import com.example.scheduleme.FragmentControllers.WeeklyViewFragment;
 import com.example.scheduleme.Utilities.ImageUtilities;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
@@ -47,9 +50,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
-public class MainPage extends AppCompatActivity implements  NavigationView.OnNavigationItemSelectedListener ,WeeklyViewFragment.OnCompleteListener,DailyViewFragment.OnCompleteListener {
+public class MainPage extends AppCompatActivity implements  NavigationView.OnNavigationItemSelectedListener , WeeklyViewFragment.OnCompleteListener, DailyViewFragment.OnCompleteListener {
     //Request codes
     static int EDIT_ACTIVITY_REQUEST=2;
     static int PROFILE_ACTIVITY_REQUEST=3;
@@ -86,6 +88,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
     //Fragments
     DailyViewFragment dailyViewFragment;
     WeeklyViewFragment weeklyViewFragment;
+    DailyViewFragmentAlternative dailyAltViewFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -184,16 +187,6 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
         else{
             //Get database ref
             DatabaseReference myRef = database.getReference("Users/"+currentUser.getUid()+"/Tasks/");
-
-            //=====Remove After Testing
-            /*          DatabaseFaker dbFaker = new DatabaseFaker(currentUser,database,myRef);
-            dbFaker.generateData();
-            dbFaker.generateData();
-            dbFaker.generateData();
-            dbFaker.generateData();
-            dbFaker.generateData();
-            //======*/
-            // Read from the database
             myRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -248,6 +241,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
         selectedViewMode=R.id.daily;
         dailyViewFragment = new DailyViewFragment();
         weeklyViewFragment = new WeeklyViewFragment();
+        dailyAltViewFragment = new DailyViewFragmentAlternative();
         ft.replace(R.id.frameLayout, dailyViewFragment);
         ft.commit();
 
@@ -304,10 +298,15 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
             dailyViewFragment.updateDate(date,formattedDateDayOfTheWeek);
 
         }
-        else{
+        else if (selectedViewMode==R.id.weekly){
             weeklyViewFragment.passData(calendarEntries);
             weeklyViewFragment.updateDate(date);
             textViewDateDay.setText("");
+        }
+        else{
+            dailyAltViewFragment.passData(calendarEntries);
+            dailyAltViewFragment.updateDate(date,formattedDateDayOfTheWeek);
+
         }
 
 
@@ -343,6 +342,13 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
                 // Complete the changes added above
                 ft.commit();
                 break;
+            case R.id.dailyAlt:
+                selectedViewMode=R.id.dailyAlt;
+                ft.replace(R.id.frameLayout, dailyAltViewFragment);
+                // or ft.add(R.id.your_placeholder, new FooFragment());
+                // Complete the changes added above
+                ft.commit();
+                break;
             case R.id.nav_logout:
                 logout();
                 break;
@@ -358,7 +364,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
     public void setupBottomView(CalendarEntry calendarEntry) {
 
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(MainPage.this);
-        bottomSheetDialog.setContentView(R.layout.fragment_bottom_view_layout);
+        bottomSheetDialog.setContentView(R.layout.bottom_view_layout);
         //components initialization
         TextView textViewTitle = bottomSheetDialog.findViewById(R.id.titleBottomView);
         TextView textViewDate = bottomSheetDialog.findViewById(R.id.dateViewBottomView);
@@ -387,7 +393,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
 
 
             textViewDate.setText("Date : " + calendarEntry.getDayOfMonth() + "/" + calendarEntry.getMonth() + "/" + calendarEntry.getYear());
-            textViewTime.setText(calendarEntry.getTimeStart().substring(0, 2) + ":" + calendarEntry.getTimeStart().substring(2, 4) + "-" + calendarEntry.getTimeEnd().substring(0, 2) + ":" + calendarEntry.getTimeEnd().substring(2, 4));
+            textViewTime.setText(calendarEntry.calculateHourFrom()+":"+calendarEntry.calculateMinuteFrom()+"-"+calendarEntry.calculateHourTo()+":"+calendarEntry.calculateMinuteTo());
             String[] items = getResources().getStringArray(R.array.spinnerItems);
             textViewRepeating.setText("Repeating : " + items[calendarEntry.getRepeating()]);
 
@@ -421,7 +427,6 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
 
         }
         else{
-
             authenticateLayout.setVisibility(View.VISIBLE);
             authenticateButton.setVisibility(View.VISIBLE);
             nestedScrollView.setVisibility(View.GONE);
@@ -561,5 +566,13 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
 
     public boolean isAuthenticated() {
         return authenticated;
+    }
+
+    public void nextDate(View view) {
+        updateDate(new Date(currentDate.getTime()+86400000));
+    }
+
+    public void previousDate(View view) {
+        updateDate(new Date(currentDate.getTime()-86400000));
     }
 }

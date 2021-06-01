@@ -3,6 +3,7 @@ package com.example.scheduleme;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 
@@ -23,6 +24,7 @@ import android.provider.MediaStore;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
@@ -72,6 +74,7 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
     EditText editTextDate;
 
     Spinner spinnerRepeat;
+    Spinner spinnerType;
     Switch switchImportant;
     Switch switchPhotoId;
     Switch descriptionSwitch;
@@ -88,7 +91,10 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
 
     private GoogleMap mMap;
     private Marker current_location_marker;
+
     LinearLayout mapLayout;
+    ConstraintLayout timeConstraintLayout;
+
     private final int RESULT_LOAD_IMG = 155;
     private final int RESULT_TAKE_PHOTO = 156;
     Bitmap imageBitmap = null;
@@ -100,6 +106,7 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
     int minuteFrom = 0;
     int hourTo= 0;
     int minuteTo = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -123,6 +130,7 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
         switchPhotoId=(Switch)findViewById(R.id.switchPhotoId);
         createButton = (Button)findViewById(R.id.createButton);
         spinnerRepeat = (Spinner)findViewById(R.id.spinner);
+        spinnerType = (Spinner)findViewById(R.id.spinner2);
         descriptionSwitch = findViewById(R.id.descriptionSwitch);
         imageSwitch = findViewById(R.id.imageSwitch);
         imageView=findViewById(R.id.imageViewTaskPage);
@@ -132,6 +140,7 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
         date = (Date) getIntent().getSerializableExtra("Date");
         locationSwitch = findViewById(R.id.locationSwitch);
         mapLayout = findViewById(R.id.mapLayout);
+        timeConstraintLayout = findViewById(R.id.timeConstraintLayout);
 
 
         //listeners
@@ -333,6 +342,23 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
 
         });
 
+        spinnerType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(position==CalendarEntry.TYPE_REMINDER) {
+                    timeConstraintLayout.setVisibility(View.GONE);
+                }
+                else{
+                    timeConstraintLayout.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         if(calendarEntry != null){
             editTextTitle.setText(calendarEntry.getTitle());
             if(calendarEntry.getDescription().length()!=0){
@@ -369,6 +395,7 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
             switchImportant.setChecked(calendarEntry.isImportant());
             switchPhotoId.setChecked(calendarEntry.isRequireIdScan());
             spinnerRepeat.setSelection(calendarEntry.getRepeating());
+            spinnerType.setSelection(calendarEntry.getType());
             editTextDate.setText(calendarEntry.getDayOfMonth()+"/"+calendarEntry.getMonthNumeric()+"/"+calendarEntry.getYear());
             editTextDate.setTag(Long.toString(calendarEntry.getDate()));
             editTextFrom.setText(calendarEntry.calculateHourFrom()+":"+calendarEntry.calculateMinuteFrom());
@@ -412,12 +439,7 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
 
     public void checkCreate(View view) {
         //check if any of the fields are empty
-        if (
-                editTextTitle.getText().toString().trim().length()==0 ||
-                        editTextFrom.getText().toString().trim().length()==0  ||
-                        editTextTo.getText().toString().trim().length()==0    ||
-                        editTextDate.getText().toString().trim().length()==0
-        )
+        if ((editTextTitle.getText().toString().trim().length()==0 || editTextDate.getText().toString().trim().length()==0)  || ((editTextTo.getText().toString().trim().length()==0 || editTextFrom.getText().toString().trim().length()==0)&& spinnerType.getSelectedItemPosition()==calendarEntry.TYPE_EVENT))
         {
             //inform the user that all the fields are required
             Toast.makeText(this,getString(R.string.toast_fill_warning),Toast.LENGTH_LONG).show();
@@ -425,20 +447,23 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
         else
         {
             Long dateMillis = Long.parseLong(editTextDate.getTag().toString());
-
-
             Long timeFromMillis = (hourFrom*60+minuteFrom)*60000l;
             Long timeToMillis = (hourTo*60+minuteTo)*60000l;
 
-            CalendarEntry newCalendarEntry= new CalendarEntryBuilder()
-                    .setTitle(editTextTitle.getText().toString())
-                    .setTimeStart(timeFromMillis)
-                    .setTimeEnd(timeToMillis)
-                    .setImportant(switchImportant.isChecked())
-                    .setRequireIdScan(switchPhotoId.isChecked())
-                    .setDate(dateMillis)
-                    .setRepeating(spinnerRepeat.getSelectedItemPosition())
-                    .build();
+            CalendarEntry newCalendarEntry = new CalendarEntryBuilder()
+                                            .setTitle(editTextTitle.getText().toString())
+                                            .setImportant(switchImportant.isChecked())
+                                            .setRequireIdScan(switchPhotoId.isChecked())
+                                            .setDate(dateMillis)
+                                            .setRepeating(spinnerRepeat.getSelectedItemPosition())
+                                            .setType(spinnerType.getSelectedItemPosition())
+                                            .build();
+
+            //time set
+            if(spinnerType.getSelectedItemPosition() == CalendarEntry.TYPE_EVENT ){
+                 newCalendarEntry.setTimeStart(timeFromMillis);
+                 newCalendarEntry.setTimeEnd(timeFromMillis);
+            }
             //description Checkbox
             if(editTextDescription.getText().toString().trim().length()!=0 && descriptionSwitch.isChecked())
             {
@@ -447,7 +472,6 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
             //image Checkbox
             if(imageBitmap!=null && imageSwitch.isChecked())
             {
-                Log.e("tag",ImageUtilities.bitmapToBase64(imageBitmap));
                 newCalendarEntry.setBase64Image(ImageUtilities.bitmapToBase64(imageBitmap));
             }
 

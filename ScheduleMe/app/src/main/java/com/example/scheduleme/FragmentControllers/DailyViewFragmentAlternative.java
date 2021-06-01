@@ -11,12 +11,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 
+import com.example.scheduleme.Adapters.CalendarEntitiesAdapter;
 import com.example.scheduleme.Adapters.CalendarEntriesAdapterAlternative;
 import com.example.scheduleme.DataClasses.CalendarEntry;
 import com.example.scheduleme.FragmentControllers.WeeklyViewFragment;
@@ -36,15 +40,17 @@ import java.util.stream.Collectors;
 
 public class DailyViewFragmentAlternative extends Fragment {
     public List<CalendarEntry> calendarEntryList;
-    List<CalendarEntry> calendarEntriesForAdapter;
+
     //RecyclerView calendarEntryRecyclerView;
     LinearLayout linearLayoutAlternative;
     HorizontalScrollView horizontalScrollView;
     NestedScrollView nestedScrollView;
     MainPage parent;
-    ItemTouchHelper.SimpleCallback simpleItemTouchCallback;
+    RecyclerView reminderRecyclerView;
     Date currentDate;
     View view;
+    Switch switchReminder;
+    LinearLayout linearLayoutReminder;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,7 +77,24 @@ public class DailyViewFragmentAlternative extends Fragment {
 
         linearLayoutAlternative=(LinearLayout)view.findViewById(R.id.linearLayoutAlternative);
         horizontalScrollView=(HorizontalScrollView) view.findViewById(R.id.horizontalScrollView);
+        switchReminder= (Switch)view.findViewById(R.id.switchReminder);
         nestedScrollView = (NestedScrollView) view.findViewById(R.id.nestedScrollViewAlternative);
+        reminderRecyclerView = (RecyclerView) view.findViewById(R.id.reminderRecyclerView);
+        reminderRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        linearLayoutReminder = (LinearLayout)view.findViewById(R.id.linearLayoutReminder);
+        switchReminder.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(!isChecked) {
+                    reminderRecyclerView.setVisibility(View.GONE);
+                }
+                else{
+                    reminderRecyclerView.setVisibility(View.VISIBLE);
+
+                }
+            }
+        });
+        switchReminder.setChecked(true);
         this.view = view;
         mListener.onComplete();
     }
@@ -170,9 +193,23 @@ public class DailyViewFragmentAlternative extends Fragment {
 
     }
 
+    public void updateRecyclerViewEvents(List<CalendarEntry> calendarEntriesForAdapter){
+        if(calendarEntriesForAdapter.size() == 0 ) linearLayoutReminder.setVisibility(View.GONE);
+        else linearLayoutReminder.setVisibility(View.VISIBLE);
+        CalendarEntriesAdapterAlternative adapter = new CalendarEntriesAdapterAlternative(calendarEntriesForAdapter, new MyOnClickListener(){
+            @Override
+            public void onItemClicked(int index) {
+                parent.setupBottomView(calendarEntriesForAdapter.get(index));
+            }
+        });
+
+        reminderRecyclerView.setAdapter(adapter);
+
+
+    }
     public void updateDate(Date date,String formattedDateDayOfTheWeek) {
         //update recycler view
-        calendarEntriesForAdapter=new ArrayList<>();
+        List<CalendarEntry> calendarEntriesForAdapter=new ArrayList<>();
         //Get non repeating Tasks
         calendarEntriesForAdapter.addAll(calendarEntryList.stream()
                 .filter(calendarEntry -> (calendarEntry.getDate()==date.getTime() || calendarEntry.getRepeating()==1)  && (calendarEntry.getRepeating()!=2 && calendarEntry.getRepeating()!=3) )
@@ -196,7 +233,18 @@ public class DailyViewFragmentAlternative extends Fragment {
                 }
             }
         }
-        updateRecyclerView(calendarEntriesForAdapter);
+        List<CalendarEntry> calendarEntriesReminder=new ArrayList<>();
+        calendarEntriesReminder.addAll(calendarEntriesForAdapter.stream()
+                .filter(calendarEntry -> (calendarEntry.getType()==CalendarEntry.TYPE_REMINDER))
+                .collect(Collectors.toList())
+        );
+        List<CalendarEntry> calendarEntriesEvents = new ArrayList<>();
+        calendarEntriesEvents.addAll(calendarEntriesForAdapter.stream()
+                .filter(calendarEntry -> (calendarEntry.getType()==CalendarEntry.TYPE_EVENT))
+                .collect(Collectors.toList())
+        );
+        updateRecyclerView(calendarEntriesEvents);
+        updateRecyclerViewEvents(calendarEntriesReminder);
         if(date.getTime()!=currentDate.getTime()) {
             parent.showDateButton(currentDate);
         }

@@ -7,20 +7,21 @@ import java.io.ByteArrayOutputStream;
 import java.util.Date;
 
 public class CalendarEntryBuilder {
-
+    public static int TYPE_EVENT=0;
+    public static int TYPE_REMINDER=1;
     private String databaseID="";
     private String title="";
     private String description="";
     private long date=0;
     private long timeStart;
     private long timeEnd;
-    private String type="";
+    private int type=TYPE_EVENT;
     private boolean important=false;
     private boolean requireIdScan=false;
     private int repeating;
     private String base64Image;
     private int protectionLevel=0;
-    public CalendarEntryBuilder(String databaseID, String title, String description, long date, String type, boolean important,boolean requireIdScan, long timeStart, long timeEnd, int repeating, String base64Image)
+    public CalendarEntryBuilder(String databaseID, String title, String description, long date, int type, boolean important,boolean requireIdScan, long timeStart, long timeEnd, int repeating, String base64Image)
     {
         this.databaseID = databaseID;
         this.title = title;
@@ -80,7 +81,7 @@ public class CalendarEntryBuilder {
         this.timeEnd = timeEnd;
         return this;
     }
-    public CalendarEntryBuilder setType(String type)
+    public CalendarEntryBuilder setType(int type)
     {
         this.type = type;
         return this;

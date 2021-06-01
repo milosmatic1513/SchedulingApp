@@ -57,13 +57,17 @@
     <string name="important_description">Για να δείτε το γεγονός αυτο πρέπει να αυθεντικοποιηθείτε με το FACETEC scanner</string>
     <string name="photoID_description">Για να δείτε το γεγονός αυτο πρέπει να παρουσιάσετε ενα εγραφό ταυτότητας</string>
     <string name="time_warning">Δεν μπορείς να πας πίσω τον χρόνο</string>
-
+    <string name="event_type">Τύπος :</string>
     <!-- Spinner Values -->
     <string-array name="spinnerItems">
         <item>Καθολόυ</item>
         <item>Καθε μέρα</item>
         <item>Καθε ευδομάδα</item>
         <item>Καθε χρόνο</item>
+    </string-array>
+    <string-array name="spinnerItemsType">
+        <item>Γεγονός</item>
+        <item>Υπενθύμιση</item>
     </string-array>
     <!-- Day Values -->
     <string name="monday">Δευτέρα</string>
@@ -96,5 +100,10 @@
     <string name="dialog_change_language_message">Η εφαρμογή πρέπει να κάνει επανακίνση.Είστε σίγουρος: </string>
     <!-- Snackbar -->
     <string name="snackbar_important_warning">Πρέπει να είστε αυθεντικοποιημένος για να διαγράψετε το γεγονός</string>
+
+    <string name="otherFeatures">Επιπλέον λειτοτυργίες</string>
+    <string name="addPublicEvent">Προσθήκη δημόσιου γεγονότος</string>
+
+
 
 </resources>

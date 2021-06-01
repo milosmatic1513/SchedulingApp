@@ -23,11 +23,18 @@
             </group>
         </menu>
     </item>
-
-    <item android:title="@string/profile">
-
+    <item android:title="@string/otherFeatures">
         <menu>
+            <group android:checkableBehavior="single">
 
+            <item
+                android:id="@+id/nav_public_events"
+                android:title="@string/addPublicEvent" />
+            </group>
+        </menu>
+    </item>
+    <item android:title="@string/profile">
+        <menu>
             <group android:checkableBehavior="single">
 
                 <item

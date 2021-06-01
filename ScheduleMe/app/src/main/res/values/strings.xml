@@ -56,11 +56,16 @@
     <string name="important_description">To view this event you will need to authenticate your self with the FACETEC scanner</string>
     <string name="photoID_description">To view this event you will need to provide a Photo ID</string>
     <string name="time_warning">You cant travel back in time</string>
+    <string name="event_type">Type :</string>
     <!-- Spinner Values -->
     <string-array name="spinnerItems">
         <item>None</item>
         <item>Daily</item>
         <item>Weekly</item>
+    </string-array>
+    <string-array name="spinnerItemsType">
+        <item>Event</item>
+        <item>Reminder</item>
     </string-array>
     <!-- Day Values -->
     <string name="monday">Monday</string>
@@ -93,8 +98,9 @@
     <string name="dialog_change_language_message">The app needs to be restarted.Are you sure?</string>
     <!-- Snackbar -->
     <string name="snackbar_important_warning">You must be authenticated to delete this item</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="otherFeatures">Other Features</string>
+    <string name="addPublicEvent">Add a public Event</string>
 
 
 </resources>

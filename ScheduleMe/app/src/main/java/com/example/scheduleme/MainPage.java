@@ -48,8 +48,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class MainPage extends AppCompatActivity implements  NavigationView.OnNavigationItemSelectedListener , WeeklyViewFragment.OnCompleteListener, DailyViewFragment.OnCompleteListener {
     //Request codes
@@ -81,6 +84,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
     DatePickerDialog pickerDate;
     //Calendar View Components
     List<CalendarEntry> calendarEntries;
+    List<CalendarEntry> calendarEntriesPublic;
     //Drawer layout
     DrawerLayout drawerLayout;
     NavigationView navigationView;
@@ -90,6 +94,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
     DailyViewFragment dailyViewFragment;
     WeeklyViewFragment weeklyViewFragment;
     DailyViewFragmentAlternative dailyAltViewFragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -230,10 +235,53 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
                 }
             });
 
+            //Get Public Events
+            DatabaseReference myRefPublicEvents = database.getReference("Users/"+currentUser.getUid()+"/TasksReferences");
+            myRefPublicEvents.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    calendarEntriesPublic = new ArrayList<>();
+                    for(DataSnapshot dataSnapshotChild : dataSnapshot.getChildren())
+                    {
+                        DatabaseReference childReference = database.getReference(dataSnapshotChild.getValue(String.class));
+
+                        childReference.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                CalendarEntry calendarEntry =snapshot.getValue(CalendarEntry.class);
+                                if(calendarEntry==null) {
+                                    deleteReference(dataSnapshotChild.getKey());
+                                }
+                                else{
+                                    calendarEntry.setDatabaseID("Users/"+currentUser.getUid()+"/TasksReferences/"+dataSnapshotChild.getKey());
+                                    if(calendarEntriesPublic.stream().filter(o -> o.getDatabaseID().equalsIgnoreCase(calendarEntry.getDatabaseID())).findFirst().isPresent());
+                                    {
+                                        calendarEntriesPublic.removeIf(o -> o.getDatabaseID().equalsIgnoreCase(calendarEntry.getDatabaseID()));
+                                        calendarEntriesPublic.add(calendarEntry);
+                                    }
+
+                                    updateDate(currentDate);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
         }
 
         calendarEntries = new ArrayList<>();
-
+        calendarEntriesPublic= new ArrayList<>();
         // Begin the transaction
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         // Replace the contents of the container with the new fragment
@@ -294,7 +342,9 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
 
         currentDate = date;
         if(selectedViewMode==R.id.daily) {
-            dailyViewFragment.passData(calendarEntries);
+            List<CalendarEntry> calendarEntriesFinal = Stream.concat(calendarEntries.stream(), calendarEntriesPublic.stream())
+                    .collect(Collectors.toList());
+            dailyViewFragment.passData(calendarEntriesFinal);
             dailyViewFragment.updateDate(date,formattedDateDayOfTheWeek);
 
         }
@@ -610,5 +660,10 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
 
     public void previousDate(View view) {
         updateDate(new Date(currentDate.getTime()-86400000));
+    }
+    private void deleteReference(String key)
+    {
+        DatabaseReference databaseReference = database.getReference("Users/"+currentUser.getUid()+"/TasksReferences/"+key);
+        databaseReference.removeValue();
     }
 }

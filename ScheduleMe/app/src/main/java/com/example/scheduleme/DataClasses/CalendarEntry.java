@@ -10,19 +10,23 @@ import java.util.Date;
 import java.util.Locale;
 
 public class CalendarEntry implements Serializable ,Comparable<CalendarEntry> {
+    public static int TYPE_EVENT=0;
+    public static int TYPE_REMINDER=1;
     private String databaseID;
     private String title;
     private String description;
     private long date;
     private long timeStart;
     private long timeEnd;
-    private String type;
+    private int type;
     private boolean important;
     private boolean requireIdScan;
     private int repeating;
     private String base64Image;
 
-    public CalendarEntry(String databaseID,String title,String description,long date,String type,boolean important,boolean requireIdScan,long timeStart,long timeEnd,int repeating, String base64Image) {
+
+
+    public CalendarEntry(String databaseID,String title,String description,long date,int type,boolean important,boolean requireIdScan,long timeStart,long timeEnd,int repeating, String base64Image) {
         this.databaseID = databaseID;
         this.title = title;
         this.description = description;
@@ -41,7 +45,7 @@ public class CalendarEntry implements Serializable ,Comparable<CalendarEntry> {
         this.title = "";
         this.description = "";
         this.date = 0;
-        this.type = "";
+        this.type = TYPE_EVENT;
         this.important = false;
         this.requireIdScan = false;
         this.timeStart = 0;
@@ -82,11 +86,11 @@ public class CalendarEntry implements Serializable ,Comparable<CalendarEntry> {
         this.date = date;
     }
 
-    public String getType() {
+    public int getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(int type) {
         this.type = type;
     }
 

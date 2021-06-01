@@ -1,6 +1,7 @@
 package com.example.scheduleme.Adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.scheduleme.DataClasses.CalendarEntry;
@@ -33,7 +35,9 @@ public class CalendarEntitiesAdapter extends RecyclerView.Adapter<CalendarEntiti
         public TextView timeTextView;
         public TextView importantTag;
         public ImageView idImageView;
+        public ImageView timeImageView;
         public CardView cardView;
+        public ConstraintLayout constraintLayout;
         private WeakReference<MyOnClickListener> listenerRef;
 
 
@@ -43,12 +47,14 @@ public class CalendarEntitiesAdapter extends RecyclerView.Adapter<CalendarEntiti
             // Stores the itemView in a public final member variable that can be used
             // to access the context from any ViewHolder instance.
             super(itemView);
+            constraintLayout = (ConstraintLayout)itemView.findViewById(R.id.calendarEntryLayout);
             cardView = (CardView)itemView.findViewById(R.id.cardViewAlternative);
             taskTextView = (TextView) itemView.findViewById(R.id.eventNameTextAlternative);
             moreInfoButton = (Button) itemView.findViewById(R.id.moreInfoButton);
             timeTextView = (TextView) itemView.findViewById(R.id.timeTextView);
             importantTag = (TextView) itemView.findViewById(R.id.importantMarkerAlternative);
             idImageView =(ImageView) itemView.findViewById(R.id.idImageView);
+            timeImageView = (ImageView) itemView.findViewById(R.id.imageView);
             listenerRef = new WeakReference<>(listener);
             // OnClickListeners to trigger the Listener given in the constructor
             moreInfoButton.setOnClickListener((view)->{
@@ -82,11 +88,16 @@ public class CalendarEntitiesAdapter extends RecyclerView.Adapter<CalendarEntiti
 
         // Set item views based on your views and data model
         TextView titleTextView = holder.taskTextView;
+        ImageView imageView=holder.timeImageView;
         titleTextView.setText(calendarEntry.getTitle());
         TextView timeTextView =holder.timeTextView;
-
-        timeTextView.setText(calendarEntry.calculateHourFrom()+":"+calendarEntry.calculateMinuteFrom()+"-"+calendarEntry.calculateHourTo()+":"+calendarEntry.calculateMinuteTo());
-
+        if(calendarEntry.getType()==CalendarEntry.TYPE_EVENT) {
+            timeTextView.setText(calendarEntry.calculateHourFrom() + ":" + calendarEntry.calculateMinuteFrom() + "-" + calendarEntry.calculateHourTo() + ":" + calendarEntry.calculateMinuteTo());
+        }
+        else{
+            timeTextView.setVisibility(View.GONE);
+            imageView.setVisibility(View.GONE);
+        }
         if(!calendarEntry.isImportant())
         {
             holder.importantTag.setVisibility(View.INVISIBLE);
@@ -94,6 +105,11 @@ public class CalendarEntitiesAdapter extends RecyclerView.Adapter<CalendarEntiti
         if(!calendarEntry.isRequireIdScan())
         {
             holder.idImageView.setVisibility(View.INVISIBLE);
+        }
+        if(calendarEntry.getType()==CalendarEntry.TYPE_REMINDER){
+           // holder.constraintLayout.getBackground().setTint(Color.parseColor("#2980b9"));
+            holder.cardView.setCardBackgroundColor(Color.parseColor("#2980b9"));
+            holder.taskTextView.setTextColor(Color.parseColor("#FFFFFF"));
         }
     }
     @Override

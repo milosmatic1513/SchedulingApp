@@ -432,8 +432,8 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
 
         NestedScrollView nestedScrollView  = bottomSheetDialog.findViewById(R.id.nestedScrollView);
         ImageView imageView = bottomSheetDialog.findViewById(R.id.imageBottomView);
-        ImageButton button = bottomSheetDialog.findViewById(R.id.editButtonBottomView);
-
+        ImageButton buttonEdit = bottomSheetDialog.findViewById(R.id.editButtonBottomView);
+        ImageButton buttonDelete= bottomSheetDialog.findViewById(R.id.deleteButtonBottomView);
         Button authenticateButton = bottomSheetDialog.findViewById(R.id.authenticateButton);
 
         bottomSheetDialog.show();
@@ -443,8 +443,8 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
             authenticateLayout.setVisibility(View.GONE);
             authenticateButton.setVisibility(View.GONE);
             nestedScrollView.setVisibility(View.VISIBLE);
-            button.setVisibility(View.VISIBLE);
-
+            buttonEdit.setVisibility(View.VISIBLE);
+            buttonDelete.setVisibility(View.VISIBLE);
 
             textViewDate.setText("Date : " + calendarEntry.getDayOfMonth() + "/" + calendarEntry.getMonth() + "/" + calendarEntry.getYear());
             textViewTime.setText(calendarEntry.calculateHourFrom()+":"+calendarEntry.calculateMinuteFrom()+"-"+calendarEntry.calculateHourTo()+":"+calendarEntry.calculateMinuteTo());
@@ -468,7 +468,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
                 }
             }
 
-            button.setOnClickListener(new View.OnClickListener() {
+            buttonEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     bottomSheetDialog.dismiss();
@@ -478,13 +478,21 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
 
                 }
             });
+            buttonDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    bottomSheetDialog.dismiss();
+                    deleteFromDatabase(calendarEntry.getDatabaseID(),calendarEntry);
+                }
+            });
 
         }
         else{
             authenticateLayout.setVisibility(View.VISIBLE);
             authenticateButton.setVisibility(View.VISIBLE);
             nestedScrollView.setVisibility(View.GONE);
-            button.setVisibility(View.GONE);
+            buttonEdit.setVisibility(View.GONE);
+            buttonDelete.setVisibility(View.GONE);
             authenticateButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -580,14 +588,14 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
 
     }
     //fragment functions
-    public void deleteFromDatabase(int position , String databaseId,CalendarEntry calendarEntry){
+    public void deleteFromDatabase(String databaseId,CalendarEntry calendarEntry){
         //Remove swiped item from list and notify the RecyclerView
 
         lastDeletedItem = calendarEntry;
         DatabaseReference myRef = database.getReference("Users/" + currentUser.getUid() + "/Tasks/"+databaseId
         );
 
-        Snackbar snackbar = Snackbar.make(findViewById(R.id.drawer_layout),"Item " + calendarEntries.get(position).getTitle() +" Deleted ",Snackbar.LENGTH_SHORT);
+        Snackbar snackbar = Snackbar.make(findViewById(R.id.drawer_layout),"Item "+calendarEntry.getTitle() +" Deleted ",Snackbar.LENGTH_SHORT);
         snackbar.setAction("UNDO", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -597,7 +605,6 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
 
             }
         });
-
         myRef.removeValue();
         snackbar.show();
 

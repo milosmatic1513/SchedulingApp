@@ -22,11 +22,13 @@ import android.widget.Switch;
 
 import com.example.scheduleme.Adapters.CalendarEntitiesAdapter;
 import com.example.scheduleme.Adapters.CalendarEntriesAdapterAlternative;
+import com.example.scheduleme.Adapters.CalendarEntriesReminderAdapter;
 import com.example.scheduleme.DataClasses.CalendarEntry;
 import com.example.scheduleme.FragmentControllers.WeeklyViewFragment;
 import com.example.scheduleme.MainPage;
 import com.example.scheduleme.MyOnClickListener;
 import com.example.scheduleme.R;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -39,8 +41,9 @@ import java.util.stream.Collectors;
 
 
 public class DailyViewFragmentAlternative extends Fragment {
+    CalendarEntriesReminderAdapter adapter;
     public List<CalendarEntry> calendarEntryList;
-
+    List<CalendarEntry> calendarEntriesReminder;
     //RecyclerView calendarEntryRecyclerView;
     LinearLayout linearLayoutAlternative;
     HorizontalScrollView horizontalScrollView;
@@ -51,6 +54,8 @@ public class DailyViewFragmentAlternative extends Fragment {
     View view;
     Switch switchReminder;
     LinearLayout linearLayoutReminder;
+    ItemTouchHelper.SimpleCallback simpleItemTouchCallback;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +65,7 @@ public class DailyViewFragmentAlternative extends Fragment {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
     }
 
     @Override
@@ -80,7 +86,7 @@ public class DailyViewFragmentAlternative extends Fragment {
         switchReminder= (Switch)view.findViewById(R.id.switchReminder);
         nestedScrollView = (NestedScrollView) view.findViewById(R.id.nestedScrollViewAlternative);
         reminderRecyclerView = (RecyclerView) view.findViewById(R.id.reminderRecyclerView);
-        reminderRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        reminderRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
         linearLayoutReminder = (LinearLayout)view.findViewById(R.id.linearLayoutReminder);
         switchReminder.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -96,6 +102,8 @@ public class DailyViewFragmentAlternative extends Fragment {
         });
         switchReminder.setChecked(true);
         this.view = view;
+
+        setupSimpleItemTouchCallback();
         mListener.onComplete();
     }
 
@@ -194,20 +202,26 @@ public class DailyViewFragmentAlternative extends Fragment {
     }
 
     public void updateRecyclerViewEvents(List<CalendarEntry> calendarEntriesForAdapter){
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        parent.getDisplay().getRealMetrics(displayMetrics);
         if(calendarEntriesForAdapter.size() == 0 ) linearLayoutReminder.setVisibility(View.GONE);
         else linearLayoutReminder.setVisibility(View.VISIBLE);
-        CalendarEntriesAdapterAlternative adapter = new CalendarEntriesAdapterAlternative(calendarEntriesForAdapter, new MyOnClickListener(){
+        adapter = new CalendarEntriesReminderAdapter(calendarEntriesForAdapter, new MyOnClickListener(){
             @Override
             public void onItemClicked(int index) {
                 parent.setupBottomView(calendarEntriesForAdapter.get(index));
             }
-        });
+        },displayMetrics.widthPixels);
 
         reminderRecyclerView.setAdapter(adapter);
-
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(reminderRecyclerView);
 
     }
+
     public void updateDate(Date date,String formattedDateDayOfTheWeek) {
+
+        currentDate=date;
         //update recycler view
         List<CalendarEntry> calendarEntriesForAdapter=new ArrayList<>();
         //Get non repeating Tasks
@@ -233,7 +247,7 @@ public class DailyViewFragmentAlternative extends Fragment {
                 }
             }
         }
-        List<CalendarEntry> calendarEntriesReminder=new ArrayList<>();
+        calendarEntriesReminder=new ArrayList<>();
         calendarEntriesReminder.addAll(calendarEntriesForAdapter.stream()
                 .filter(calendarEntry -> (calendarEntry.getType()==CalendarEntry.TYPE_REMINDER))
                 .collect(Collectors.toList())
@@ -268,5 +282,27 @@ public class DailyViewFragmentAlternative extends Fragment {
         catch (final ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement OnCompleteListener");
         }
+    }
+
+    private void setupSimpleItemTouchCallback() {
+        simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.UP  ) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                if(calendarEntriesReminder.get(viewHolder.getAdapterPosition()).isImportant() && !parent.isAuthenticated())
+                {
+                    Snackbar snackbar = Snackbar.make(parent.findViewById(R.id.drawer_layout),getString(R.string.snackbar_important_warning) ,Snackbar.LENGTH_SHORT);
+                    snackbar.show();
+                    parent.updateDate(currentDate);
+                }
+                else{
+                    parent.deleteFromDatabase(calendarEntriesReminder.get(viewHolder.getAdapterPosition()).getDatabaseID(),calendarEntriesReminder.get(viewHolder.getAdapterPosition()));
+                }
+
+            }
+        };
     }
 }

@@ -8,12 +8,17 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.example.scheduleme.Adapters.CalendarEntitiesAdapter;
+import com.example.scheduleme.Adapters.CalendarEntriesReminderAdapter;
 import com.example.scheduleme.DataClasses.CalendarEntry;
 import com.example.scheduleme.FragmentControllers.WeeklyViewFragment;
 import com.example.scheduleme.MainPage;
@@ -31,15 +36,20 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class DailyViewFragment extends Fragment {
-    CalendarEntitiesAdapter adapter;
+
     public List<CalendarEntry> calendarEntryList;
-    List<CalendarEntry> calendarEntriesForAdapter;
+    List<CalendarEntry> calendarEntriesEvents;
+    List<CalendarEntry> calendarEntriesReminder;
     RecyclerView calendarEntryRecyclerView;
+    RecyclerView reminderEntryRecyclerView;
+    LinearLayout linearLayoutReminder;
     TextView message;
     MainPage parent;
-    ItemTouchHelper.SimpleCallback simpleItemTouchCallback;
-    Date currentDate;
 
+    ItemTouchHelper.SimpleCallback simpleItemTouchCallbackEvents;
+    ItemTouchHelper.SimpleCallback simpleItemTouchCallbackReminders;
+    Date currentDate;
+    Switch switchReminder;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,7 +79,26 @@ public class DailyViewFragment extends Fragment {
         calendarEntryRecyclerView = (RecyclerView) view.findViewById(R.id.recycler);
         calendarEntryRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
-        setupSimpleItemTouchCallback();
+        reminderEntryRecyclerView = (RecyclerView) view.findViewById(R.id.reminderRecyclerDailyView);
+        reminderEntryRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
+
+        linearLayoutReminder = (LinearLayout)view.findViewById(R.id.linearLayoutReminderDailyView);
+        switchReminder = (Switch)view.findViewById(R.id.switchReminderDailyView) ;
+        switchReminder.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(!isChecked) {
+                    reminderEntryRecyclerView.setVisibility(View.GONE);
+                }
+                else{
+                    reminderEntryRecyclerView.setVisibility(View.VISIBLE);
+
+                }
+            }
+        });
+        switchReminder.setChecked(true);
+        setupSimpleItemTouchCallbackEvents();
+        setupSimpleItemTouchCallbackReminders();
          mListener.onComplete();
     }
 
@@ -82,7 +111,7 @@ public class DailyViewFragment extends Fragment {
 
     public void updateRecyclerView(List<CalendarEntry> calendarEntriesForAdapter){
         //create new adapter
-        adapter = new CalendarEntitiesAdapter(calendarEntriesForAdapter, new MyOnClickListener(){
+        CalendarEntitiesAdapter adapter = new CalendarEntitiesAdapter(calendarEntriesForAdapter, new MyOnClickListener(){
             @Override
             public void onItemClicked(int index) {
                 parent.setupBottomView(calendarEntriesForAdapter.get(index));
@@ -101,36 +130,78 @@ public class DailyViewFragment extends Fragment {
         // Set layout manager to position the items
 
         //attach itemTouch helper to adapter
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
-        itemTouchHelper.attachToRecyclerView(calendarEntryRecyclerView);
+        ItemTouchHelper itemTouchHelperEvents = new ItemTouchHelper(simpleItemTouchCallbackEvents);
+        itemTouchHelperEvents.attachToRecyclerView(calendarEntryRecyclerView);
+
     }
 
-    private void setupSimpleItemTouchCallback() {
-        simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT ) {
+    public void updateRecyclerViewEvents(List<CalendarEntry> calendarEntriesForAdapter){
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        parent.getDisplay().getRealMetrics(displayMetrics);
+        if(calendarEntriesForAdapter.size() == 0 ) linearLayoutReminder.setVisibility(View.GONE);
+        else linearLayoutReminder.setVisibility(View.VISIBLE);
+        CalendarEntriesReminderAdapter adapter = new CalendarEntriesReminderAdapter(calendarEntriesForAdapter, new MyOnClickListener(){
+            @Override
+            public void onItemClicked(int index) {
+                parent.setupBottomView(calendarEntriesForAdapter.get(index));
+            }
+        },displayMetrics.widthPixels);
+
+        reminderEntryRecyclerView.setAdapter(adapter);
+        //attach itemTouch helper to adapter
+        ItemTouchHelper itemTouchHelperReminders = new ItemTouchHelper(simpleItemTouchCallbackReminders);
+        itemTouchHelperReminders.attachToRecyclerView(reminderEntryRecyclerView);
+
+    }
+
+    private void setupSimpleItemTouchCallbackEvents() {
+        simpleItemTouchCallbackEvents = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT ) {
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
                 return false;
             }
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-                if(calendarEntriesForAdapter.get(viewHolder.getAdapterPosition()).isImportant() && !parent.isAuthenticated())
+                if(calendarEntriesEvents.get(viewHolder.getAdapterPosition()).isImportant() && !parent.isAuthenticated())
                 {
                     Snackbar snackbar = Snackbar.make(parent.findViewById(R.id.drawer_layout),getString(R.string.snackbar_important_warning) ,Snackbar.LENGTH_SHORT);
                     snackbar.show();
                     parent.updateDate(currentDate);
                 }
                 else{
-                    parent.deleteFromDatabase(viewHolder.getAdapterPosition(),adapter.getDatabaseID(viewHolder.getAdapterPosition()),calendarEntriesForAdapter.get(viewHolder.getAdapterPosition()));
+                    parent.deleteFromDatabase(calendarEntriesEvents.get(viewHolder.getAdapterPosition()).getDatabaseID(),calendarEntriesEvents.get(viewHolder.getAdapterPosition()));
                 }
 
             }
     };
     }
 
-    public void updateDate(Date date,String formattedDateDayOfTheWeek)
-    {
+    private void setupSimpleItemTouchCallbackReminders() {
+        simpleItemTouchCallbackReminders = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.UP ) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                if(calendarEntriesReminder.get(viewHolder.getAdapterPosition()).isImportant() && !parent.isAuthenticated())
+                {
+                    Snackbar snackbar = Snackbar.make(parent.findViewById(R.id.drawer_layout),getString(R.string.snackbar_important_warning) ,Snackbar.LENGTH_SHORT);
+                    snackbar.show();
+                    parent.updateDate(currentDate);
+                }
+                else{
+                    parent.deleteFromDatabase(calendarEntriesReminder.get(viewHolder.getAdapterPosition()).getDatabaseID(),calendarEntriesReminder.get(viewHolder.getAdapterPosition()));
+                }
+
+            }
+        };
+    }
+
+    public void updateDate(Date date,String formattedDateDayOfTheWeek) {
+        currentDate=date;
         //update recycler view
-        calendarEntriesForAdapter=new ArrayList<>();
+        List<CalendarEntry> calendarEntriesForAdapter=new ArrayList<>();
         //Get non repeating Tasks
         calendarEntriesForAdapter.addAll(calendarEntryList.stream()
                 .filter(calendarEntry -> (calendarEntry.getDate()==date.getTime() || calendarEntry.getRepeating()==1)  && (calendarEntry.getRepeating()!=2 && calendarEntry.getRepeating()!=3) )
@@ -154,7 +225,18 @@ public class DailyViewFragment extends Fragment {
                 }
             }
         }
-        updateRecyclerView(calendarEntriesForAdapter);
+        calendarEntriesReminder=new ArrayList<>();
+        calendarEntriesReminder.addAll(calendarEntriesForAdapter.stream()
+                .filter(calendarEntry -> (calendarEntry.getType()==CalendarEntry.TYPE_REMINDER))
+                .collect(Collectors.toList())
+        );
+        calendarEntriesEvents = new ArrayList<>();
+        calendarEntriesEvents.addAll(calendarEntriesForAdapter.stream()
+                .filter(calendarEntry -> (calendarEntry.getType()==CalendarEntry.TYPE_EVENT))
+                .collect(Collectors.toList())
+        );
+        updateRecyclerView(calendarEntriesEvents);
+        updateRecyclerViewEvents(calendarEntriesReminder);
         if(date.getTime()!=currentDate.getTime()) {
             parent.showDateButton(currentDate);
         }
@@ -179,4 +261,5 @@ public class DailyViewFragment extends Fragment {
             throw new ClassCastException(context.toString() + " must implement OnCompleteListener");
         }
     }
+
 }

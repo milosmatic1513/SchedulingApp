@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="500dp"
-    android:background="@drawable/ic_launcher_background"
     android:backgroundTint="#007C0404">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -88,10 +87,41 @@
                 android:orientation="vertical"
                 android:padding="20dp">
 
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/publicCodeLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/background_rounded">
+
+                    <TextView
+                        android:id="@+id/publicCodeBottomView"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:padding="10dp"
+                        android:text="@string/event_public_code"
+                        android:textColor="#000000"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/copyButtonBottomView"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageButton
+                        android:id="@+id/copyButtonBottomView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="#FFFFFF"
+                        android:tint="@color/hint_color"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="?attr/actionModeCopyDrawable" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
                 <LinearLayout
                     android:id="@+id/generalInfoBottomView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginTop="20dp"
                     android:background="@drawable/background_rounded"
                     android:elevation="8dp"
                     android:orientation="vertical"
@@ -99,7 +129,7 @@
 
 
                     <TextView
-                        android:id="@+id/dateViewBottomView"
+                        android:id="@+id/dateViewPublicEvents"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingTop="10dp"
@@ -126,7 +156,7 @@
                             app:tint="@color/black" />
 
                         <TextView
-                            android:id="@+id/timeBottomView"
+                            android:id="@+id/timePublicEvents"
                             android:layout_width="108dp"
                             android:layout_height="30dp"
                             android:gravity="center_horizontal|center_vertical"
@@ -140,7 +170,7 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <TextView
-                        android:id="@+id/repeatingBottomView"
+                        android:id="@+id/repeatingPublicEvents"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingTop="10dp"
@@ -226,7 +256,8 @@
                     android:padding="10dp"
                     android:paddingStart="20dp"
                     android:paddingRight="20dp"
-                    android:paddingBottom="30dp">
+                    android:paddingBottom="30dp"
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/textView9"

@@ -60,6 +60,20 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/eventNameTextReminder" />
 
+            <TextView
+                android:id="@+id/publicMarkerReminder"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:width="20dp"
+                android:background="@drawable/round_button"
+                android:backgroundTint="#4056a1"
+                android:foregroundTint="#F4F4F4"
+                android:gravity="clip_horizontal|center"
+                android:text="P"
+                android:textColor="#FFFFFF"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/eventNameTextReminder" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 

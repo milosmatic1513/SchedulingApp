@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintLayoutEventCreate"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_color"
@@ -49,7 +50,7 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/createButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView8"
         app:layout_constraintVertical_bias="0.0">
@@ -307,7 +308,57 @@
                 android:paddingEnd="20dp">
 
                 <Switch
-                    android:id="@+id/descriptionSwitch"
+                    android:id="@+id/publicSwitchCreateView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/event_public" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraintLayoutPublic"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/publicCodeTextView"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/event_public_code"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/imageViewCopy"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/imageViewCopy"
+                        android:layout_width="50dp"
+                        android:layout_height="0dp"
+                        android:background="@color/white"
+                        android:padding="5dp"
+                        android:tint="@color/hint_color"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="?attr/actionModeCopyDrawable" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/background_rounded"
+                android:elevation="8dp"
+                android:orientation="vertical"
+                android:padding="10dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp">
+
+                <Switch
+                    android:id="@+id/publicSwitch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/description" />
@@ -405,7 +456,8 @@
                 android:orientation="vertical"
                 android:padding="10dp"
                 android:paddingStart="20dp"
-                android:paddingEnd="20dp">
+                android:paddingEnd="20dp"
+                android:visibility="gone">
 
                 <Switch
                     android:id="@+id/locationSwitch"

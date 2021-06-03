@@ -18,6 +18,8 @@ import com.example.scheduleme.DataClasses.CalendarEntry;
 import com.example.scheduleme.MyOnClickListener;
 import com.example.scheduleme.R;
 
+import org.w3c.dom.Text;
+
 import java.lang.ref.WeakReference;
 import java.util.List;
 
@@ -34,6 +36,7 @@ public class CalendarEntitiesAdapter extends RecyclerView.Adapter<CalendarEntiti
         public Button   moreInfoButton;
         public TextView timeTextView;
         public TextView importantTag;
+        public TextView publicTag;
         public ImageView idImageView;
         public ImageView timeImageView;
         public CardView cardView;
@@ -55,6 +58,7 @@ public class CalendarEntitiesAdapter extends RecyclerView.Adapter<CalendarEntiti
             importantTag = (TextView) itemView.findViewById(R.id.importantMarkerReminder);
             idImageView =(ImageView) itemView.findViewById(R.id.idImageView);
             timeImageView = (ImageView) itemView.findViewById(R.id.imageView);
+            publicTag=(TextView) itemView.findViewById(R.id.publicMarkerEvent);
             listenerRef = new WeakReference<>(listener);
             // OnClickListeners to trigger the Listener given in the constructor
             moreInfoButton.setOnClickListener((view)->{
@@ -101,6 +105,12 @@ public class CalendarEntitiesAdapter extends RecyclerView.Adapter<CalendarEntiti
         if(!calendarEntry.isImportant())
         {
             holder.importantTag.setVisibility(View.INVISIBLE);
+        }
+        if(calendarEntry.getPublicCode().length()!=0){
+            holder.publicTag.setVisibility(View.VISIBLE);
+        }
+        else{
+            holder.publicTag.setVisibility(View.INVISIBLE);
         }
         if(!calendarEntry.isRequireIdScan())
         {

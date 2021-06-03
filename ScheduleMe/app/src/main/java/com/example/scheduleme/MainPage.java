@@ -2,6 +2,7 @@ package com.example.scheduleme;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.appcompat.widget.Toolbar;
@@ -9,6 +10,9 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.app.DatePickerDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -33,6 +37,7 @@ import com.example.scheduleme.FragmentControllers.DailyViewFragment;
 import com.example.scheduleme.FragmentControllers.DailyViewFragmentAlternative;
 import com.example.scheduleme.FragmentControllers.WeeklyViewFragment;
 import com.example.scheduleme.Utilities.ImageUtilities;
+import com.example.scheduleme.Utilities.RandomStringGenerator;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
@@ -48,7 +53,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -59,6 +63,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
     static int EDIT_ACTIVITY_REQUEST=2;
     static int PROFILE_ACTIVITY_REQUEST=3;
     static int FACETEC_ACTIVITY_REQUEST=4;
+    static int PUBLIC_EVENT_ACTIVITY_REQUEST=5;
     //Database
     private FirebaseAuth mAuth;
     FirebaseUser currentUser;
@@ -94,7 +99,6 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
     DailyViewFragment dailyViewFragment;
     WeeklyViewFragment weeklyViewFragment;
     DailyViewFragmentAlternative dailyAltViewFragment;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -363,7 +367,6 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
     }
     @Override
     public void onBackPressed(){
-
         if(drawerLayout.isDrawerOpen(GravityCompat.START)){
             drawerLayout.closeDrawer(GravityCompat.START);
         }
@@ -375,7 +378,6 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-
         switch (item.getItemId()) {
 
             case R.id.weekly:
@@ -399,6 +401,9 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
                 // Complete the changes added above
                 ft.commit();
                 break;
+            case R.id.nav_public_events:
+                startActivityForResult(new Intent(getApplicationContext(),PublicEventsPage.class),PUBLIC_EVENT_ACTIVITY_REQUEST);
+                break;
             case R.id.nav_logout:
                 logout();
                 break;
@@ -411,30 +416,33 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
 
     }
 
-    public void setupBottomView(CalendarEntry calendarEntry)
-    {
+    public void setupBottomView(CalendarEntry calendarEntry) {
         setupBottomView(calendarEntry,false );
     }
+
     public void setupBottomView(CalendarEntry calendarEntry,boolean photoIdAuth) {
 
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(MainPage.this);
         bottomSheetDialog.setContentView(R.layout.bottom_view_layout);
         //components initialization
         TextView textViewTitle = bottomSheetDialog.findViewById(R.id.titleBottomView);
-        TextView textViewDate = bottomSheetDialog.findViewById(R.id.dateViewBottomView);
-        TextView textViewTime = bottomSheetDialog.findViewById(R.id.timeBottomView);
-        TextView textViewRepeating = bottomSheetDialog.findViewById(R.id.repeatingBottomView);
+        TextView textViewDate = bottomSheetDialog.findViewById(R.id.dateViewPublicEvents);
+        TextView textViewTime = bottomSheetDialog.findViewById(R.id.timePublicEvents);
+        TextView textViewRepeating = bottomSheetDialog.findViewById(R.id.repeatingPublicEvents);
         TextView descriptionEditText = bottomSheetDialog.findViewById(R.id.descriptionEditText);
+        TextView publicCodeBottomView=bottomSheetDialog.findViewById(R.id.publicCodeBottomView);
 
         LinearLayout descriptionBox=bottomSheetDialog.findViewById(R.id.descriptionBoxBottomView);
         LinearLayout imageBox=bottomSheetDialog.findViewById(R.id.imageBoxBottomView);
         LinearLayout authenticateLayout=bottomSheetDialog.findViewById(R.id.authenticateLayout);
+        ConstraintLayout publicCodeLayout=bottomSheetDialog.findViewById(R.id.publicCodeLayout);
 
         NestedScrollView nestedScrollView  = bottomSheetDialog.findViewById(R.id.nestedScrollView);
         ImageView imageView = bottomSheetDialog.findViewById(R.id.imageBottomView);
         ImageButton buttonEdit = bottomSheetDialog.findViewById(R.id.editButtonBottomView);
         ImageButton buttonDelete= bottomSheetDialog.findViewById(R.id.deleteButtonBottomView);
         Button authenticateButton = bottomSheetDialog.findViewById(R.id.authenticateButton);
+        ImageButton copyButton = bottomSheetDialog.findViewById(R.id.copyButtonBottomView);
 
         bottomSheetDialog.show();
         textViewTitle.setText(calendarEntry.getTitle());
@@ -467,6 +475,26 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
                     imageBox.setVisibility(View.GONE);
                 }
             }
+            if(calendarEntry.getDatabaseID().contains("TasksReferences")){
+                buttonEdit.setVisibility(View.GONE);
+            }
+            if(calendarEntry.getPublicCode().length()!=0) {
+                publicCodeLayout.setVisibility(View.VISIBLE);
+                publicCodeBottomView.setText(getString(R.string.event_public_code)+" "+calendarEntry.getPublicCode());
+                copyButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clip = ClipData.newPlainText("Public Code", calendarEntry.getPublicCode());
+                        clipboard.setPrimaryClip(clip);
+                        Snackbar snackbar = Snackbar.make(findViewById(R.id.drawer_layout), "Copied to clipboard", Snackbar.LENGTH_SHORT);
+                        snackbar.show();
+                    }
+                });
+            }
+            else{
+                publicCodeLayout.setVisibility(View.GONE);
+            }
 
             buttonEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -478,11 +506,12 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
 
                 }
             });
+
             buttonDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     bottomSheetDialog.dismiss();
-                    deleteFromDatabase(calendarEntry.getDatabaseID(),calendarEntry);
+                    deleteFromDatabase(calendarEntry.getDatabaseID(), calendarEntry);
                 }
             });
 
@@ -591,25 +620,34 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
     public void deleteFromDatabase(String databaseId,CalendarEntry calendarEntry){
         //Remove swiped item from list and notify the RecyclerView
 
-        lastDeletedItem = calendarEntry;
-        DatabaseReference myRef = database.getReference("Users/" + currentUser.getUid() + "/Tasks/"+databaseId
-        );
+        if(calendarEntry.getDatabaseID().contains("TasksReferences")){
+            DatabaseReference myRef = database.getReference(calendarEntry.getDatabaseID());
+            myRef.removeValue();
+        }
+        else {
+            lastDeletedItem = calendarEntry;
+            DatabaseReference myRef = database.getReference("Users/" + currentUser.getUid() + "/Tasks/" + databaseId);
 
-        Snackbar snackbar = Snackbar.make(findViewById(R.id.drawer_layout),"Item "+calendarEntry.getTitle() +" Deleted ",Snackbar.LENGTH_SHORT);
-        snackbar.setAction("UNDO", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                myRef.setValue(lastDeletedItem);
-                calendarEntries.add(lastDeletedItem);
-                lastDeletedItem = null;
-
+            if(calendarEntry.getPublicCode().length()!=0){
+                DatabaseReference myRefShared = database.getReference("PublicEvents/" + calendarEntry.getPublicCode());
+                myRefShared.removeValue();
             }
-        });
-        myRef.removeValue();
-        snackbar.show();
 
+
+            Snackbar snackbar = Snackbar.make(findViewById(R.id.drawer_layout), "Item " + calendarEntry.getTitle() + " Deleted ", Snackbar.LENGTH_SHORT);
+            snackbar.setAction("UNDO", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    myRef.setValue(lastDeletedItem);
+                    calendarEntries.add(lastDeletedItem);
+                    lastDeletedItem = null;
+
+                }
+            });
+            myRef.removeValue();
+            snackbar.show();
+        }
     }
-
     @Override
     public void onComplete() {
         if(currentDate==null) {
@@ -668,8 +706,8 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
     public void previousDate(View view) {
         updateDate(new Date(currentDate.getTime()-86400000));
     }
-    private void deleteReference(String key)
-    {
+
+    private void deleteReference(String key) {
         DatabaseReference databaseReference = database.getReference("Users/"+currentUser.getUid()+"/TasksReferences/"+key);
         databaseReference.removeValue();
     }

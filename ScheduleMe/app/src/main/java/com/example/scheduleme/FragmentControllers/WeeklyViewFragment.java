@@ -44,6 +44,7 @@ public class WeeklyViewFragment extends Fragment {
     //add to resources
     private String daysOfTheWeek[]= {"Mon","Tue","Wed","Thu","Fri","Sat","Sun"};
     Date currentDate;
+    Date selectedDate;
     List<Date> dates;
     List<RecyclerView> weekdaysRecyclerView;
     List<TextView> weekdaysTextView;

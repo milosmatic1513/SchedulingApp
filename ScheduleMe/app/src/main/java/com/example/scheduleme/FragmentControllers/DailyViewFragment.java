@@ -49,6 +49,7 @@ public class DailyViewFragment extends Fragment {
     ItemTouchHelper.SimpleCallback simpleItemTouchCallbackEvents;
     ItemTouchHelper.SimpleCallback simpleItemTouchCallbackReminders;
     Date currentDate;
+    Date selectedDate;
     Switch switchReminder;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -166,7 +167,7 @@ public class DailyViewFragment extends Fragment {
                 {
                     Snackbar snackbar = Snackbar.make(parent.findViewById(R.id.drawer_layout),getString(R.string.snackbar_important_warning) ,Snackbar.LENGTH_SHORT);
                     snackbar.show();
-                    parent.updateDate(currentDate);
+                    parent.updateDate(selectedDate);
                 }
                 else{
                     parent.deleteFromDatabase(calendarEntriesEvents.get(viewHolder.getAdapterPosition()).getDatabaseID(),calendarEntriesEvents.get(viewHolder.getAdapterPosition()));
@@ -188,7 +189,7 @@ public class DailyViewFragment extends Fragment {
                 {
                     Snackbar snackbar = Snackbar.make(parent.findViewById(R.id.drawer_layout),getString(R.string.snackbar_important_warning) ,Snackbar.LENGTH_SHORT);
                     snackbar.show();
-                    parent.updateDate(currentDate);
+                    parent.updateDate(selectedDate);
                 }
                 else{
                     parent.deleteFromDatabase(calendarEntriesReminder.get(viewHolder.getAdapterPosition()).getDatabaseID(),calendarEntriesReminder.get(viewHolder.getAdapterPosition()));
@@ -199,7 +200,7 @@ public class DailyViewFragment extends Fragment {
     }
 
     public void updateDate(Date date,String formattedDateDayOfTheWeek) {
-        currentDate=date;
+        selectedDate=date;
         //update recycler view
         List<CalendarEntry> calendarEntriesForAdapter=new ArrayList<>();
         //Get non repeating Tasks

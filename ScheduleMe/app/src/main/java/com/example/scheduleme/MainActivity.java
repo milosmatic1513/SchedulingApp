@@ -52,11 +52,14 @@ public class MainActivity extends AppCompatActivity {
     String currentLocale;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+
         //Get and set Language
         currentLocale = Preferences.getLanguage(this);
         Preferences.setLocale(this, currentLocale);
+
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
 
         //Shared Preferences Instantiation
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -190,6 +193,5 @@ public class MainActivity extends AppCompatActivity {
     public void register(View view) {
         startActivity(new Intent(getApplicationContext(), RegisterPage.class));
     }
-
 
 }

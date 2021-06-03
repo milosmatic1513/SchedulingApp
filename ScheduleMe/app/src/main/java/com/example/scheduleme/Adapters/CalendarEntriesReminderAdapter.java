@@ -34,6 +34,7 @@ public class CalendarEntriesReminderAdapter extends RecyclerView.Adapter<Calenda
         public TextView taskTextView;
         public Button moreInfoButton;
         public TextView importantTag;
+        public TextView publicTag;
 
         public CardView cardView;
         public ConstraintLayout constraintLayout;
@@ -50,6 +51,7 @@ public class CalendarEntriesReminderAdapter extends RecyclerView.Adapter<Calenda
             taskTextView = (TextView) itemView.findViewById(R.id.eventNameTextReminder);
             moreInfoButton = (Button) itemView.findViewById(R.id.moreInfoButtonReminder);
             importantTag = (TextView) itemView.findViewById(R.id.importantMarkerReminder);
+            publicTag = (TextView) itemView.findViewById(R.id.publicMarkerReminder);
             listenerRef = new WeakReference<>(listener);
             // OnClickListeners to trigger the Listener given in the constructor
             moreInfoButton.setOnClickListener((view)->{
@@ -89,7 +91,12 @@ public class CalendarEntriesReminderAdapter extends RecyclerView.Adapter<Calenda
         if (!calendarEntry.isRequireIdScan()) {
             //holder.idImageView.setVisibility(View.INVISIBLE);
         }
-
+        if(calendarEntry.getPublicCode().length()!=0){
+            holder.publicTag.setVisibility(View.VISIBLE);
+        }
+        else{
+            holder.publicTag.setVisibility(View.INVISIBLE);
+        }
 
         RecyclerView.LayoutParams params = (RecyclerView.LayoutParams)holder.constraintLayout.getLayoutParams();
         if(calendarEntries.size()<=3) {

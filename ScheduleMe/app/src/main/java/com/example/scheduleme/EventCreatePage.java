@@ -5,18 +5,18 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
-import androidx.core.view.GravityCompat;
 
 import android.Manifest;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.ActivityNotFoundException;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -33,18 +33,21 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.scheduleme.DataClasses.CalendarEntry;
 import com.example.scheduleme.DataClasses.CalendarEntryBuilder;
 import com.example.scheduleme.Utilities.ImageUtilities;
+import com.example.scheduleme.Utilities.RandomStringGenerator;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -67,6 +70,8 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
     TimePickerDialog pickerTime;
     DatePickerDialog pickerDate;
 
+    TextView publicCodeTextView;
+
     EditText editTextTitle;
     EditText editTextDescription;
     EditText editTextFrom;
@@ -80,6 +85,7 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
     Switch descriptionSwitch;
     Switch imageSwitch;
     Switch locationSwitch;
+    Switch publicSwitch;
 
     CalendarEntry calendarEntry;
     Date date;
@@ -88,13 +94,13 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
     Button takeImageButton;
     Button loadImageButton;
     ImageView imageView;
-
+    ImageView imageViewCopy;
     private GoogleMap mMap;
     private Marker current_location_marker;
 
     LinearLayout mapLayout;
     ConstraintLayout timeConstraintLayout;
-
+    ConstraintLayout constraintLayoutPublic;
     private final int RESULT_LOAD_IMG = 155;
     private final int RESULT_TAKE_PHOTO = 156;
     Bitmap imageBitmap = null;
@@ -107,6 +113,8 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
     int hourTo= 0;
     int minuteTo = 0;
 
+    //string
+    String publicCode = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -131,7 +139,7 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
         createButton = (Button)findViewById(R.id.createButton);
         spinnerRepeat = (Spinner)findViewById(R.id.spinner);
         spinnerType = (Spinner)findViewById(R.id.spinner2);
-        descriptionSwitch = findViewById(R.id.descriptionSwitch);
+        descriptionSwitch = findViewById(R.id.publicSwitch);
         imageSwitch = findViewById(R.id.imageSwitch);
         imageView=findViewById(R.id.imageViewTaskPage);
         takeImageButton=findViewById(R.id.takeImageButton);
@@ -141,15 +149,17 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
         locationSwitch = findViewById(R.id.locationSwitch);
         mapLayout = findViewById(R.id.mapLayout);
         timeConstraintLayout = findViewById(R.id.timeConstraintLayout);
-
-
+        constraintLayoutPublic=findViewById(R.id.constraintLayoutPublic);
+        constraintLayoutPublic.setVisibility(View.GONE);
+        publicSwitch=findViewById(R.id.publicSwitchCreateView);
+        publicCodeTextView=findViewById(R.id.publicCodeTextView);
+        imageViewCopy=findViewById(R.id.imageViewCopy);
         //listeners
         switchImportant.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked) {
                     switchPhotoId.setEnabled(true);
-
                 }
                 else{
                     switchPhotoId.setEnabled(false);
@@ -269,10 +279,6 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
                         new TimePickerDialog.OnTimeSetListener() {
                             @Override
                             public void onTimeSet(TimePicker tp, int sHour, int sMinute) {
-
-
-
-
                                 int timeInMinutesFrom = (hourFrom*60)+minuteFrom;
                                 int timeInMinutesTo= (sHour*60)+sMinute;
                                 Log.e("Time","Time from : "+timeInMinutesFrom +" Time to:"+timeInMinutesTo);
@@ -359,6 +365,31 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
             }
         });
 
+        publicSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    if(publicCode.length()==0) publicCode = RandomStringGenerator.generateString(10);
+                    constraintLayoutPublic.setVisibility(View.VISIBLE);
+                    publicCodeTextView.setText(getString(R.string.event_public_code)+" "+publicCode);
+                    imageViewCopy.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                            ClipData clip = ClipData.newPlainText("Public Code", publicCode);
+                            clipboard.setPrimaryClip(clip);
+                            Snackbar snackbar = Snackbar.make(findViewById(R.id.constraintLayoutEventCreate), "Copied to clipboard", Snackbar.LENGTH_SHORT);
+                            snackbar.show();
+                        }
+                    });
+                }
+                else{
+                    constraintLayoutPublic.setVisibility(View.GONE);
+
+                }
+            }
+        });
+
         if(calendarEntry != null){
             editTextTitle.setText(calendarEntry.getTitle());
             if(calendarEntry.getDescription().length()!=0){
@@ -385,13 +416,17 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
                     takeImageButton.setVisibility(View.GONE);
                 }
             }
-            else
-            {
+            else {
                 imageSwitch.setChecked(false);
                 loadImageButton.setVisibility(View.GONE);
                 imageView.setVisibility(View.GONE);
                 takeImageButton.setVisibility(View.GONE);
             }
+            if(calendarEntry.getPublicCode().length()!=0){
+                publicCode=calendarEntry.getPublicCode();
+                publicSwitch.setChecked(true);
+            }
+
             switchImportant.setChecked(calendarEntry.isImportant());
             switchPhotoId.setChecked(calendarEntry.isRequireIdScan());
             spinnerRepeat.setSelection(calendarEntry.getRepeating());
@@ -474,10 +509,17 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
             {
                 newCalendarEntry.setBase64Image(ImageUtilities.bitmapToBase64(imageBitmap));
             }
+            if(publicSwitch.isChecked()){
+                newCalendarEntry.setPublicCode(publicCode);
+            }
 
             if(calendarEntry==null) {
                 DatabaseReference myRef = database.getReference("Users/" + currentUser.getUid() + "/Tasks/").push();
                 myRef.setValue(newCalendarEntry);
+                if(newCalendarEntry.getPublicCode().length()!=0){
+                    DatabaseReference myRefShared = database.getReference("PublicEvents/"+newCalendarEntry.getPublicCode());
+                    myRefShared.setValue("Users/" + currentUser.getUid() + "/Tasks/"+myRef.getKey());
+                }
                 finish();
             }
             else
@@ -487,9 +529,19 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
                     myRef.setValue(newCalendarEntry);
                     Intent intent=new Intent();
                     newCalendarEntry.setDatabaseID(calendarEntry.getDatabaseID());
+                    if(publicCode.length()!=0 && newCalendarEntry.getPublicCode().length()==0) {
+                        DatabaseReference myRefShared = database.getReference("PublicEvents/" +publicCode);
+                        myRefShared.removeValue();
+                    }
+                    if(newCalendarEntry.getPublicCode().length()!=0){
+                        DatabaseReference myRefShared = database.getReference("PublicEvents/"+newCalendarEntry.getPublicCode());
+                        myRefShared.setValue("Users/" + currentUser.getUid() + "/Tasks/"+myRef.getKey());
+                    }
+
+                    finish();
                     intent.putExtra("calendarEntry",newCalendarEntry);
                     setResult(2,intent);
-                    finish();
+
                 }
                 Toast.makeText(EventCreatePage.this,"There was an error ",Toast.LENGTH_SHORT);
 

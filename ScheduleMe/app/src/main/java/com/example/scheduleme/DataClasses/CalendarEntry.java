@@ -15,6 +15,7 @@ public class CalendarEntry implements Serializable ,Comparable<CalendarEntry> {
     private String databaseID;
     private String title;
     private String description;
+    private String publicCode;
     private long date;
     private long timeStart;
     private long timeEnd;
@@ -26,10 +27,11 @@ public class CalendarEntry implements Serializable ,Comparable<CalendarEntry> {
 
 
 
-    public CalendarEntry(String databaseID,String title,String description,long date,int type,boolean important,boolean requireIdScan,long timeStart,long timeEnd,int repeating, String base64Image) {
+    public CalendarEntry(String databaseID,String title,String description,String publicCode,long date,int type,boolean important,boolean requireIdScan,long timeStart,long timeEnd,int repeating, String base64Image) {
         this.databaseID = databaseID;
         this.title = title;
         this.description = description;
+        this.publicCode = publicCode;
         this.date = date;
         this.type = type;
         this.important = important;
@@ -44,6 +46,7 @@ public class CalendarEntry implements Serializable ,Comparable<CalendarEntry> {
         this.databaseID = "";
         this.title = "";
         this.description = "";
+        this.publicCode = "";
         this.date = 0;
         this.type = TYPE_EVENT;
         this.important = false;
@@ -78,6 +81,12 @@ public class CalendarEntry implements Serializable ,Comparable<CalendarEntry> {
         this.description = description;
     }
 
+    public String getPublicCode() { return publicCode; }
+
+    public void setPublicCode(String publicCode) {
+        this.publicCode = publicCode;
+    }
+
     public long getDate() {
         return date;
     }
@@ -109,7 +118,6 @@ public class CalendarEntry implements Serializable ,Comparable<CalendarEntry> {
     public void setRequireIdScan(boolean requireIdScan) {
         this.requireIdScan = requireIdScan;
     }
-
 
     public long getTimeStart() {
         return timeStart;

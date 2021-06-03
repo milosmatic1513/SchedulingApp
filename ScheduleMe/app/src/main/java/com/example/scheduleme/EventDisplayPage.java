@@ -35,10 +35,10 @@ public class EventDisplayPage extends AppCompatActivity {
 
         //component initialization
         titleTextView=findViewById(R.id.titleBottomView);
-        timeTextView=findViewById(R.id.timeBottomView);
+        timeTextView=findViewById(R.id.timePublicEvents);
         descriptionEditText=findViewById(R.id.descriptionEditText);
-        repeatingTextView = findViewById(R.id.repeatingBottomView);
-        dateTextView = findViewById(R.id.dateViewBottomView);
+        repeatingTextView = findViewById(R.id.repeatingPublicEvents);
+        dateTextView = findViewById(R.id.dateViewPublicEvents);
         descriptionBox=findViewById(R.id.descriptionBoxBottomView);
         imageBox=findViewById(R.id.imageBoxBottomView);
         imageView=findViewById(R.id.imageBottomView);

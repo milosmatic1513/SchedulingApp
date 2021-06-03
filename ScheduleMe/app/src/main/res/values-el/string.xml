@@ -58,6 +58,9 @@
     <string name="photoID_description">Για να δείτε το γεγονός αυτο πρέπει να παρουσιάσετε ενα εγραφό ταυτότητας</string>
     <string name="time_warning">Δεν μπορείς να πας πίσω τον χρόνο</string>
     <string name="event_type">Τύπος :</string>
+    <string name="event_public">Δημόσιο</string>
+    <string name="event_public_code">Δημόσιος κωδικός :</string>
+
     <!-- Spinner Values -->
     <string-array name="spinnerItems">
         <item>Καθολόυ</item>
@@ -102,8 +105,12 @@
     <string name="snackbar_important_warning">Πρέπει να είστε αυθεντικοποιημένος για να διαγράψετε το γεγονός</string>
 
     <string name="otherFeatures">Επιπλέον λειτοτυργίες</string>
+
+    <!-- Public Event View -->
     <string name="addPublicEvent">Προσθήκη δημόσιου γεγονότος</string>
-
-
+    <string name="publicEventHint">Δημόσιο γεγονότος</string>
+    <string name="publicEventTitle">Πληκτρολογήστε τον κωδικό του δημόσιου γεγονότος</string>
+    <string name="publicEventButton">Επόμενο</string>
+    <string name="publicEventAdd">Προσθήκη</string>
 
 </resources>

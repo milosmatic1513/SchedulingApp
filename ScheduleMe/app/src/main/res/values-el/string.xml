@@ -60,7 +60,7 @@
     <string name="event_type">Τύπος :</string>
     <string name="event_public">Δημόσιο</string>
     <string name="event_public_code">Δημόσιος κωδικός :</string>
-
+    <string name="event_current_location">Τωρινή τοποθεσία</string>
     <!-- Spinner Values -->
     <string-array name="spinnerItems">
         <item>Καθολόυ</item>

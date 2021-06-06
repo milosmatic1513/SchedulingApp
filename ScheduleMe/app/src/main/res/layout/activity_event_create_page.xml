@@ -457,14 +457,15 @@
                 android:padding="10dp"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <Switch
                     android:id="@+id/locationSwitch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/location" />
+                    android:text="@string/location"
+                    android:visibility="visible" />
 
                 <LinearLayout
                     android:id="@+id/mapLayout"
@@ -480,7 +481,7 @@
                         android:layout_width="match_parent"
 
 
-                        android:layout_height="200dp" />
+                        android:layout_height="500dp" />
                 </LinearLayout>
 
 

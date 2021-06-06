@@ -59,6 +59,8 @@
     <string name="event_type">Type :</string>
     <string name="event_public">Public</string>
     <string name="event_public_code">Public code :</string>
+    <string name="event_current_location">Current Locations</string>
+
     <!-- Spinner Values -->
     <string-array name="spinnerItems">
         <item>None</item>

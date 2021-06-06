@@ -17,6 +17,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -41,9 +43,11 @@ import com.example.scheduleme.DataClasses.CalendarEntry;
 import com.example.scheduleme.DataClasses.CalendarEntryBuilder;
 import com.example.scheduleme.Utilities.ImageUtilities;
 import com.example.scheduleme.Utilities.RandomStringGenerator;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -61,7 +65,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-public class EventCreatePage extends AppCompatActivity implements OnMapReadyCallback  {
+public class EventCreatePage extends AppCompatActivity implements OnMapReadyCallback , LocationListener {
     //firebase
     private FirebaseAuth mAuth;
     FirebaseUser currentUser;
@@ -201,7 +205,7 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     mapLayout.setVisibility(View.VISIBLE);
-
+                    gps();
                 }
                 else {
                     mapLayout.setVisibility(View.GONE);
@@ -619,7 +623,14 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
             @Override
             public void onMapClick(@NonNull LatLng latLng) {
                 mMap.clear();
-                mMap.addMarker(new MarkerOptions().position(latLng).title("New Custom Marker"));
+                mMap.addMarker(new MarkerOptions().position(latLng).
+                        title("New Custom Marker")
+                );
+                mMap.addMarker(new MarkerOptions().position(current_location_marker.getPosition())
+                        .title("Current Location")
+                        .icon(BitmapDescriptorFactory
+                        .defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                );
             }
         });
 
@@ -631,5 +642,41 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
         intent.putExtra("calendarEntry",calendarEntry);
         setResult(2,intent);
         finish();
+    }
+
+    private void gps() {
+        //Gps Function
+        //Handles location tracking start = true : location is updated , start = false location is not updated
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 234);
+            return;
+        }
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0,this);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 0,this);
+
+    }
+
+    @Override
+    public void onLocationChanged(@NonNull Location location) {
+        LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
+
+        if (current_location_marker != null)
+            current_location_marker.remove();
+
+        current_location_marker = mMap.addMarker(new MarkerOptions()
+                .position(currentLocation)
+                .title(getString(R.string.event_current_location))
+                .zIndex(1000f) // Always on top of other markers
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+        );
+
+        zoomOnCurrentMarker();
+    }
+
+    private void zoomOnCurrentMarker() {
+        if (mMap != null && current_location_marker != null) {
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(current_location_marker.getPosition(), 15f), 1000, null);
+        }
     }
 }

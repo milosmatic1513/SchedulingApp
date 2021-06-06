@@ -497,7 +497,7 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
             //time set
             if(spinnerType.getSelectedItemPosition() == CalendarEntry.TYPE_EVENT ){
                  newCalendarEntry.setTimeStart(timeFromMillis);
-                 newCalendarEntry.setTimeEnd(timeFromMillis);
+                 newCalendarEntry.setTimeEnd(timeToMillis);
             }
             //description Checkbox
             if(editTextDescription.getText().toString().trim().length()!=0 && descriptionSwitch.isChecked())

@@ -18,6 +18,7 @@
             android:orientation="vertical">
 
             <HorizontalScrollView
+                android:id="@+id/horizontalScrollViewWeekly"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -161,10 +162,10 @@
                             android:layout_width="30dp"
                             android:layout_height="wrap_content"
                             android:background="@drawable/round_button"
+                            android:backgroundTint="@color/background_color"
                             android:padding="5dp"
                             android:text="X"
-                            android:textAlignment="center"
-                            android:backgroundTint="@color/background_color" />
+                            android:textAlignment="center" />
 
                         <TextView
                             android:id="@+id/Thursday"
@@ -212,14 +213,14 @@
                             android:id="@+id/Friday"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
                             android:background="@drawable/background_rounded"
                             android:backgroundTint="@color/background_color"
                             android:text="@string/friday"
                             android:textAlignment="center"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            android:layout_margin="10dp" />
+                            app:layout_constraintTop_toTopOf="parent" />
 
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/friRecyclerView"
@@ -310,10 +311,10 @@
                             android:id="@+id/sunRecyclerView"
                             android:layout_width="135dp"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="20dp"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/Sunday"
-                            android:layout_marginBottom="20dp">
+                            app:layout_constraintTop_toBottomOf="@+id/Sunday">
 
                         </androidx.recyclerview.widget.RecyclerView>
                     </LinearLayout>

@@ -90,7 +90,7 @@ public class CalendarEntriesAdapterAlternative extends RecyclerView.Adapter<Cale
         }
 
         //calculate hours
-        int size =(int)Math.ceil((calendarEntry.getTimeEnd()-calendarEntry.getTimeStart()+1800000)/1800000);
+        int size =(int)Math.ceil((calendarEntry.getTimeEnd()-calendarEntry.getTimeStart())/1800000);
         final float scale = holder.itemView.getResources().getDisplayMetrics().density;;
         int pixels = (int) (60 * scale + 0.5f);
         if(size<1)

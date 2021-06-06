@@ -10,10 +10,13 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.HorizontalScrollView;
+import android.widget.ScrollView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,7 +54,8 @@ public class WeeklyViewFragment extends Fragment {
     List<TextView> weekdaysDateTextView;
     MainPage parent;
     ItemTouchHelper.SimpleCallback simpleItemTouchCallback;
-
+    HorizontalScrollView horizontalScrollViewWeekly;
+    float scale;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -149,6 +153,10 @@ public class WeeklyViewFragment extends Fragment {
         weekdaysDateTextView.get(weekdaysDateTextView.size() - 1).setOnClickListener(listener);
 
         mListener.onComplete();
+        horizontalScrollViewWeekly=view.findViewById(R.id.horizontalScrollViewWeekly);
+
+        //get scale of view
+        scale = view.getResources().getDisplayMetrics().density;
 
     }
     @Override
@@ -164,6 +172,8 @@ public class WeeklyViewFragment extends Fragment {
     }
 
     public void updateDate(Date date) {
+
+
         boolean currentDayInWeek=false;
         //set Day
         SimpleDateFormat dfday = new SimpleDateFormat("dd", Locale.getDefault());
@@ -209,8 +219,19 @@ public class WeeklyViewFragment extends Fragment {
         }
         else{
             parent.hideDateButton();
-
         }
+
+        //create a handler and scroll to appropriate view
+        Handler h = new Handler();
+        //copy to an effectively final variable to be accesible from the handler
+        int finalDepthInPixels = 1000;
+        h.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                horizontalScrollViewWeekly.smoothScrollTo(index*(int) (135* scale + 0.5f),0 );
+            }
+        }, 250); // 250 ms delay
+
     }
 
     public void populateRecycler(Date date,String weekday,int recyclerIndex) {

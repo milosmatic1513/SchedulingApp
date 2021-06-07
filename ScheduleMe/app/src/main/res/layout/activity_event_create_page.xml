@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/background_color"
     android:backgroundTint="@color/background_color"
+    android:onClick="zoomOnCurrentMarker"
     tools:context=".EventCreatePage">
 
     <Button
@@ -46,6 +47,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
+        android:id="@+id/scrollMap"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/createButton"
@@ -56,6 +58,7 @@
         app:layout_constraintVertical_bias="0.0">
 
         <LinearLayout
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
@@ -337,11 +340,11 @@
                         android:layout_height="0dp"
                         android:background="@color/white"
                         android:padding="5dp"
-                        android:tint="@color/hint_color"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="?attr/actionModeCopyDrawable" />
+                        app:srcCompat="?attr/actionModeCopyDrawable"
+                        app:tint="@color/hint_color" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </LinearLayout>
@@ -472,16 +475,51 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:orientation="horizontal"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
                     android:visibility="gone">
 
-                    <fragment
-                        android:id="@+id/map"
-                        android:name="com.google.android.gms.maps.SupportMapFragment"
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
 
+                        <ProgressBar
+                            android:id="@+id/progressBarEventCreate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:elevation="20dp"
+                            android:indeterminate="true"
+                            app:layout_constraintBottom_toBottomOf="@+id/map"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="@+id/map" />
 
-                        android:layout_height="500dp" />
+                        <fragment
+                            android:id="@+id/map"
+                            android:name="com.example.scheduleme.WorkaroundMapFragment"
+                            android:layout_width="match_parent"
+
+                            android:layout_height="500dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.0"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintVertical_bias="1.0"></fragment>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <Button
+                        android:id="@+id/locationButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:backgroundTint="#4056a1"
+                        android:onClick="zoomOnCurrentMarker"
+                        android:text="@string/event_current_location"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        app:icon="@android:drawable/ic_menu_mylocation" />
+
                 </LinearLayout>
 
 

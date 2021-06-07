@@ -17,6 +17,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -435,13 +436,19 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
         LinearLayout descriptionBox=bottomSheetDialog.findViewById(R.id.descriptionBoxBottomView);
         LinearLayout imageBox=bottomSheetDialog.findViewById(R.id.imageBoxBottomView);
         LinearLayout authenticateLayout=bottomSheetDialog.findViewById(R.id.authenticateLayout);
+        LinearLayout locationBoxBottomView=bottomSheetDialog.findViewById(R.id.locationBoxBottomView);
+
         ConstraintLayout publicCodeLayout=bottomSheetDialog.findViewById(R.id.publicCodeLayout);
+        ConstraintLayout timeConstrainViewBottomView=bottomSheetDialog.findViewById(R.id.timeConstrainViewBottomView);
 
         NestedScrollView nestedScrollView  = bottomSheetDialog.findViewById(R.id.nestedScrollView);
         ImageView imageView = bottomSheetDialog.findViewById(R.id.imageBottomView);
         ImageButton buttonEdit = bottomSheetDialog.findViewById(R.id.editButtonBottomView);
         ImageButton buttonDelete= bottomSheetDialog.findViewById(R.id.deleteButtonBottomView);
         Button authenticateButton = bottomSheetDialog.findViewById(R.id.authenticateButton);
+        Button showLocationButton = bottomSheetDialog.findViewById(R.id.showLocationButton);
+
+
         ImageButton copyButton = bottomSheetDialog.findViewById(R.id.copyButtonBottomView);
 
         bottomSheetDialog.show();
@@ -495,7 +502,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
             else{
                 publicCodeLayout.setVisibility(View.GONE);
             }
-
+            if(calendarEntry.getType()==CalendarEntry.TYPE_REMINDER){timeConstrainViewBottomView.setVisibility(View.GONE);}
             buttonEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -506,7 +513,21 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
 
                 }
             });
+            if(calendarEntry.getLocationLong()!=0 && calendarEntry.getLocationLong()!=0){
+                locationBoxBottomView.setVisibility(View.VISIBLE);
+                showLocationButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v){
+                        String geoUri = "http://maps.google.com/maps?q=loc:" + calendarEntry.getLocationLat() + "," + calendarEntry.getLocationLong()  + " (" + calendarEntry.getTitle() + ")";
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(geoUri));
+                        startActivity(intent);
+                    }
+                });
+            }
+            else{
+                locationBoxBottomView.setVisibility(View.GONE);
 
+            }
             buttonDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

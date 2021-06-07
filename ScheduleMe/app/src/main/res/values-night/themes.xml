@@ -2,7 +2,7 @@
     <!-- Base application theme. -->
     <style name="Theme.ScheduleMe" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/black</item>
+        <item name="colorPrimary">#79c5e7</item>
         <item name="colorPrimaryVariant">#79c5e7</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
@@ -14,4 +14,10 @@
         <!-- Customize your theme here. -->
 
     </style>
+    <style name="Theme.ScheduleMe.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <style name="Theme.ScheduleMe.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.ScheduleMe.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

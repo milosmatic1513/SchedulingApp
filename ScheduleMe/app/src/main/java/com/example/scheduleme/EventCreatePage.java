@@ -33,6 +33,8 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -65,7 +67,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-public class EventCreatePage extends AppCompatActivity implements OnMapReadyCallback , LocationListener {
+public class EventCreatePage extends AppCompatActivity implements LocationListener {
     //firebase
     private FirebaseAuth mAuth;
     FirebaseUser currentUser;
@@ -99,6 +101,8 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
     Button loadImageButton;
     ImageView imageView;
     ImageView imageViewCopy;
+    Button locationButton;
+    ProgressBar progressBar;
     private GoogleMap mMap;
     private Marker current_location_marker;
 
@@ -116,6 +120,10 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
     int minuteFrom = 0;
     int hourTo= 0;
     int minuteTo = 0;
+    //marker
+    LatLng selectedMarkerLatLong;
+
+
 
     //string
     String publicCode = "";
@@ -158,6 +166,9 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
         publicSwitch=findViewById(R.id.publicSwitchCreateView);
         publicCodeTextView=findViewById(R.id.publicCodeTextView);
         imageViewCopy=findViewById(R.id.imageViewCopy);
+        locationButton=findViewById(R.id.locationButton);
+        locationButton.setEnabled(false);
+        progressBar = findViewById(R.id.progressBarEventCreate);
         //listeners
         switchImportant.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -206,11 +217,14 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
                 if (isChecked) {
                     mapLayout.setVisibility(View.VISIBLE);
                     gps();
+                    if(mMap!=null){
+                        mMap.clear();
+
+                    }
                 }
                 else {
                     mapLayout.setVisibility(View.GONE);
-
-
+                    selectedMarkerLatLong=null;
                 }
             }
         });
@@ -394,6 +408,11 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
             }
         });
 
+        //location manager initialization
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        //setup google maps
+        setupMap();
+
         if(calendarEntry != null){
             editTextTitle.setText(calendarEntry.getTitle());
             if(calendarEntry.getDescription().length()!=0){
@@ -430,6 +449,15 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
                 publicCode=calendarEntry.getPublicCode();
                 publicSwitch.setChecked(true);
             }
+            if(calendarEntry.getPublicCode().length()!=0){
+                publicCode=calendarEntry.getPublicCode();
+                publicSwitch.setChecked(true);
+            }
+            if(calendarEntry.getLocationLat()!=0 && calendarEntry.getLocationLong()!=0){
+                locationSwitch.setChecked(true);
+                selectedMarkerLatLong=new LatLng(calendarEntry.getLocationLat(),calendarEntry.getLocationLong());
+            }
+
 
             switchImportant.setChecked(calendarEntry.isImportant());
             switchPhotoId.setChecked(calendarEntry.isRequireIdScan());
@@ -467,24 +495,25 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
             }
         }
 
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
 
-        //location manager initialization
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+
     }
 
     public void checkCreate(View view) {
         //check if any of the fields are empty
-        if ((editTextTitle.getText().toString().trim().length()==0 || editTextDate.getText().toString().trim().length()==0)  || ((editTextTo.getText().toString().trim().length()==0 || editTextFrom.getText().toString().trim().length()==0)&& spinnerType.getSelectedItemPosition()==calendarEntry.TYPE_EVENT))
+        if ((editTextTitle.getText().toString().trim().length()==0 || editTextDate.getText().toString().trim().length()==0)  || ((editTextTo.getText().toString().trim().length()==0 || editTextFrom.getText().toString().trim().length()==0) && spinnerType.getSelectedItemPosition()==calendarEntry.TYPE_EVENT))
         {
             //inform the user that all the fields are required
             Toast.makeText(this,getString(R.string.toast_fill_warning),Toast.LENGTH_LONG).show();
         }
-        else
+        else if(locationSwitch.isChecked() && selectedMarkerLatLong == null)
         {
+            //inform the user that all the fields are required
+            Toast.makeText(this,getString(R.string.location_warning),Toast.LENGTH_LONG).show();
+        }
+        else
+          {
             Long dateMillis = Long.parseLong(editTextDate.getTag().toString());
             Long timeFromMillis = (hourFrom*60+minuteFrom)*60000l;
             Long timeToMillis = (hourTo*60+minuteTo)*60000l;
@@ -509,9 +538,13 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
                 newCalendarEntry.setDescription(editTextDescription.getText().toString());
             }
             //image Checkbox
-            if(imageBitmap!=null && imageSwitch.isChecked())
-            {
+            if(imageBitmap!=null && imageSwitch.isChecked()) {
                 newCalendarEntry.setBase64Image(ImageUtilities.bitmapToBase64(imageBitmap));
+            }
+            //location Checkbox
+            if(selectedMarkerLatLong!=null && locationSwitch.isChecked()){
+                newCalendarEntry.setLocationLat(selectedMarkerLatLong.latitude);
+                newCalendarEntry.setLocationLong(selectedMarkerLatLong.longitude);
             }
             if(publicSwitch.isChecked()){
                 newCalendarEntry.setPublicCode(publicCode);
@@ -617,26 +650,6 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-            @Override
-            public void onMapClick(@NonNull LatLng latLng) {
-                mMap.clear();
-                mMap.addMarker(new MarkerOptions().position(latLng).
-                        title("New Custom Marker")
-                );
-                mMap.addMarker(new MarkerOptions().position(current_location_marker.getPosition())
-                        .title("Current Location")
-                        .icon(BitmapDescriptorFactory
-                        .defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-                );
-            }
-        });
-
-    }
-
-    @Override
     public void onBackPressed(){
         Intent intent=new Intent();
         intent.putExtra("calendarEntry",calendarEntry);
@@ -659,7 +672,9 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
 
     @Override
     public void onLocationChanged(@NonNull Location location) {
+        locationButton.setEnabled(true);
         LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
+        progressBar.setVisibility(View.GONE);
 
         if (current_location_marker != null)
             current_location_marker.remove();
@@ -672,11 +687,64 @@ public class EventCreatePage extends AppCompatActivity implements OnMapReadyCall
         );
 
         zoomOnCurrentMarker();
+        locationManager.removeUpdates(this);
     }
 
     private void zoomOnCurrentMarker() {
         if (mMap != null && current_location_marker != null) {
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(current_location_marker.getPosition(), 15f), 1000, null);
+        }
+    }
+    public void zoomOnCurrentMarker(View view) {
+        zoomOnCurrentMarker();
+    }
+
+    private void setupMap(){
+        if (mMap == null) {
+            SupportMapFragment mapFragment = (WorkaroundMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+            mapFragment.getMapAsync(new OnMapReadyCallback() {
+                @Override
+                public void onMapReady(GoogleMap googleMap)
+                {
+                    mMap = googleMap;
+                    mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                    mMap.getUiSettings().setZoomControlsEnabled(true);
+
+                    ScrollView mScrollView = findViewById(R.id.scrollMap); //parent scrollview in xml, give your scrollview id value
+                    ((WorkaroundMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
+                            .setListener(new WorkaroundMapFragment.OnTouchListener() {
+                                @Override
+                                public void onTouch()
+                                {
+                                    mScrollView.requestDisallowInterceptTouchEvent(true);
+                                }
+                            });
+
+                    mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                        @Override
+                        public void onMapClick(@NonNull LatLng latLng) {
+                            if(current_location_marker!=null) {
+                                selectedMarkerLatLong = null;
+                                mMap.clear();
+                                mMap.addMarker(new MarkerOptions().position(latLng).
+                                        title("New Custom Marker")
+                                );
+                                selectedMarkerLatLong = latLng;
+                                mMap.addMarker(new MarkerOptions().position(current_location_marker.getPosition())
+                                        .title(getString(R.string.event_current_location))
+                                        .icon(BitmapDescriptorFactory
+                                                .defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                                );
+                            }
+                        }
+                    });
+                    if (selectedMarkerLatLong!=null){
+                        mMap.addMarker(new MarkerOptions().position(selectedMarkerLatLong).
+                                title("New Custom Marker")
+                        );
+                    }
+                }
+            });
         }
     }
 }

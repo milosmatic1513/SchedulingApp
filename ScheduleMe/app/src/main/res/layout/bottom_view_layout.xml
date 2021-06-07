@@ -139,6 +139,7 @@
                         android:textSize="14sp" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/timeConstrainViewBottomView"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:paddingStart="0dp"
@@ -257,7 +258,7 @@
                     android:paddingStart="20dp"
                     android:paddingRight="20dp"
                     android:paddingBottom="30dp"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <TextView
                         android:id="@+id/textView9"
@@ -268,7 +269,17 @@
                         android:text="@string/location"
                         android:textColor="@color/black"
                         android:textSize="14sp" />
+
+                    <Button
+                        android:id="@+id/showLocationButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="#79c5e7"
+                        android:text="@string/show_location"
+                        android:textAllCaps="false" />
                 </LinearLayout>
+
+
 
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
@@ -303,7 +314,11 @@
                 android:text="Authenticate"
                 android:textColor="#FFFFFF"
                 android:visibility="visible" />
+
+
+
         </LinearLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

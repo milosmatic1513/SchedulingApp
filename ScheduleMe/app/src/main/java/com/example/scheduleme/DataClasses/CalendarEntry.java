@@ -24,10 +24,11 @@ public class CalendarEntry implements Serializable ,Comparable<CalendarEntry> {
     private boolean requireIdScan;
     private int repeating;
     private String base64Image;
+    private double locationLat;
+    private double locationLong;
 
 
-
-    public CalendarEntry(String databaseID,String title,String description,String publicCode,long date,int type,boolean important,boolean requireIdScan,long timeStart,long timeEnd,int repeating, String base64Image) {
+    public CalendarEntry(String databaseID,String title,String description,String publicCode,long date,int type,boolean important,boolean requireIdScan,long timeStart,long timeEnd,int repeating, String base64Image,double locationLat,double locationLong) {
         this.databaseID = databaseID;
         this.title = title;
         this.description = description;
@@ -40,6 +41,8 @@ public class CalendarEntry implements Serializable ,Comparable<CalendarEntry> {
         this.timeEnd = timeEnd;
         this.repeating = repeating;
         this.base64Image = base64Image;
+        this.locationLat=locationLat;
+        this.locationLong=locationLong;
     }
 
     public CalendarEntry() {
@@ -55,6 +58,8 @@ public class CalendarEntry implements Serializable ,Comparable<CalendarEntry> {
         this.timeEnd = 0;
         this.repeating = 0;
         this.base64Image = "";
+        this.locationLat=0;
+        this.locationLong=0;
     }
 
     public String getDatabaseID() {
@@ -150,6 +155,18 @@ public class CalendarEntry implements Serializable ,Comparable<CalendarEntry> {
     public void setBase64Image(String base64Image) {
         this.base64Image = base64Image;
     }
+
+    public double getLocationLat() {
+        return locationLat;
+    }
+
+    public void setLocationLat(double locationLat) { this.locationLat = locationLat; }
+
+    public double getLocationLong() {
+        return locationLong;
+    }
+
+    public void setLocationLong(double locationLong) { this.locationLong = locationLong; }
 
     //Custom functions
     public String getDayOfMonth() {

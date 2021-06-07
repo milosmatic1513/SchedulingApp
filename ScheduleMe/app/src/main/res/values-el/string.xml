@@ -61,6 +61,8 @@
     <string name="event_public">Δημόσιο</string>
     <string name="event_public_code">Δημόσιος κωδικός :</string>
     <string name="event_current_location">Τωρινή τοποθεσία</string>
+    <string name="location_warning">Επίλεξτε τοποθεσία</string>
+    <string name="show_location">Προβολή τοποθεσίας στο GOOGLE MAPS</string>
     <!-- Spinner Values -->
     <string-array name="spinnerItems">
         <item>Καθολόυ</item>

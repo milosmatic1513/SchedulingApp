@@ -21,8 +21,10 @@ public class CalendarEntryBuilder {
     private boolean requireIdScan=false;
     private int repeating;
     private String base64Image;
-    private int protectionLevel=0;
-    public CalendarEntryBuilder(String databaseID, String title, String description,String publicCode, long date, int type, boolean important,boolean requireIdScan, long timeStart, long timeEnd, int repeating, String base64Image)
+    private double locationLat=0;
+    private double locationLong=0;
+
+    public CalendarEntryBuilder(String databaseID, String title, String description,String publicCode, long date, int type, boolean important,boolean requireIdScan, long timeStart, long timeEnd, int repeating, String base64Image,double locationLat,double locationLong)
     {
         this.databaseID = databaseID;
         this.title = title;
@@ -36,7 +38,8 @@ public class CalendarEntryBuilder {
         this.timeEnd = timeEnd;
         this.repeating=repeating;
         this.base64Image = base64Image;
-
+        this.locationLat=locationLat;
+        this.locationLong=locationLong;
     }
     public CalendarEntryBuilder()
     {
@@ -52,6 +55,8 @@ public class CalendarEntryBuilder {
         this.timeEnd = 0;
         this.repeating=0;
         this.base64Image="";
+        this.locationLat=locationLat;
+        this.locationLong=locationLong;
 
     }
     public CalendarEntryBuilder setDatabaseID(String databaseID)
@@ -109,14 +114,26 @@ public class CalendarEntryBuilder {
         this.repeating = repeating;
         return this;
     }
+
     public CalendarEntryBuilder setBase64Image(String base64Image)
     {
         this.base64Image = base64Image;
         return this;
     }
+
+    public CalendarEntryBuilder setLocationLat(double locationLat)
+    {
+        this.locationLat = locationLat;
+        return this;
+    }
+    public CalendarEntryBuilder setLocationLong(double locationLong)
+    {
+        this.locationLong = locationLong;
+        return this;
+    }
     public CalendarEntry build()
     {
-        return new CalendarEntry(databaseID,title,description,publicCode,date,type,important,requireIdScan,timeStart,timeEnd,repeating,base64Image);
+        return new CalendarEntry(databaseID,title,description,publicCode,date,type,important,requireIdScan,timeStart,timeEnd,repeating,base64Image,locationLat,locationLong);
     }
 
 }

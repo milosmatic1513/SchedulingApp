@@ -7,6 +7,7 @@
     <string name="login">Login</string>
     <string name="register">Register</string>
     <string name="toast_incorrect_info_warning">Invalid login information</string>
+    <string name="remember_me">Remember me</string>
     <string name="title_activity_maps">Map</string>
 
     <!-- Register Page -->
@@ -30,6 +31,9 @@
 
     <!-- Activity Main -->
     <string name="authenticated">Authenticated</string>
+    <string name="reminders">Reminders</string>
+    <string name="schedule">Schedule</string>
+
 
     <!-- Activity Profile -->
     <string name="profile">Profile</string>
@@ -48,6 +52,7 @@
     <string name="dialog_change_name_message">New Name</string>
     <string name="dialog_change_name_missing_info">Please fill out all the information</string>
     <string name="dialog_change_name_post">Change</string>
+
     <!-- Event View -->
     <string name="event_name">Event Name</string>
     <string name="event_date">Date :</string>
@@ -62,6 +67,11 @@
     <string name="event_current_location">Current Location</string>
     <string name="location_warning">Please select a location</string>
     <string name="show_location">Show location on GOOGLE MAPS</string>
+    <string name="important">Important</string>
+    <string name="important_id">ID Authentication</string>
+    <string name="authenticate_message">You must be authenticated to view IMPORTANT tasks</string>
+
+
     <!-- Spinner Values -->
     <string-array name="spinnerItems">
         <item>None</item>
@@ -82,7 +92,6 @@
     <string name="sunday">Sunday</string>
     <!-- Side Bar -->
     <string name="schedule_your_day">Schedule your Day</string>
-
     <string name="title_activity_temp">temp</string>
     <string name="nav_header_title">Android Studio</string>
     <string name="nav_header_subtitle">android.studio@android.com</string>

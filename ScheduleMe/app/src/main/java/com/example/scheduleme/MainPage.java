@@ -103,6 +103,10 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Get and set Language
+        String currentLocale = Preferences.getLanguage(this);
+        Preferences.setLocale(this, currentLocale);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_page);
 
@@ -346,20 +350,23 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
         String formattedDateDayOfTheWeek = dfdayOfTheWeek .format(date);
 
         currentDate = date;
+
+        List<CalendarEntry> calendarEntriesFinal = Stream.concat(calendarEntries.stream(), calendarEntriesPublic.stream())
+                .collect(Collectors.toList());
+
         if(selectedViewMode==R.id.daily) {
-            List<CalendarEntry> calendarEntriesFinal = Stream.concat(calendarEntries.stream(), calendarEntriesPublic.stream())
-                    .collect(Collectors.toList());
+
             dailyViewFragment.passData(calendarEntriesFinal);
             dailyViewFragment.updateDate(date,formattedDateDayOfTheWeek);
 
         }
         else if (selectedViewMode==R.id.weekly){
-            weeklyViewFragment.passData(calendarEntries);
+            weeklyViewFragment.passData(calendarEntriesFinal);
             weeklyViewFragment.updateDate(date);
             textViewDateDay.setText("");
         }
         else{
-            dailyAltViewFragment.passData(calendarEntries);
+            dailyAltViewFragment.passData(calendarEntriesFinal);
             dailyAltViewFragment.updateDate(date,formattedDateDayOfTheWeek);
 
         }

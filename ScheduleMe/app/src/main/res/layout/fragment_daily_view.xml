@@ -29,10 +29,11 @@
                     android:layout_margin="10dp"
                     android:background="@drawable/background_rounded"
                     android:backgroundTint="#4056a1"
+                    android:elevation="10dp"
                     android:padding="3dp"
                     android:paddingStart="10dp"
                     android:paddingEnd="10dp"
-                    android:text="Reminders"
+                    android:text="@string/reminders"
                     android:textColor="@color/white" />
 
                 <Switch
@@ -56,10 +57,11 @@
                 android:layout_margin="10dp"
                 android:background="@drawable/background_rounded"
                 android:backgroundTint="#4056a1"
+                android:elevation="10dp"
                 android:padding="3dp"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
-                android:text="Schedule"
+                android:text="@string/schedule"
                 android:textColor="@color/white" />
 
         </LinearLayout>

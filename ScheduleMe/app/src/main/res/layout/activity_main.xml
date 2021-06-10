@@ -100,7 +100,7 @@
             android:layout_marginLeft="20dp"
             android:buttonTint="#605C5C"
             android:foregroundTint="@color/black"
-            android:text="Remember me"
+            android:text="@string/remember_me"
             android:textColor="#605C5C"
             android:textSize="18sp" />
 

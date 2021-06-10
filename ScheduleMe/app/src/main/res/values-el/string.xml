@@ -8,6 +8,7 @@
     <string name="login">Σύνδεση</string>
     <string name="register">Εγγραφή</string>
     <string name="toast_incorrect_info_warning">Λάθος στοιχεία σύνδεσης</string>
+    <string name="remember_me">Θυμήσου με</string>
     <string name="title_activity_maps">Map</string>
 
     <!-- Register Page -->
@@ -17,7 +18,7 @@
     <string name="register_page">Σελίδα εγγραφής</string>
     <string name="toast_fill_warning">Συμπλήστε όλα τα δεδομένα</string>
     <string name="repeat_password">Επιβεβαίωση κωδικού</string>
-    <string name="time_from">Απο της</string>
+    <string name="time_from">Απο της :</string>
     <string name="time_to">Μεχρί της :</string>
     <string name="date">Ημερομηνία</string>
     <string name="description">Περιγραφή</string>
@@ -31,6 +32,8 @@
 
     <!-- Activity Main -->
     <string name="authenticated">Αυθεντικοποιημένος</string>
+    <string name="reminders">Υπενθυμίσεις</string>
+    <string name="schedule">Πρόγραμμα</string>
 
     <!-- Activity Profile -->
     <string name="profile">Προφίλ</string>
@@ -49,6 +52,8 @@
     <string name="dialog_change_name_message">Νέα όνομα</string>
     <string name="dialog_change_name_missing_info">Συμπληρώστε όλες τις πληροφορίες</string>
     <string name="dialog_change_name_post">Αλλαγή</string>
+
+
     <!-- Event View -->
     <string name="event_name">Όνομα :</string>
     <string name="event_date">Ημερομήνια :</string>
@@ -63,6 +68,11 @@
     <string name="event_current_location">Τωρινή τοποθεσία</string>
     <string name="location_warning">Επίλεξτε τοποθεσία</string>
     <string name="show_location">Προβολή τοποθεσίας στο GOOGLE MAPS</string>
+    <string name="important">Σημαντικό</string>
+    <string name="important_id">Αυθεντικοποίηση με Ταυτότητα</string>
+    <string name="authenticate_message">Πρέπει να ειστε αυθεντικοποιημένος για να δείτε ΣΗΜΑΝΤΙΚΑ γεγονότα</string>
+
+
     <!-- Spinner Values -->
     <string-array name="spinnerItems">
         <item>Καθολόυ</item>

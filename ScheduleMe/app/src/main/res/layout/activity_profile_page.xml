@@ -169,7 +169,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
                     android:foregroundTint="#FF0000"
-                    android:text="Require Login Auth"
+                    android:text="@string/require_login_auth"
                     android:textColor="#938A8A"
                     android:textSize="14sp" />
 

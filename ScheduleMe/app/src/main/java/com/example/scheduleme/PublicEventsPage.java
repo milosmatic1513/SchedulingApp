@@ -99,7 +99,7 @@ public class PublicEventsPage extends AppCompatActivity {
                                 taskPublicEvents.setVisibility(View.VISIBLE);
                                 titlePublicEvent.setText(calendarEntry.getTitle());
 
-                                dateViewPublicEvents.setText("Date : " + calendarEntry.getDayOfMonth() + "/" + calendarEntry.getMonth() + "/" + calendarEntry.getYear());
+                                dateViewPublicEvents.setText(getString(R.string.date) + calendarEntry.getDayOfMonth() + "/" + calendarEntry.getMonth() + "/" + calendarEntry.getYear());
                                 if (calendarEntry.getType() == calendarEntry.TYPE_EVENT) {
                                     timeLayoutPublicEvents.setVisibility(View.VISIBLE);
                                     timePublicEvents.setText(calendarEntry.calculateHourFrom() + ":" + calendarEntry.calculateMinuteFrom() + "-" + calendarEntry.calculateHourTo() + ":" + calendarEntry.calculateMinuteTo());

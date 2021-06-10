@@ -36,6 +36,7 @@
         android:elevation="20dp"
         android:gravity="center_vertical"
         android:paddingLeft="40dp"
+        android:paddingRight="40dp"
         android:text="@string/register_page"
         android:textColor="@android:color/white"
         android:textSize="24sp"
@@ -98,7 +99,7 @@
                 android:layout_margin="10dp">
 
                 <EditText
-                    android:id="@+id/password1"
+                    android:id="@+id/textPassword1"
                     android:layout_width="0dp"
                     android:layout_height="43dp"
                     android:width="300dp"
@@ -126,7 +127,7 @@
                     android:onClick="toggleVisibility1"
                     app:icon="@android:drawable/ic_menu_view"
                     app:iconTint="#3E3C3C"
-                    app:layout_constraintEnd_toEndOf="@+id/password1"
+                    app:layout_constraintEnd_toEndOf="@+id/textPassword1"
                     app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -145,7 +146,7 @@
                 android:layout_margin="10dp">
 
                 <EditText
-                    android:id="@+id/password2"
+                    android:id="@+id/textPassword2"
                     android:layout_width="0dp"
                     android:layout_height="43dp"
 
@@ -173,7 +174,7 @@
                     android:onClick="toggleVisibility2"
                     app:icon="@android:drawable/ic_menu_view"
                     app:iconTint="#3E3C3C"
-                    app:layout_constraintEnd_toEndOf="@+id/password2"
+                    app:layout_constraintEnd_toEndOf="@+id/textPassword2"
                     app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 

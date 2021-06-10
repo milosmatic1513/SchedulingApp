@@ -28,7 +28,8 @@ public class RegisterPage extends AppCompatActivity {
     //Firebase
     FirebaseDatabase database;
     FirebaseAuth mAuth;
-
+    //Strings
+    static int FACETEC_ACTIVITY_REQUEST=4;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,8 +37,8 @@ public class RegisterPage extends AppCompatActivity {
 
         //Component Initialisation
         emailText = findViewById(R.id.email);
-        password1Text = findViewById(R.id.password1);
-        password2Text = findViewById(R.id.password2);
+        password1Text = findViewById(R.id.textPassword1);
+        password2Text = findViewById(R.id.textPassword2);
         nameText = findViewById(R.id.name);
 
         //password1 hidden
@@ -100,7 +101,7 @@ public class RegisterPage extends AppCompatActivity {
                             //Redirect to home page
                             Intent intent = new Intent(getApplicationContext(),FacetecAuthentication.class);
                             intent.putExtra("mode",2);
-                            startActivity(intent);
+                            startActivityForResult(intent,FACETEC_ACTIVITY_REQUEST);
                         }
                         else {
                             // If sign in fails, display a message to the user.
@@ -129,6 +130,14 @@ public class RegisterPage extends AppCompatActivity {
         } else {
             password2Text.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
             password2Text.setTag(HIDDEN_TAG_STRING);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==4) {
+           finish();
         }
     }
 }

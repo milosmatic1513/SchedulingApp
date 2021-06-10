@@ -302,7 +302,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
-                android:text="You must be authenticated to view IMPORTANT tasks"
+                android:text="@string/authenticate_message"
                 android:textAlignment="center"
                 android:textSize="18sp" />
 

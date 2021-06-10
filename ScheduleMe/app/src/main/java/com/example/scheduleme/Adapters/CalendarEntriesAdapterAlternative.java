@@ -36,7 +36,9 @@ public class CalendarEntriesAdapterAlternative extends RecyclerView.Adapter<Cale
         public TextView taskTextView;
         public Button moreInfoButton;
         public TextView importantTag;
+        public TextView publicTag;
         public ConstraintLayout constraintLayout;
+
         private WeakReference<MyOnClickListener> listenerRef;
 
 
@@ -46,6 +48,7 @@ public class CalendarEntriesAdapterAlternative extends RecyclerView.Adapter<Cale
             // Stores the itemView in a public final member variable that can be used
             // to access the context from any ViewHolder instance.
             super(itemView);
+            publicTag= (TextView) itemView.findViewById(R.id.publicMarkerAlternative);
             constraintLayout = (ConstraintLayout)itemView.findViewById(R.id.constaintLayoutAlternative);
             taskTextView = (TextView) itemView.findViewById(R.id.eventNameTextAlternative);
             moreInfoButton = (Button) itemView.findViewById(R.id.moreInfoButton);
@@ -87,6 +90,9 @@ public class CalendarEntriesAdapterAlternative extends RecyclerView.Adapter<Cale
 
         if(!calendarEntry.isImportant()) {
             holder.importantTag.setVisibility(View.INVISIBLE);
+        }
+        if(calendarEntry.getPublicCode().length()!=0){
+            holder.publicTag.setVisibility(View.VISIBLE);
         }
 
         //calculate hours

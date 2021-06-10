@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.scheduleme.DataClasses.CalendarEntry;
 import com.example.scheduleme.DataClasses.Preferences;
 import com.example.scheduleme.DataClasses.User;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -49,12 +50,12 @@ public class MainActivity extends AppCompatActivity {
     static String HIDDEN_TAG_STRING = "hidden";
     SharedPreferences sharedPreferences;
 
-    String currentLocale;
+
+    FirebaseUser currentUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         //Get and set Language
-        currentLocale = Preferences.getLanguage(this);
+        String currentLocale = Preferences.getLanguage(this);
         Preferences.setLocale(this, currentLocale);
 
         super.onCreate(savedInstanceState);
@@ -146,37 +147,10 @@ public class MainActivity extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 progressBar.setVisibility(View.VISIBLE);
                                 // Sign in success, update UI with the signed-in user's information
-                                FirebaseUser currentUser;
-                                currentUser = mAuth.getCurrentUser();
-                                if(currentUser!=null) {
-                                    DatabaseReference myRef = database.getReference("Users/" + currentUser.getUid() + "/UserInfo");
-                                    myRef.addValueEventListener(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                            progressBar.setVisibility(View.INVISIBLE);
-                                            User user = snapshot.getValue(User.class);
-                                            if(user!=null)
-                                            {
-                                                if (user.isLoginAuth())
-                                                {
-                                                    Intent intent = new Intent(getApplicationContext(), FacetecAuthentication.class);
-                                                    intent.putExtra("mode",1);
-                                                    startActivity(intent);
-                                                }
-                                                else {
-                                                    Intent intent = new Intent(getApplicationContext(), MainPage.class);
-                                                    startActivity(intent);
-                                                }
-                                            }
-                                        }
+                                logIn();
 
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError error) {
-                                            progressBar.setVisibility(View.INVISIBLE);
-                                        }
-                                    });
                                     //Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_SHORT).show();
-                                }
+
 
                             }
                             else {
@@ -193,5 +167,43 @@ public class MainActivity extends AppCompatActivity {
     public void register(View view) {
         startActivity(new Intent(getApplicationContext(), RegisterPage.class));
     }
+
+    public void onStart() {
+        super.onStart();
+        logIn();
+    }
+
+    private void  logIn(){
+        currentUser = mAuth.getCurrentUser();
+        if(currentUser!=null) {
+            DatabaseReference myRef = database.getReference("Users/" + currentUser.getUid() + "/UserInfo");
+            myRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    progressBar.setVisibility(View.INVISIBLE);
+                    User user = snapshot.getValue(User.class);
+                    if(user!=null)
+                    {
+                        if (user.isLoginAuth())
+                        {
+                            Intent intent = new Intent(getApplicationContext(), FacetecAuthentication.class);
+                            intent.putExtra("mode",1);
+                            startActivity(intent);
+                        }
+                        else {
+                            Intent intent = new Intent(getApplicationContext(), MainPage.class);
+                            startActivity(intent);
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    progressBar.setVisibility(View.INVISIBLE);
+                }
+            });
+        }
+    }
+
 
 }

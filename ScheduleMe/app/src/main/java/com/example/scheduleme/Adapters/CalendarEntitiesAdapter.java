@@ -88,8 +88,6 @@ public class CalendarEntitiesAdapter extends RecyclerView.Adapter<CalendarEntiti
         // Get the data model based on position
         CalendarEntry calendarEntry = calendarEntries.get(position);
 
-        Button moreInfoButton = holder.moreInfoButton;
-
         // Set item views based on your views and data model
         TextView titleTextView = holder.taskTextView;
         ImageView imageView=holder.timeImageView;
@@ -117,7 +115,6 @@ public class CalendarEntitiesAdapter extends RecyclerView.Adapter<CalendarEntiti
             holder.idImageView.setVisibility(View.INVISIBLE);
         }
         if(calendarEntry.getType()==CalendarEntry.TYPE_REMINDER){
-           // holder.constraintLayout.getBackground().setTint(Color.parseColor("#2980b9"));
             holder.cardView.setCardBackgroundColor(Color.parseColor("#2980b9"));
             holder.taskTextView.setTextColor(Color.parseColor("#FFFFFF"));
         }

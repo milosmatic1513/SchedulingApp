@@ -5,10 +5,16 @@
     <!-- Main Activity -->
     <string name="authentication_failed">Authentication failed</string>
     <string name="login">Login</string>
-    <string name="register">Register</string>
+    <string name="register"><u>Create a new Account</u></string>
+    <string name="register_alt">Register</string>
     <string name="toast_incorrect_info_warning">Invalid login information</string>
     <string name="remember_me">Remember me</string>
     <string name="title_activity_maps">Map</string>
+    <string name="forgot_password"><u>I forgot my password</u></string>
+    <string name="sign_in">Sign in</string>
+    <string name="or">or</string>
+    <string name="sign_in_with_google">Sign in with Google</string>
+    <string name="sign_in_with_facebook">Sign in with Facebook</string>
 
     <!-- Register Page -->
     <string name="title">Title</string>
@@ -33,7 +39,7 @@
     <string name="authenticated">Authenticated</string>
     <string name="reminders">Reminders</string>
     <string name="schedule">Schedule</string>
-
+    <string name="internet_disabled">Internet is disabled</string>
 
     <!-- Activity Profile -->
     <string name="profile">Profile</string>
@@ -70,7 +76,11 @@
     <string name="important">Important</string>
     <string name="important_id">ID Authentication</string>
     <string name="authenticate_message">You must be authenticated to view IMPORTANT tasks</string>
-
+    <string name="reminder_time">Remind me</string>Reminder
+    <string name="gps_location">Your GPS seems to be disabled, do you want to enable it?</string>
+    <string name="reminder">Reminder</string>
+    <string name="copied_to_clipboard">Coppied to Clipboard</string>
+    <string name="reminder_warning">Reminder only allowed for events</string>
 
     <!-- Spinner Values -->
     <string-array name="spinnerItems">
@@ -81,6 +91,13 @@
     <string-array name="spinnerItemsType">
         <item>Event</item>
         <item>Reminder</item>
+    </string-array>
+    <string-array name="reminderTimes">
+        <item>five minutes before</item>
+        <item>ten minutes before</item>
+        <item>fifteen minutes before</item>
+        <item>thirty minutes before</item>
+        <item>one hour before</item>
     </string-array>
     <!-- Day Values -->
     <string name="monday">Monday</string>

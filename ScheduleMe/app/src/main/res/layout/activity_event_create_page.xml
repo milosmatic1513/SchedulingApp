@@ -283,7 +283,7 @@
 
                     <Spinner
                         android:id="@+id/spinner"
-                        android:layout_width="162dp"
+                        android:layout_width="160dp"
                         android:layout_height="wrap_content"
                         android:background="@drawable/background_rounded"
                         android:backgroundTint="@color/background_color"
@@ -297,6 +297,46 @@
                         tools:listitem="item" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <Switch
+                    android:id="@+id/reminderSwitch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:text="@string/reminder" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraintLayoutReminderTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/textView42"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:text="@string/reminder_time"
+                        android:textColor="@color/black"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <Spinner
+                        android:id="@+id/spinnerReminderTime"
+                        android:layout_width="160dp"
+                        android:layout_height="0dp"
+                        android:background="@drawable/background_rounded"
+                        android:backgroundTint="@color/background_color"
+                        android:entries="@array/reminderTimes"
+                        android:textAlignment="center"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
             </LinearLayout>
 
             <LinearLayout

@@ -17,6 +17,8 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -38,7 +40,9 @@ import com.example.scheduleme.FragmentControllers.DailyViewFragment;
 import com.example.scheduleme.FragmentControllers.DailyViewFragmentAlternative;
 import com.example.scheduleme.FragmentControllers.WeeklyViewFragment;
 import com.example.scheduleme.Utilities.ImageUtilities;
+import com.example.scheduleme.Utilities.NetworkUtilities;
 import com.example.scheduleme.Utilities.RandomStringGenerator;
+import com.example.scheduleme.Utilities.ReminderUtilities;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
@@ -100,7 +104,8 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
     DailyViewFragment dailyViewFragment;
     WeeklyViewFragment weeklyViewFragment;
     DailyViewFragmentAlternative dailyAltViewFragment;
-
+    //reminders
+    ReminderUtilities reminderUtilities;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //Get and set Language
@@ -211,11 +216,53 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
 
                     calendarEntries = new ArrayList<>();
 
-
-                    for(DataSnapshot dataSnapshotChild : dataSnapshot.getChildren())
-                    {
+                    int index=0;
+                    reminderUtilities.clearNotifications();
+                    reminderUtilities.clearAllAlarms();
+                    for(DataSnapshot dataSnapshotChild : dataSnapshot.getChildren()) {
                         CalendarEntry databaseCalendarEntry = dataSnapshotChild.getValue(CalendarEntry.class);
                         databaseCalendarEntry.setDatabaseID(dataSnapshotChild.getRef().getKey());
+                        if(databaseCalendarEntry.getReminder() && databaseCalendarEntry.getDate()+databaseCalendarEntry.getTimeStart()>System.currentTimeMillis()){
+                            if(index>=10){
+                                Toast.makeText(getApplicationContext(),"ScheduleME only Supports 10 reminder notification please delete some",Toast.LENGTH_SHORT).show();
+                            }else{
+                                String calendarEntryTime = databaseCalendarEntry.calculateHourFrom()+":"+databaseCalendarEntry.calculateMinuteFrom()+" - "+databaseCalendarEntry.calculateHourTo()+":"+databaseCalendarEntry.calculateMinuteTo();
+
+                                if(databaseCalendarEntry.getRepeating()==databaseCalendarEntry.REPEATING_NONE){
+                                    reminderUtilities.startAlarm(databaseCalendarEntry.getTitle(),calendarEntryTime,index,databaseCalendarEntry.getDate()+databaseCalendarEntry.getTimeStart(),databaseCalendarEntry.getReminderTime());
+                                    index++;
+                                }
+                                else if(databaseCalendarEntry.getRepeating()==databaseCalendarEntry.REPEATING_DAILY){
+                                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                                    Date dateParsed;
+                                    try {
+                                        dateParsed = sdf.parse(Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + "/" + (Calendar.getInstance().get(Calendar.MONTH) + 1) + "/" + Calendar.getInstance().get(Calendar.YEAR) + " 00:00");
+                                        reminderUtilities.startAlarm(databaseCalendarEntry.getTitle(),calendarEntryTime,index,dateParsed.getTime()+databaseCalendarEntry.getTimeStart(),databaseCalendarEntry.getReminderTime());
+                                        index++;
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                    }
+
+
+                                }
+                                else if(databaseCalendarEntry.getRepeating()==databaseCalendarEntry.REPEATING_WEEKLY){
+                                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                                        Date dateParsed;
+                                        try {
+                                            dateParsed = sdf.parse(Calendar.getInstance().get(Calendar.DAY_OF_MONTH) + "/" + (Calendar.getInstance().get(Calendar.MONTH) + 1) + "/" + Calendar.getInstance().get(Calendar.YEAR) + " 00:00");
+                                            SimpleDateFormat dfdayOfTheWeek = new SimpleDateFormat("E", Locale.getDefault());
+                                            String formattedDateDayOfTheWeek = dfdayOfTheWeek .format(dateParsed);
+                                            if(formattedDateDayOfTheWeek.equalsIgnoreCase(databaseCalendarEntry.getDayOfWeek())){
+                                                reminderUtilities.startAlarm(databaseCalendarEntry.getTitle(),calendarEntryTime,index,dateParsed.getTime()+databaseCalendarEntry.getTimeStart(),databaseCalendarEntry.getReminderTime());
+                                                index++;
+                                            }
+                                        } catch (ParseException e) {
+                                            e.printStackTrace();
+                                        }
+                                }
+
+                            }
+                        }
                         calendarEntries.add(databaseCalendarEntry);
 
                     }
@@ -266,6 +313,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
                                     if(calendarEntriesPublic.stream().filter(o -> o.getDatabaseID().equalsIgnoreCase(calendarEntry.getDatabaseID())).findFirst().isPresent());
                                     {
                                         calendarEntriesPublic.removeIf(o -> o.getDatabaseID().equalsIgnoreCase(calendarEntry.getDatabaseID()));
+                                        calendarEntry.setReminder(false);
                                         calendarEntriesPublic.add(calendarEntry);
                                     }
 
@@ -301,6 +349,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
         ft.replace(R.id.frameLayout, dailyViewFragment);
         ft.commit();
 
+        reminderUtilities = new ReminderUtilities(this);
     }
 
     public void logout(View view) {
@@ -314,9 +363,14 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
     }
 
     public void createEvent(View view) {
-        Intent intent = new Intent(getApplicationContext(),EventCreatePage.class);
-        intent.putExtra("Date",getDate());
-        startActivity(intent);
+        if(NetworkUtilities.isNetworkAvailable(this)){
+            Intent intent = new Intent(getApplicationContext(),EventCreatePage.class);
+            intent.putExtra("Date",getDate());
+            startActivity(intent);
+        }
+        else{
+            Toast.makeText(this,getString(R.string.internet_disabled),Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void idProcessor(View view) {
@@ -439,7 +493,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
         TextView textViewRepeating = bottomSheetDialog.findViewById(R.id.repeatingPublicEvents);
         TextView descriptionEditText = bottomSheetDialog.findViewById(R.id.descriptionEditText);
         TextView publicCodeBottomView=bottomSheetDialog.findViewById(R.id.publicCodeBottomView);
-
+        TextView reminderTimeTag = bottomSheetDialog.findViewById(R.id.reminderTimeTag);
         LinearLayout descriptionBox=bottomSheetDialog.findViewById(R.id.descriptionBoxBottomView);
         LinearLayout imageBox=bottomSheetDialog.findViewById(R.id.imageBoxBottomView);
         LinearLayout authenticateLayout=bottomSheetDialog.findViewById(R.id.authenticateLayout);
@@ -501,8 +555,8 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
                         ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                         ClipData clip = ClipData.newPlainText("Public Code", calendarEntry.getPublicCode());
                         clipboard.setPrimaryClip(clip);
-                        Snackbar snackbar = Snackbar.make(findViewById(R.id.drawer_layout), "Copied to clipboard", Snackbar.LENGTH_SHORT);
-                        snackbar.show();
+                        Toast.makeText(getApplicationContext(), getString(R.string.copied_to_clipboard),Toast.LENGTH_SHORT).show();
+
                     }
                 });
             }
@@ -513,10 +567,15 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
             buttonEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    bottomSheetDialog.dismiss();
-                    Intent intent = new Intent(MainPage.this, EventCreatePage.class);
-                    intent.putExtra("task", calendarEntry);
-                    startActivityForResult(intent, EDIT_ACTIVITY_REQUEST);
+                    if(NetworkUtilities.isNetworkAvailable(getApplicationContext())) {
+                        bottomSheetDialog.dismiss();
+                        Intent intent = new Intent(MainPage.this, EventCreatePage.class);
+                        intent.putExtra("task", calendarEntry);
+                        startActivityForResult(intent, EDIT_ACTIVITY_REQUEST);
+                    }
+                    else{
+                        Toast.makeText(getApplicationContext(),getString(R.string.internet_disabled),Toast.LENGTH_SHORT).show();
+                    }
 
                 }
             });
@@ -542,7 +601,15 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
                     deleteFromDatabase(calendarEntry.getDatabaseID(), calendarEntry);
                 }
             });
+            if(calendarEntry.getReminder()){
+                reminderTimeTag.setVisibility(View.VISIBLE);
+                String[] reminderTimes = getResources().getStringArray(R.array.reminderTimes);
+                reminderTimeTag.setText(getString(R.string.reminder)+" "+reminderTimes[calendarEntry.getReminderTime()]);
+            }
+            else{
+                reminderTimeTag.setVisibility(View.GONE);
 
+            }
         }
         else{
             authenticateLayout.setVisibility(View.VISIBLE);
@@ -647,33 +714,37 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
     //fragment functions
     public void deleteFromDatabase(String databaseId,CalendarEntry calendarEntry){
         //Remove swiped item from list and notify the RecyclerView
+        if(NetworkUtilities.isNetworkAvailable(getApplicationContext())) {
+            if (calendarEntry.getDatabaseID().contains("TasksReferences")) {
+                DatabaseReference myRef = database.getReference(calendarEntry.getDatabaseID());
+                myRef.removeValue();
+            } else {
+                lastDeletedItem = calendarEntry;
+                DatabaseReference myRef = database.getReference("Users/" + currentUser.getUid() + "/Tasks/" + databaseId);
 
-        if(calendarEntry.getDatabaseID().contains("TasksReferences")){
-            DatabaseReference myRef = database.getReference(calendarEntry.getDatabaseID());
-            myRef.removeValue();
-        }
-        else {
-            lastDeletedItem = calendarEntry;
-            DatabaseReference myRef = database.getReference("Users/" + currentUser.getUid() + "/Tasks/" + databaseId);
-
-            if(calendarEntry.getPublicCode().length()!=0){
-                DatabaseReference myRefShared = database.getReference("PublicEvents/" + calendarEntry.getPublicCode());
-                myRefShared.removeValue();
-            }
-
-
-            Snackbar snackbar = Snackbar.make(findViewById(R.id.drawer_layout), "Item " + calendarEntry.getTitle() + " Deleted ", Snackbar.LENGTH_SHORT);
-            snackbar.setAction("UNDO", new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    myRef.setValue(lastDeletedItem);
-                    calendarEntries.add(lastDeletedItem);
-                    lastDeletedItem = null;
-
+                if (calendarEntry.getPublicCode().length() != 0) {
+                    DatabaseReference myRefShared = database.getReference("PublicEvents/" + calendarEntry.getPublicCode());
+                    myRefShared.removeValue();
                 }
-            });
-            myRef.removeValue();
-            snackbar.show();
+
+
+                Snackbar snackbar = Snackbar.make(findViewById(R.id.drawer_layout), "Item " + calendarEntry.getTitle() + " Deleted ", Snackbar.LENGTH_SHORT);
+                snackbar.setAction("UNDO", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        myRef.setValue(lastDeletedItem);
+                        calendarEntries.add(lastDeletedItem);
+                        lastDeletedItem = null;
+
+                    }
+                });
+                myRef.removeValue();
+                snackbar.show();
+            }
+        }
+        else{
+            Toast.makeText(this,getString(R.string.internet_disabled),Toast.LENGTH_SHORT).show();
+            updateDate(currentDate);
         }
     }
     @Override
@@ -739,4 +810,5 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
         DatabaseReference databaseReference = database.getReference("Users/"+currentUser.getUid()+"/TasksReferences/"+key);
         databaseReference.removeValue();
     }
+
 }

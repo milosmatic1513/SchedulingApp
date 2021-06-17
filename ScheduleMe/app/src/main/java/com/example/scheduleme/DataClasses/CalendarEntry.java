@@ -12,6 +12,15 @@ import java.util.Locale;
 public class CalendarEntry implements Serializable ,Comparable<CalendarEntry> {
     public static int TYPE_EVENT=0;
     public static int TYPE_REMINDER=1;
+    public static int REPEATING_NONE=0;
+    public static int REPEATING_DAILY=1;
+    public static int REPEATING_WEEKLY=2;
+    public static int REMINDER_TIME_FIVE_MINUTES=0;
+    public static int REMINDER_TIME_TEN_MINUTES=1;
+    public static int REMINDER_TIME_FIFTEEN_MINUTES=2;
+    public static int REMINDER_TIME_THIRTY_MINUTES=3;
+    public static int REMINDER_TIME_ONE_HOUR=4;
+
     private String databaseID;
     private String title;
     private String description;
@@ -26,9 +35,9 @@ public class CalendarEntry implements Serializable ,Comparable<CalendarEntry> {
     private String base64Image;
     private double locationLat;
     private double locationLong;
-
-
-    public CalendarEntry(String databaseID,String title,String description,String publicCode,long date,int type,boolean important,boolean requireIdScan,long timeStart,long timeEnd,int repeating, String base64Image,double locationLat,double locationLong) {
+    private boolean reminder;
+    private int reminderTime;
+    public CalendarEntry(String databaseID,String title,String description,String publicCode,long date,int type,boolean important,boolean requireIdScan,long timeStart,long timeEnd,int repeating, String base64Image,double locationLat,double locationLong,boolean reminder,int reminderTime) {
         this.databaseID = databaseID;
         this.title = title;
         this.description = description;
@@ -43,6 +52,9 @@ public class CalendarEntry implements Serializable ,Comparable<CalendarEntry> {
         this.base64Image = base64Image;
         this.locationLat=locationLat;
         this.locationLong=locationLong;
+        this.reminder=reminder;
+        this.reminderTime=reminderTime;
+
     }
 
     public CalendarEntry() {
@@ -60,6 +72,8 @@ public class CalendarEntry implements Serializable ,Comparable<CalendarEntry> {
         this.base64Image = "";
         this.locationLat=0;
         this.locationLong=0;
+        this.reminder=false;
+        this.reminderTime=REMINDER_TIME_FIVE_MINUTES;
     }
 
     public String getDatabaseID() {
@@ -168,6 +182,20 @@ public class CalendarEntry implements Serializable ,Comparable<CalendarEntry> {
 
     public void setLocationLong(double locationLong) { this.locationLong = locationLong; }
 
+    public boolean getReminder() {
+        return reminder;
+    }
+
+    public void setReminder(boolean reminder) {
+        this.reminder = reminder; }
+
+    public int getReminderTime() {
+        return reminderTime;
+    }
+
+    public void setReminderTime(int reminderTime) {
+        this.reminderTime = reminderTime;
+    }
     //Custom functions
     public String getDayOfMonth() {
         SimpleDateFormat dfday = new SimpleDateFormat("dd", Locale.getDefault());
@@ -180,7 +208,6 @@ public class CalendarEntry implements Serializable ,Comparable<CalendarEntry> {
         String formattedDateDayOfTheWeek = dfdayOfTheWeek .format(date);
         return formattedDateDayOfTheWeek;
     }
-
     public String getMonth() {
         SimpleDateFormat dfmonth = new SimpleDateFormat("MMM", Locale.getDefault());
         String formattedDateMonth = dfmonth.format(date);
@@ -199,8 +226,7 @@ public class CalendarEntry implements Serializable ,Comparable<CalendarEntry> {
         return formattedDateYear;
     }
 
-    public String calculateHourFrom()
-    {
+    public String calculateHourFrom() {
         SimpleDateFormat dfHourFrom = new SimpleDateFormat("k", Locale.getDefault());
         String formattedHourFrom = dfHourFrom.format(date+timeStart);
 
@@ -210,16 +236,16 @@ public class CalendarEntry implements Serializable ,Comparable<CalendarEntry> {
 
         return formattedHourFrom;
     }
-    public String calculateMinuteFrom()
-    {
+
+    public String calculateMinuteFrom() {
         SimpleDateFormat dfMinuteFrom = new SimpleDateFormat("m", Locale.getDefault());
         String formattedMinuteFrom = dfMinuteFrom.format(date+timeStart);
         if(formattedMinuteFrom.length()==1) formattedMinuteFrom="0"+formattedMinuteFrom;
 
         return formattedMinuteFrom;
     }
-    public String calculateHourTo()
-    {
+
+    public String calculateHourTo() {
         SimpleDateFormat dfHourTo = new SimpleDateFormat("k", Locale.getDefault());
         String formattedHourTo = dfHourTo.format(date+timeEnd);
 
@@ -229,8 +255,8 @@ public class CalendarEntry implements Serializable ,Comparable<CalendarEntry> {
 
         return formattedHourTo;
     }
-    public String calculateMinuteTo()
-    {
+
+    public String calculateMinuteTo() {
         SimpleDateFormat dfMinuteTo = new SimpleDateFormat("m", Locale.getDefault());
         String formattedMinuteTo = dfMinuteTo.format(date+timeEnd);
 

@@ -7,14 +7,18 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
@@ -43,6 +47,7 @@ import android.widget.Toast;
 
 import com.example.scheduleme.DataClasses.CalendarEntry;
 import com.example.scheduleme.DataClasses.CalendarEntryBuilder;
+import com.example.scheduleme.DataClasses.Preferences;
 import com.example.scheduleme.Utilities.ImageUtilities;
 import com.example.scheduleme.Utilities.RandomStringGenerator;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -86,12 +91,15 @@ public class EventCreatePage extends AppCompatActivity implements LocationListen
 
     Spinner spinnerRepeat;
     Spinner spinnerType;
+    Spinner spinnerReminderTime;
+
     Switch switchImportant;
     Switch switchPhotoId;
     Switch descriptionSwitch;
     Switch imageSwitch;
     Switch locationSwitch;
     Switch publicSwitch;
+    Switch reminderSwitch;
 
     CalendarEntry calendarEntry;
     Date date;
@@ -109,8 +117,10 @@ public class EventCreatePage extends AppCompatActivity implements LocationListen
     LinearLayout mapLayout;
     ConstraintLayout timeConstraintLayout;
     ConstraintLayout constraintLayoutPublic;
+    ConstraintLayout constraintLayoutReminderTime;
     private final int RESULT_LOAD_IMG = 155;
     private final int RESULT_TAKE_PHOTO = 156;
+    private final int RESULT_TURN_ON_LOCATION= 157;
     Bitmap imageBitmap = null;
 
     LocationManager locationManager;
@@ -122,13 +132,13 @@ public class EventCreatePage extends AppCompatActivity implements LocationListen
     int minuteTo = 0;
     //marker
     LatLng selectedMarkerLatLong;
-
-
-
     //string
     String publicCode = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Get and set Language
+        String currentLocale = Preferences.getLanguage(this);
+        Preferences.setLocale(this, currentLocale);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_create_page);
@@ -169,6 +179,9 @@ public class EventCreatePage extends AppCompatActivity implements LocationListen
         locationButton=findViewById(R.id.locationButton);
         locationButton.setEnabled(false);
         progressBar = findViewById(R.id.progressBarEventCreate);
+        reminderSwitch=findViewById(R.id.reminderSwitch);
+        constraintLayoutReminderTime=findViewById(R.id.constraintLayoutReminderTime);
+        spinnerReminderTime=findViewById(R.id.spinnerReminderTime);
         //listeners
         switchImportant.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -182,6 +195,7 @@ public class EventCreatePage extends AppCompatActivity implements LocationListen
                 }
             }
         });
+
         descriptionSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -195,6 +209,7 @@ public class EventCreatePage extends AppCompatActivity implements LocationListen
                 }
             }
         });
+
         imageSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -211,6 +226,7 @@ public class EventCreatePage extends AppCompatActivity implements LocationListen
                 }
             }
         });
+
         locationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -228,6 +244,7 @@ public class EventCreatePage extends AppCompatActivity implements LocationListen
                 }
             }
         });
+
         editTextFrom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -371,6 +388,7 @@ public class EventCreatePage extends AppCompatActivity implements LocationListen
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if(position==CalendarEntry.TYPE_REMINDER) {
                     timeConstraintLayout.setVisibility(View.GONE);
+                    reminderSwitch.setChecked(false);
                 }
                 else{
                     timeConstraintLayout.setVisibility(View.VISIBLE);
@@ -396,13 +414,31 @@ public class EventCreatePage extends AppCompatActivity implements LocationListen
                             ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                             ClipData clip = ClipData.newPlainText("Public Code", publicCode);
                             clipboard.setPrimaryClip(clip);
-                            Snackbar snackbar = Snackbar.make(findViewById(R.id.constraintLayoutEventCreate), "Copied to clipboard", Snackbar.LENGTH_SHORT);
-                            snackbar.show();
+                            Toast.makeText(getApplicationContext(), getString(R.string.copied_to_clipboard),Toast.LENGTH_SHORT).show();
+
                         }
                     });
                 }
                 else{
                     constraintLayoutPublic.setVisibility(View.GONE);
+
+                }
+            }
+        });
+
+        reminderSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    if(spinnerType.getSelectedItemPosition()==CalendarEntry.TYPE_REMINDER){
+                        reminderSwitch.setChecked(false);
+                        Toast.makeText(getApplication(),getString(R.string.reminder_warning),Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        constraintLayoutReminderTime.setVisibility(View.VISIBLE);
+                    }
+                }else{
+                    constraintLayoutReminderTime.setVisibility(View.GONE);
 
                 }
             }
@@ -461,6 +497,8 @@ public class EventCreatePage extends AppCompatActivity implements LocationListen
 
             switchImportant.setChecked(calendarEntry.isImportant());
             switchPhotoId.setChecked(calendarEntry.isRequireIdScan());
+            reminderSwitch.setChecked(calendarEntry.getReminder());
+            spinnerReminderTime.setSelection(calendarEntry.getReminderTime());
             spinnerRepeat.setSelection(calendarEntry.getRepeating());
             spinnerType.setSelection(calendarEntry.getType());
             editTextDate.setText(calendarEntry.getDayOfMonth()+"/"+calendarEntry.getMonthNumeric()+"/"+calendarEntry.getYear());
@@ -471,6 +509,7 @@ public class EventCreatePage extends AppCompatActivity implements LocationListen
             editTextTo.setText(calendarEntry.calculateHourTo()+":"+calendarEntry.calculateMinuteTo());
             hourTo=Integer.parseInt(calendarEntry.calculateHourTo());
             minuteTo=Integer.parseInt(calendarEntry.calculateMinuteTo());
+
         }
         else{
             if (date!=null) {
@@ -525,8 +564,8 @@ public class EventCreatePage extends AppCompatActivity implements LocationListen
                                             .setDate(dateMillis)
                                             .setRepeating(spinnerRepeat.getSelectedItemPosition())
                                             .setType(spinnerType.getSelectedItemPosition())
+                                            .setReminder(reminderSwitch.isChecked())
                                             .build();
-
             //time set
             if(spinnerType.getSelectedItemPosition() == CalendarEntry.TYPE_EVENT ){
                  newCalendarEntry.setTimeStart(timeFromMillis);
@@ -549,7 +588,10 @@ public class EventCreatePage extends AppCompatActivity implements LocationListen
             if(publicSwitch.isChecked()){
                 newCalendarEntry.setPublicCode(publicCode);
             }
+            if(reminderSwitch.isChecked()){
+                newCalendarEntry.setReminderTime(spinnerReminderTime.getSelectedItemPosition());
 
+            }
             if(calendarEntry==null) {
                 DatabaseReference myRef = database.getReference("Users/" + currentUser.getUid() + "/Tasks/").push();
                 myRef.setValue(newCalendarEntry);
@@ -647,6 +689,9 @@ public class EventCreatePage extends AppCompatActivity implements LocationListen
                 Toast.makeText(EventCreatePage.this, R.string.failure_taking_picture,Toast.LENGTH_LONG).show();
             }
         }
+        else if (reqCode==RESULT_TURN_ON_LOCATION){
+            gps();
+        }
     }
 
     @Override
@@ -660,13 +705,18 @@ public class EventCreatePage extends AppCompatActivity implements LocationListen
     private void gps() {
         //Gps Function
         //Handles location tracking start = true : location is updated , start = false location is not updated
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 234);
-            return;
+        if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                    ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 234);
+                return;
+            }
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, this);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 0, this);
         }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0,this);
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 0,this);
+        else{
+            buildAlertMessageNoGps();
+        }
 
     }
 
@@ -695,6 +745,7 @@ public class EventCreatePage extends AppCompatActivity implements LocationListen
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(current_location_marker.getPosition(), 15f), 1000, null);
         }
     }
+
     public void zoomOnCurrentMarker(View view) {
         zoomOnCurrentMarker();
     }
@@ -747,4 +798,23 @@ public class EventCreatePage extends AppCompatActivity implements LocationListen
             });
         }
     }
+
+    private void buildAlertMessageNoGps() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(getString(R.string.gps_location))
+                .setCancelable(false)
+                .setPositiveButton(getString(R.string.dialog_delete_yes), new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        startActivityForResult(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS),RESULT_TURN_ON_LOCATION);
+                    }
+                })
+                .setNegativeButton(getString(R.string.dialog_delete_no), new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
+    }
+
 }

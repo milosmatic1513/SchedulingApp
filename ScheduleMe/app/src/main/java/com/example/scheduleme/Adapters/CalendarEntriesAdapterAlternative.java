@@ -94,6 +94,10 @@ public class CalendarEntriesAdapterAlternative extends RecyclerView.Adapter<Cale
         if(calendarEntry.getPublicCode().length()!=0){
             holder.publicTag.setVisibility(View.VISIBLE);
         }
+        else{
+            holder.publicTag.setVisibility(View.GONE);
+
+        }
 
         //calculate hours
         int size =(int)Math.ceil((calendarEntry.getTimeEnd()-calendarEntry.getTimeStart())/1800000);

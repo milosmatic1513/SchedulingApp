@@ -19,7 +19,7 @@
             android:layout_height="match_parent"
             android:background="#79c5e7"
             android:backgroundTint="#79c5e7"
-            app:srcCompat="@drawable/logo" />
+            app:srcCompat="@drawable/logo_transparent" />
 
         <LinearLayout
             android:layout_width="match_parent"

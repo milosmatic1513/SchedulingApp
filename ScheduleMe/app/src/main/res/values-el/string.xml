@@ -6,11 +6,16 @@
     <!-- Main Activity -->
     <string name="authentication_failed">Αυθεντικοποίηση απέτυχε</string>
     <string name="login">Σύνδεση</string>
-    <string name="register">Εγγραφή</string>
+    <string name="register"><u>Δήμιουργισε καινούριο λογαριασμό</u></string>
+    <string name="register_alt">Εγγραφή</string>
     <string name="toast_incorrect_info_warning">Λάθος στοιχεία σύνδεσης</string>
     <string name="remember_me">Θυμήσου με</string>
     <string name="title_activity_maps">Map</string>
-
+    <string name="forgot_password"><u>Ξέχασα τον κωδικό μου</u></string>
+    <string name="sign_in">Συνδέσου</string>
+    <string name="or">ή</string>
+    <string name="sign_in_with_google">Συνδέση με Google</string>
+    <string name="sign_in_with_facebook">Συνδέση με Facebook</string>
     <!-- Register Page -->
     <string name="title">Τίτλος</string>
     <string name="create_task_page">Δημιούργησε εγγραφή</string>
@@ -34,6 +39,7 @@
     <string name="authenticated">Αυθεντικοποιημένος</string>
     <string name="reminders">Υπενθυμίσεις</string>
     <string name="schedule">Πρόγραμμα</string>
+    <string name="internet_disabled">To Internet είναι απενεργοποιμένο</string>
 
     <!-- Activity Profile -->
     <string name="profile">Προφίλ</string>
@@ -71,18 +77,29 @@
     <string name="important">Σημαντικό</string>
     <string name="important_id">Αυθεντικοποίηση με Ταυτότητα</string>
     <string name="authenticate_message">Πρέπει να ειστε αυθεντικοποιημένος για να δείτε ΣΗΜΑΝΤΙΚΑ γεγονότα</string>
-
+    <string name="reminder_time">Θύμησε μου</string>
+    <string name="gps_location">Το GPS σας είναι απενεργοποιημένο, θέλετε να το ενεργοποιήσετε;</string>
+    <string name="reminder">Υπενθύμιση</string>
+    <string name="copied_to_clipboard">Αντιγράφηκε στο Clipboard</string>
+    <string name="reminder_warning">Υπενθήμηση επιτρέπετε μόνο στα γεγονότα</string>
 
     <!-- Spinner Values -->
     <string-array name="spinnerItems">
         <item>Καθολόυ</item>
         <item>Καθε μέρα</item>
-        <item>Καθε ευδομάδα</item>
+        <item>Καθε εβδομάδα</item>
         <item>Καθε χρόνο</item>
     </string-array>
     <string-array name="spinnerItemsType">
         <item>Γεγονός</item>
         <item>Υπενθύμιση</item>
+    </string-array>
+    <string-array name="reminderTimes">
+        <item>πέντε λεπτά πριν</item>
+        <item>δέκα λεπτά πριν</item>
+        <item>δεκαπέντε λεπτά πριν</item>
+        <item>μισή ώρα πριν</item>
+        <item>μια ώρα πριν</item>
     </string-array>
     <!-- Day Values -->
     <string name="monday">Δευτέρα</string>
@@ -94,7 +111,6 @@
     <string name="sunday">Κυριακή</string>
     <!-- Side Bar -->
     <string name="schedule_your_day">Σχεδίασιασε την μέρα σου</string>
-
     <string name="title_activity_temp">temp</string>
     <string name="nav_header_title">Android Studio</string>
     <string name="nav_header_subtitle">android.studio@android.com</string>

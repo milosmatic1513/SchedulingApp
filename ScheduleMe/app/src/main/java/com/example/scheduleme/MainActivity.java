@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.example.scheduleme.DataClasses.CalendarEntry;
 import com.example.scheduleme.DataClasses.Preferences;
 import com.example.scheduleme.DataClasses.User;
+import com.example.scheduleme.Utilities.NetworkUtilities;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -138,30 +139,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void logIn(View view) {
-        //Attempts to log the user into the app
-        if(emailEditText.getText().toString().trim().length() != 0 && passwordEditText.getText().toString().trim().length() != 0) {
-            mAuth.signInWithEmailAndPassword(emailEditText.getText().toString(), passwordEditText.getText().toString())
-                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                progressBar.setVisibility(View.VISIBLE);
-                                // Sign in success, update UI with the signed-in user's information
-                                logIn();
-
-                                    //Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_SHORT).show();
-
-
+        if(NetworkUtilities.isNetworkAvailable(this)) {
+            //Attempts to log the user into the app
+            if (emailEditText.getText().toString().trim().length() != 0 && passwordEditText.getText().toString().trim().length() != 0) {
+                mAuth.signInWithEmailAndPassword(emailEditText.getText().toString(), passwordEditText.getText().toString())
+                        .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    progressBar.setVisibility(View.VISIBLE);
+                                    // Sign in success, update UI with the signed-in user's information
+                                    logInAuthenticated();
+                                } else {
+                                    // If sign in fails, display a message to the user.
+                                    Toast.makeText(getApplicationContext(), getString(R.string.authentication_failed),Toast.LENGTH_SHORT).show();
+                                }
                             }
-                            else {
-                                // If sign in fails, display a message to the user.
-                                Toast.makeText(getApplicationContext(), R.string.authentication_failed,
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
+                        });
+            }
         }
-
+        else{
+            Toast.makeText(this,getString(R.string.internet_disabled),Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void register(View view) {
@@ -170,10 +169,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void onStart() {
         super.onStart();
-        logIn();
+        logInAuthenticated();
     }
 
-    private void  logIn(){
+    private void  logInAuthenticated(){
         currentUser = mAuth.getCurrentUser();
         if(currentUser!=null) {
             DatabaseReference myRef = database.getReference("Users/" + currentUser.getUid() + "/UserInfo");

@@ -8,25 +8,6 @@
     android:backgroundTint="@color/background_color"
     tools:context=".RegisterPage">
 
-    <Button
-        android:id="@+id/saveChangesButton"
-        android:layout_width="310dp"
-        android:layout_height="78dp"
-
-        android:layout_marginBottom="32dp"
-        android:backgroundTint="#2980b9"
-        android:elevation="20dp"
-        android:onClick="checkRegister"
-        android:text="@string/register"
-        android:textAllCaps="false"
-        android:textColor="#FBFBFB"
-        android:textSize="30sp"
-        app:iconTint="#2980b9"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
-        app:layout_constraintStart_toStartOf="parent" />
-
     <TextView
         android:id="@+id/textView8"
         android:layout_width="0dp"
@@ -45,11 +26,13 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
+        android:id="@+id/scrollView3"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:padding="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/saveChangesButton"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView8">
 
@@ -201,6 +184,21 @@
                 android:padding="10dp"
                 android:textColorHint="@color/hint_color"
                 android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/saveChangesButton"
+                android:layout_width="310dp"
+                android:layout_height="wrap_content"
+
+                android:layout_margin="30dp"
+                android:backgroundTint="#2980b9"
+                android:elevation="20dp"
+                android:onClick="checkRegister"
+                android:text="@string/register_alt"
+                android:textAllCaps="false"
+                android:textColor="#FBFBFB"
+                android:textSize="24sp"
+                app:iconTint="#2980b9" />
         </LinearLayout>
     </ScrollView>
 

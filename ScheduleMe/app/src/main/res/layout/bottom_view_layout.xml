@@ -85,12 +85,28 @@
                 android:layout_height="wrap_content"
                 android:minHeight="500dp"
                 android:orientation="vertical"
-                android:padding="20dp">
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp">
+
+                <TextView
+                    android:id="@+id/reminderTimeTag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/background_rounded"
+                    android:backgroundTint="#4056a1"
+                    android:paddingStart="5dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="5dp"
+                    android:paddingBottom="1dp"
+                    android:text="TextView"
+                    android:textColor="@color/white" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/publicCodeLayout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginTop="20dp"
                     android:background="@drawable/background_rounded">
 
                     <TextView
@@ -278,7 +294,6 @@
                         android:text="@string/show_location"
                         android:textAllCaps="false" />
                 </LinearLayout>
-
 
 
             </LinearLayout>

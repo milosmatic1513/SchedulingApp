@@ -55,7 +55,6 @@ public class RegisterPage extends AppCompatActivity {
     }
 
     public void checkRegister(View view) {
-
         //check if any of the fields are empty
         if (
                 emailText.getText().toString().trim().length()==0 ||

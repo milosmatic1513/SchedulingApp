@@ -23,8 +23,10 @@ public class CalendarEntryBuilder {
     private String base64Image;
     private double locationLat=0;
     private double locationLong=0;
+    private boolean reminder=false;
+    private int reminderTime = CalendarEntry.REMINDER_TIME_FIVE_MINUTES;
 
-    public CalendarEntryBuilder(String databaseID, String title, String description,String publicCode, long date, int type, boolean important,boolean requireIdScan, long timeStart, long timeEnd, int repeating, String base64Image,double locationLat,double locationLong)
+    public CalendarEntryBuilder(String databaseID, String title, String description,String publicCode, long date, int type, boolean important,boolean requireIdScan, long timeStart, long timeEnd, int repeating, String base64Image,double locationLat,double locationLong,boolean reminder,int reminderTime)
     {
         this.databaseID = databaseID;
         this.title = title;
@@ -40,6 +42,8 @@ public class CalendarEntryBuilder {
         this.base64Image = base64Image;
         this.locationLat=locationLat;
         this.locationLong=locationLong;
+        this.reminder=reminder;
+        this.reminderTime=reminderTime;
     }
     public CalendarEntryBuilder()
     {
@@ -57,6 +61,8 @@ public class CalendarEntryBuilder {
         this.base64Image="";
         this.locationLat=locationLat;
         this.locationLong=locationLong;
+        this.reminder = reminder;
+        this.reminderTime=reminderTime;
 
     }
     public CalendarEntryBuilder setDatabaseID(String databaseID)
@@ -109,12 +115,12 @@ public class CalendarEntryBuilder {
         this.requireIdScan = requireIdScan;
         return this;
     }
+
     public CalendarEntryBuilder setRepeating(int repeating)
     {
         this.repeating = repeating;
         return this;
     }
-
     public CalendarEntryBuilder setBase64Image(String base64Image)
     {
         this.base64Image = base64Image;
@@ -131,9 +137,22 @@ public class CalendarEntryBuilder {
         this.locationLong = locationLong;
         return this;
     }
+
+    public CalendarEntryBuilder setReminder(boolean reminder)
+    {
+        this.reminder = reminder;
+        return this;
+    }
+    public CalendarEntryBuilder setReminderTime(int reminderTime)
+    {
+        this.reminderTime = reminderTime;
+        return this;
+    }
+
+
     public CalendarEntry build()
     {
-        return new CalendarEntry(databaseID,title,description,publicCode,date,type,important,requireIdScan,timeStart,timeEnd,repeating,base64Image,locationLat,locationLong);
+        return new CalendarEntry(databaseID,title,description,publicCode,date,type,important,requireIdScan,timeStart,timeEnd,repeating,base64Image,locationLat,locationLong,reminder,reminderTime);
     }
 
 }

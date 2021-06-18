@@ -69,6 +69,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:backgroundTint="#DB4437"
+                android:onClick="logInWithGoogle"
                 android:text="@string/sign_in_with_google"
                 android:textAllCaps="false"
                 android:textColor="@color/white"

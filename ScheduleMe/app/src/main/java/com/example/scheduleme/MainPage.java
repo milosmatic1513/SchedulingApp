@@ -646,7 +646,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
             try {
                 calendarEntry=(CalendarEntry) data.getSerializableExtra("calendarEntry");
             }catch (java.lang.NullPointerException e ){
-                Toast.makeText(getApplicationContext(),"Editing Canceled",Toast.LENGTH_SHORT);
+                Log.e("Debug",e.getMessage());
             }
 
             if (calendarEntry==null)

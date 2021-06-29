@@ -63,19 +63,44 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <Button
-                android:id="@+id/button9"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:backgroundTint="#DB4437"
-                android:onClick="logInWithGoogle"
-                android:text="@string/sign_in_with_google"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                app:icon="@mipmap/google"
-                app:iconGravity="textStart"
-                app:iconSize="30dp" />
+                android:layout_height="match_parent">
+
+                <ProgressBar
+                    android:id="@+id/progressBarMainPageGoogle"
+                    android:layout_width="34dp"
+                    android:layout_height="40dp"
+                    android:elevation="20dp"
+                    android:foregroundTint="#EDE6E6"
+                    android:indeterminate="true"
+                    android:indeterminateTint="@color/white"
+                    android:progressBackgroundTint="@color/background_color"
+                    android:progressTint="@color/black"
+                    android:secondaryProgressTint="#1B1616"
+                    android:visibility="invisible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/button9"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:id="@+id/button9"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:backgroundTint="#DB4437"
+                    android:elevation="20dp"
+                    android:onClick="logInWithGoogle"
+                    android:text="@string/sign_in_with_google"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    app:icon="@mipmap/google"
+                    app:iconGravity="textStart"
+                    app:iconSize="30dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <Button
                 android:id="@+id/button10"
@@ -83,6 +108,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:backgroundTint="#1877f2"
+                android:elevation="20dp"
                 android:text="@string/sign_in_with_facebook"
                 android:textAllCaps="false"
                 android:textColor="@color/white"

@@ -1,8 +1,10 @@
 package com.example.scheduleme;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -49,6 +51,8 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
     private static int RC_SIGN_IN =532;
+    static int FACETEC_ACTIVITY_REQUEST=4;
+
     private FirebaseAuth mAuth;
     private FirebaseDatabase database;
 
@@ -56,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
     CheckBox rememberMeCheckbox;
 
     ProgressBar progressBar;
+    ProgressBar progressBarGoogle;
     static String HIDDEN_TAG_STRING = "hidden";
     SharedPreferences sharedPreferences;
 
@@ -80,6 +85,8 @@ public class MainActivity extends AppCompatActivity {
         rememberMeCheckbox=findViewById(R.id.rememberMeCheckBox);
         progressBar = findViewById(R.id.progressBarMainPage);
         progressBar.setVisibility(View.INVISIBLE);
+        progressBarGoogle = findViewById(R.id.progressBarMainPageGoogle);
+        progressBarGoogle.setVisibility(View.INVISIBLE);
 
         //listeners
         rememberMeCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -116,9 +123,6 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mAuth.signOut();
         updateUI();
-
-
-
     }
 
     public void updateUI() {
@@ -175,11 +179,6 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent(getApplicationContext(), RegisterPage.class));
     }
 
-    public void onStart() {
-        super.onStart();
-        logInAuthenticated();
-    }
-
     private void  logInAuthenticated(){
         currentUser = mAuth.getCurrentUser();
         if(currentUser!=null) {
@@ -216,17 +215,20 @@ public class MainActivity extends AppCompatActivity {
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions
                 .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken("262272836886-dckvp9s7cpolj8qtuod0i8384d3fvgoc.apps.googleusercontent.com")
+                .requestIdToken("230370227975-bl9tmu15rl9ral6at66fd9afhhjssdpg.apps.googleusercontent.com")
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        mGoogleSignInClient.signOut();
         signIn();
     }
+
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
     @Override
+
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -236,15 +238,20 @@ public class MainActivity extends AppCompatActivity {
             try {
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
-                Log.d("TAG", "firebaseAuthWithGoogle:" + account.getId());
-                firebaseAuthWithGoogle(account.getIdToken());
+                firebaseAuthWithGoogle(account.getIdToken(),account.getDisplayName());
+
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
                 Log.w("TAG", "Google sign in failed", e);
             }
         }
+        else if(requestCode==4) {
+            logInAuthenticated();
+        }
     }
-    private void firebaseAuthWithGoogle(String idToken) {
+
+    private void firebaseAuthWithGoogle(String idToken,String displayName) {
+        progressBarGoogle.setVisibility(View.VISIBLE);
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -254,6 +261,65 @@ public class MainActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("TAG", "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            DatabaseReference databaseRef = database.getReference("Users/");
+                            Log.e("id",mAuth.getUid());
+                            databaseRef.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    boolean userInDatabase=false;
+                                    for(DataSnapshot child : snapshot.getChildren()){
+                                        if(child.getKey().equalsIgnoreCase(user.getUid())){
+                                            Log.e("Tag",child.getKey());
+                                            userInDatabase=true;
+                                        }
+                                    }
+                                    progressBarGoogle.setVisibility(View.INVISIBLE);
+                                    if(userInDatabase){
+                                        logInAuthenticated();
+                                    }
+                                    else{
+
+                                        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                switch (which) {
+                                                    case DialogInterface.BUTTON_POSITIVE:
+                                                        // Add other user data to database
+                                                        DatabaseReference myRef = database.getReference("Users/" + user.getUid()+"/UserInfo");
+                                                        myRef.setValue(
+                                                                new User(displayName)
+                                                        );
+
+                                                        Intent intent = new Intent(getApplicationContext(),FacetecAuthentication.class);
+                                                        intent.putExtra("mode",2);
+                                                        startActivityForResult(intent,FACETEC_ACTIVITY_REQUEST);
+                                                        break;
+
+                                                    case DialogInterface.BUTTON_NEGATIVE:
+
+                                                        break;
+                                                }
+                                            }
+                                        };
+
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                                        builder.setTitle(getString(R.string.dialog_first_time_title));
+                                        builder.setMessage(getString(R.string.dialog_first_time_body)).setPositiveButton(getString(R.string.dialog_delete_yes), dialogClickListener)
+                                                .setNegativeButton(getString(R.string.dialog_delete_no), dialogClickListener).show();
+
+
+
+                                    }
+                                    databaseRef.removeEventListener(this);
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+                                    progressBarGoogle.setVisibility(View.INVISIBLE);
+                                }
+                            });
+
+
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w("TAG", "signInWithCredential:failure", task.getException());
@@ -261,4 +327,5 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
+
 }

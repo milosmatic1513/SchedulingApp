@@ -16,6 +16,9 @@
     <string name="or">ή</string>
     <string name="sign_in_with_google">Συνδέση με Google</string>
     <string name="sign_in_with_facebook">Συνδέση με Facebook</string>
+    <string name="dialog_first_time_title">Πρώτη φορά;</string>
+    <string name="dialog_first_time_body">Αν αυτή είνα η πρώτη φορά που συνδέεστε με Google θα πρέπει να κάνετε αυθεντικοποίηση σκανάροντας το πρόσωπο σας.</string>
+
     <!-- Register Page -->
     <string name="title">Τίτλος</string>
     <string name="create_task_page">Δημιούργησε εγγραφή</string>

@@ -82,6 +82,7 @@ public class EventCreatePage extends AppCompatActivity implements LocationListen
     DatePickerDialog pickerDate;
 
     TextView publicCodeTextView;
+    TextView createPageTitle;
 
     EditText editTextTitle;
     EditText editTextDescription;
@@ -182,6 +183,7 @@ public class EventCreatePage extends AppCompatActivity implements LocationListen
         reminderSwitch=findViewById(R.id.reminderSwitch);
         constraintLayoutReminderTime=findViewById(R.id.constraintLayoutReminderTime);
         spinnerReminderTime=findViewById(R.id.spinnerReminderTime);
+        createPageTitle=findViewById(R.id.createPageTitle);
         //listeners
         switchImportant.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -450,6 +452,7 @@ public class EventCreatePage extends AppCompatActivity implements LocationListen
         setupMap();
 
         if(calendarEntry != null){
+            createPageTitle.setText(getString(R.string.edit_task));
             editTextTitle.setText(calendarEntry.getTitle());
             if(calendarEntry.getDescription().length()!=0){
                 editTextDescription.setText(calendarEntry.getDescription());

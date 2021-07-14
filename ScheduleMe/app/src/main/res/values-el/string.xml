@@ -18,7 +18,10 @@
     <string name="sign_in_with_facebook">Συνδέση με Facebook</string>
     <string name="dialog_first_time_title">Πρώτη φορά;</string>
     <string name="dialog_first_time_body">Αν αυτή είνα η πρώτη φορά που συνδέεστε με Google θα πρέπει να κάνετε αυθεντικοποίηση σκανάροντας το πρόσωπο σας.</string>
-
+    <string name="email_validation">Η διεύθυνση email δεν είναι έγκυρη</string>
+    <string name="email_fill_warning">Συπληρώστε την διεύθυνση email σας</string>
+    <string name="email_sent">Email στάλθηκε</string>
+    <string name="email_sent_text">Ένα email έχει σταλεί στην διεύθυνση που εισάγατε. Ακολουθήστε τις οδηγίες του για να ανακτήσεται τον κωδικό σας.</string>
     <!-- Register Page -->
     <string name="title">Τίτλος</string>
     <string name="create_task_page">Δημιούργησε εγγραφή</string>
@@ -40,6 +43,9 @@
 
     <!-- Activity Main -->
     <string name="authenticated">Αυθεντικοποιημένος</string>
+    <string name="authenticate">Αυθεντικοποίηση</string>
+    <string name="authenticate_id">Αυθεντικοποίηση με ID</string>
+
     <string name="reminders">Υπενθυμίσεις</string>
     <string name="schedule">Πρόγραμμα</string>
     <string name="internet_disabled">To Internet είναι απενεργοποιμένο</string>
@@ -80,11 +86,12 @@
     <string name="important">Σημαντικό</string>
     <string name="important_id">Αυθεντικοποίηση με Ταυτότητα</string>
     <string name="authenticate_message">Πρέπει να ειστε αυθεντικοποιημένος για να δείτε ΣΗΜΑΝΤΙΚΑ γεγονότα</string>
-    <string name="reminder_time">Θύμησε μου</string>
+    <string name="reminder_time">Ειδοποίησε με</string>
     <string name="gps_location">Το GPS σας είναι απενεργοποιημένο, θέλετε να το ενεργοποιήσετε;</string>
     <string name="reminder">Υπενθύμιση</string>
     <string name="copied_to_clipboard">Αντιγράφηκε στο Clipboard</string>
     <string name="reminder_warning">Υπενθήμηση επιτρέπετε μόνο στα γεγονότα</string>
+    <string name="edit_task">Επεξεργασία εγγραφής</string>
 
     <!-- Spinner Values -->
     <string-array name="spinnerItems">

@@ -326,7 +326,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="#4056a1"
-                android:text="Authenticate"
+                android:text="@string/authenticate"
+                android:textAllCaps="false"
                 android:textColor="#FFFFFF"
                 android:visibility="visible" />
 

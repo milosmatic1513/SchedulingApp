@@ -88,7 +88,6 @@ public class PublicEventsPage extends AppCompatActivity {
                     negativeIcon.setVisibility(View.GONE);
                     positiveIcon.setVisibility(View.VISIBLE);
 
-
                     DatabaseReference calendarEntryRef = database.getReference(snapshot.getValue().toString());
                     calendarEntryRef.addValueEventListener(new ValueEventListener() {
                         @Override
@@ -96,6 +95,8 @@ public class PublicEventsPage extends AppCompatActivity {
                             CalendarEntry calendarEntry = snapshotChild.getValue(CalendarEntry.class);
                             if(calendarEntry != null) {
                                 currentCalendarEntry=calendarEntry;
+
+
                                 taskPublicEvents.setVisibility(View.VISIBLE);
                                 titlePublicEvent.setText(calendarEntry.getTitle());
 

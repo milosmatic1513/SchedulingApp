@@ -43,6 +43,8 @@ import com.example.scheduleme.Utilities.ImageUtilities;
 import com.example.scheduleme.Utilities.NetworkUtilities;
 import com.example.scheduleme.Utilities.RandomStringGenerator;
 import com.example.scheduleme.Utilities.ReminderUtilities;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
@@ -522,10 +524,10 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
             buttonEdit.setVisibility(View.VISIBLE);
             buttonDelete.setVisibility(View.VISIBLE);
 
-            textViewDate.setText("Date : " + calendarEntry.getDayOfMonth() + "/" + calendarEntry.getMonth() + "/" + calendarEntry.getYear());
+            textViewDate.setText(getString(R.string.event_date) + calendarEntry.getDayOfMonth() + "/" + calendarEntry.getMonth() + "/" + calendarEntry.getYear());
             textViewTime.setText(calendarEntry.calculateHourFrom()+":"+calendarEntry.calculateMinuteFrom()+"-"+calendarEntry.calculateHourTo()+":"+calendarEntry.calculateMinuteTo());
             String[] items = getResources().getStringArray(R.array.spinnerItems);
-            textViewRepeating.setText("Repeating : " + items[calendarEntry.getRepeating()]);
+            textViewRepeating.setText(getString(R.string.event_repeating) + items[calendarEntry.getRepeating()]);
 
             if (calendarEntry.getDescription().length() == 0) {
                 descriptionBox.setVisibility(View.GONE);
@@ -604,7 +606,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
             if(calendarEntry.getReminder()){
                 reminderTimeTag.setVisibility(View.VISIBLE);
                 String[] reminderTimes = getResources().getStringArray(R.array.reminderTimes);
-                reminderTimeTag.setText(getString(R.string.reminder)+" "+reminderTimes[calendarEntry.getReminderTime()]);
+                reminderTimeTag.setText(getString(R.string.reminder_time)+" "+reminderTimes[calendarEntry.getReminderTime()]);
             }
             else{
                 reminderTimeTag.setVisibility(View.GONE);
@@ -617,6 +619,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
             nestedScrollView.setVisibility(View.GONE);
             buttonEdit.setVisibility(View.GONE);
             buttonDelete.setVisibility(View.GONE);
+            if(calendarEntry.isRequireIdScan()) authenticateButton.setText(getString(R.string.authenticate_id));
             authenticateButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -626,6 +629,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
                         intent.putExtra("mode", 1);
                         intent.putExtra("CalendarEntry",calendarEntry);
                         startActivityForResult(intent, FACETEC_ACTIVITY_REQUEST);
+
                     }else {
                         Intent intent = new Intent(getApplicationContext(), FacetecAuthentication.class);
                         intent.putExtra("mode", 3);
@@ -810,5 +814,6 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
         DatabaseReference databaseReference = database.getReference("Users/"+currentUser.getUid()+"/TasksReferences/"+key);
         databaseReference.removeValue();
     }
+
 
 }

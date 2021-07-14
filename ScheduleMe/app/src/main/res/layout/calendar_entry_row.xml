@@ -55,21 +55,18 @@
                 android:id="@+id/importantMarkerReminder"
                 android:layout_width="15dp"
                 android:layout_height="15dp"
-                android:layout_marginTop="15dp"
                 android:background="@drawable/round_button"
                 android:backgroundTint="#EF7C17"
                 android:foregroundTint="#F4F4F4"
                 android:gravity="clip_horizontal|center"
                 android:textColor="#FFFFFF"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/eventNameTextReminder" />
+                app:layout_constraintEnd_toEndOf="parent" />
 
             <TextView
                 android:id="@+id/publicMarkerEvent"
                 android:layout_width="15dp"
                 android:layout_height="15dp"
-                android:layout_marginTop="15dp"
                 android:background="@drawable/round_button"
                 android:backgroundTint="#4056a1"
                 android:foregroundTint="#F4F4F4"
@@ -78,8 +75,7 @@
                 android:textColor="#FFFFFF"
                 android:textSize="10sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/eventNameTextReminder" />
+                app:layout_constraintStart_toStartOf="parent" />
 
             <ImageView
                 android:id="@+id/imageView"

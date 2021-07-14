@@ -17,6 +17,10 @@
     <string name="sign_in_with_facebook">Sign in with Facebook</string>
     <string name="dialog_first_time_title">First time?</string>
     <string name="dialog_first_time_body">If this is your first time logging on with Google you will need to Authenticate your account with a Facescan</string>
+    <string name="email_validation">The email address you provided is invalid</string>
+    <string name="email_fill_warning">Fill in your email address</string>
+    <string name="email_sent">Password reset email sent</string>
+    <string name="email_sent_text">An email has been sent to the provided address. You can reset your password by following the instructions provided.</string>
 
     <!-- Register Page -->
     <string name="title">Title</string>
@@ -39,6 +43,9 @@
 
     <!-- Activity Main -->
     <string name="authenticated">Authenticated</string>
+    <string name="authenticate">Authenticate</string>
+    <string name="authenticate_id">Authenticate with ID</string>
+
     <string name="reminders">Reminders</string>
     <string name="schedule">Schedule</string>
     <string name="internet_disabled">Internet is disabled</string>
@@ -78,11 +85,12 @@
     <string name="important">Important</string>
     <string name="important_id">ID Authentication</string>
     <string name="authenticate_message">You must be authenticated to view IMPORTANT tasks</string>
-    <string name="reminder_time">Remind me</string>Reminder
+    <string name="reminder_time">Notify me</string>
     <string name="gps_location">Your GPS seems to be disabled, do you want to enable it?</string>
     <string name="reminder">Reminder</string>
     <string name="copied_to_clipboard">Coppied to Clipboard</string>
     <string name="reminder_warning">Reminder only allowed for events</string>
+    <string name="edit_task">Edit task</string>
 
     <!-- Spinner Values -->
     <string-array name="spinnerItems">

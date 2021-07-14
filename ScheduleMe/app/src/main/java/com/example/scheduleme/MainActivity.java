@@ -15,6 +15,7 @@ import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -61,8 +62,13 @@ public class MainActivity extends AppCompatActivity {
 
     ProgressBar progressBar;
     ProgressBar progressBarGoogle;
+    ProgressBar progressBarForgotPassword;
     static String HIDDEN_TAG_STRING = "hidden";
     SharedPreferences sharedPreferences;
+
+    Button googleButton;
+    Button loginButton;
+    Button facebookButton;
 
     GoogleSignInClient mGoogleSignInClient;
     FirebaseUser currentUser;
@@ -83,11 +89,16 @@ public class MainActivity extends AppCompatActivity {
         emailEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
         rememberMeCheckbox=findViewById(R.id.rememberMeCheckBox);
+        progressBarForgotPassword=findViewById(R.id.progressBarForgotPassword);
+        googleButton=findViewById(R.id.googleButton);
+        loginButton=findViewById(R.id.loginButton);
+        facebookButton=findViewById(R.id.facebookButton);
+
         progressBar = findViewById(R.id.progressBarMainPage);
         progressBar.setVisibility(View.INVISIBLE);
         progressBarGoogle = findViewById(R.id.progressBarMainPageGoogle);
         progressBarGoogle.setVisibility(View.INVISIBLE);
-
+        progressBarForgotPassword.setVisibility(View.INVISIBLE);
         //listeners
         rememberMeCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -152,6 +163,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void logIn(View view) {
         if(NetworkUtilities.isNetworkAvailable(this)) {
+
+            toogleButtons(false);
+
             //Attempts to log the user into the app
             if (emailEditText.getText().toString().trim().length() != 0 && passwordEditText.getText().toString().trim().length() != 0) {
                 mAuth.signInWithEmailAndPassword(emailEditText.getText().toString(), passwordEditText.getText().toString())
@@ -165,6 +179,7 @@ public class MainActivity extends AppCompatActivity {
                                 } else {
                                     // If sign in fails, display a message to the user.
                                     Toast.makeText(getApplicationContext(), getString(R.string.authentication_failed),Toast.LENGTH_SHORT).show();
+                                    toogleButtons(true);
                                 }
                             }
                         });
@@ -187,6 +202,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     progressBar.setVisibility(View.INVISIBLE);
+                    toogleButtons(true);
                     User user = snapshot.getValue(User.class);
                     if(user!=null)
                     {
@@ -206,12 +222,14 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
                     progressBar.setVisibility(View.INVISIBLE);
+                    toogleButtons(true);
                 }
             });
         }
     }
 
     public void logInWithGoogle(View view){
+        toogleButtons(false);
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions
                 .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -220,15 +238,11 @@ public class MainActivity extends AppCompatActivity {
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         mGoogleSignInClient.signOut();
-        signIn();
-    }
-
-    private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
-    @Override
 
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -243,6 +257,7 @@ public class MainActivity extends AppCompatActivity {
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
                 Log.w("TAG", "Google sign in failed", e);
+                toogleButtons(true);
             }
         }
         else if(requestCode==4) {
@@ -259,17 +274,14 @@ public class MainActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            Log.d("TAG", "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             DatabaseReference databaseRef = database.getReference("Users/");
-                            Log.e("id",mAuth.getUid());
                             databaseRef.addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     boolean userInDatabase=false;
                                     for(DataSnapshot child : snapshot.getChildren()){
                                         if(child.getKey().equalsIgnoreCase(user.getUid())){
-                                            Log.e("Tag",child.getKey());
                                             userInDatabase=true;
                                         }
                                     }
@@ -278,7 +290,6 @@ public class MainActivity extends AppCompatActivity {
                                         logInAuthenticated();
                                     }
                                     else{
-
                                         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
@@ -301,18 +312,13 @@ public class MainActivity extends AppCompatActivity {
                                                 }
                                             }
                                         };
-
                                         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                                         builder.setTitle(getString(R.string.dialog_first_time_title));
                                         builder.setMessage(getString(R.string.dialog_first_time_body)).setPositiveButton(getString(R.string.dialog_delete_yes), dialogClickListener)
                                                 .setNegativeButton(getString(R.string.dialog_delete_no), dialogClickListener).show();
-
-
-
                                     }
                                     databaseRef.removeEventListener(this);
                                 }
-
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError error) {
                                     progressBarGoogle.setVisibility(View.INVISIBLE);
@@ -328,4 +334,46 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
+    public void resetPassword(View view) {
+        if (emailEditText.getText().length()!=0) {
+            view.setEnabled(false);
+            FirebaseAuth auth = FirebaseAuth.getInstance();
+            String emailAddress = emailEditText.getText().toString();
+            progressBarForgotPassword.setVisibility(View.VISIBLE);
+            auth.sendPasswordResetEmail(emailAddress)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            progressBarForgotPassword.setVisibility(View.INVISIBLE);
+                            view.setEnabled(true);
+                            if (task.isSuccessful()) {
+
+                                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                                builder.setTitle(getString(R.string.email_sent));
+                                builder.setMessage(getString(R.string.email_sent_text)).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                    }
+                                });
+                                builder.show();
+                            }
+                            else{
+                                Snackbar snackbar = Snackbar.make(findViewById(R.id.ConstraintLayoutMainActivity), getString(R.string.email_validation), Snackbar.LENGTH_SHORT);
+                                snackbar.show();
+                            }
+                        }
+                    });
+        }
+        else{
+            Snackbar snackbar = Snackbar.make(findViewById(R.id.ConstraintLayoutMainActivity), getString(R.string.email_fill_warning), Snackbar.LENGTH_SHORT);
+            snackbar.show();
+        }
+    }
+
+    private void toogleButtons(boolean mode){
+        loginButton.setEnabled(mode);
+        facebookButton.setEnabled(mode);
+        googleButton.setEnabled(mode);
+    }
 }

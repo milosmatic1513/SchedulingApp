@@ -11,7 +11,7 @@
         android:id="@+id/constraintLayout3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="#FFFFFF"
+        android:background="@drawable/background_rounded"
         android:backgroundTint="#79c5e7"
         android:elevation="8dp"
         android:padding="10dp"

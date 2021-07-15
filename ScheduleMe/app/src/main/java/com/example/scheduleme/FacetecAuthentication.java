@@ -97,7 +97,6 @@ public class FacetecAuthentication extends AppCompatActivity {
                         });
                     }
                 }
-
             }
         });
 
@@ -223,7 +222,6 @@ public class FacetecAuthentication extends AppCompatActivity {
     }
 
      public void goToMain() {
-
         Intent intent=new Intent();
         intent.putExtra("Authenticated",isAuthenticated);
         intent.putExtra("CalendarEntry",getIntent().getSerializableExtra("CalendarEntry"));
@@ -240,6 +238,10 @@ public class FacetecAuthentication extends AppCompatActivity {
 
         }
     }
-
+    public void close(View view){
+        Intent intent=new Intent();
+        setResult(4,intent);
+        finish();
+    }
 
 }

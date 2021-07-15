@@ -22,4 +22,17 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.351" />
 
+    <ImageButton
+        android:id="@+id/imageButton4"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/facetec_transparent"
+        android:onClick="close"
+        android:tint="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/facetec_internal_cancel" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

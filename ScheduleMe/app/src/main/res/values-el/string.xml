@@ -129,7 +129,7 @@
     <string name="display">Προβολή</string>
     <string name="weekly">Εβδομαδιαία</string>
     <string name="daily">Ημερήσια</string>
-    <string name="dailyAlt">Ημερήσια διαφορετικά</string>
+    <string name="dailyAlt">Ημερήσια εναλλακτικά</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="enroll_first">Enroll First</string>

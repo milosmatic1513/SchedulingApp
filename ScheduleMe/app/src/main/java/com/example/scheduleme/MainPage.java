@@ -67,6 +67,7 @@ import java.util.stream.Stream;
 
 public class MainPage extends AppCompatActivity implements  NavigationView.OnNavigationItemSelectedListener , WeeklyViewFragment.OnCompleteListener, DailyViewFragment.OnCompleteListener {
     //Request codes
+    private static int VIEW_ACTIVITY_REQUEST=1;
     static int EDIT_ACTIVITY_REQUEST=2;
     static int PROFILE_ACTIVITY_REQUEST=3;
     static int FACETEC_ACTIVITY_REQUEST=4;
@@ -77,7 +78,6 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
     FirebaseDatabase database;
     //Private variables
     private boolean authenticated;
-    private static int VIEW_ACTIVITY_REQUEST=1;
     int selectedViewMode;
     public Date currentDate;
     private CalendarEntry lastDeletedItem;
@@ -644,7 +644,6 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        // check if the request code is same as what is passed  here it is 2
         if(requestCode==EDIT_ACTIVITY_REQUEST) {
             CalendarEntry calendarEntry=null;
             try {
@@ -668,10 +667,9 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
             try {
                 restart = data.getBooleanExtra("restart",false);
             }catch (java.lang.NullPointerException e ){
-                Toast.makeText(getApplicationContext(),"Editing Canceled",Toast.LENGTH_SHORT).show();
+                Log.e("error",e.getMessage());
             }
             if (restart){
-
                 String currentLocale = Preferences.getLanguage(this);
                 Locale locale = new Locale(currentLocale);
                 Locale.setDefault(locale);

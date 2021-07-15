@@ -210,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
                         {
                             Intent intent = new Intent(getApplicationContext(), FacetecAuthentication.class);
                             intent.putExtra("mode",1);
-                            startActivity(intent);
+                            startActivityForResult(intent,MainActivity.FACETEC_ACTIVITY_REQUEST);
                         }
                         else {
                             Intent intent = new Intent(getApplicationContext(), MainPage.class);
@@ -245,7 +245,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        Log.w("TAG", "Test");
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
@@ -261,7 +261,14 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         else if(requestCode==4) {
-            logInAuthenticated();
+            if(data.getBooleanExtra("Authenticated",false)){
+                Intent intent = new Intent(getApplicationContext(), MainPage.class);
+                startActivity(intent);
+            }
+            else{
+                Snackbar snackbar = Snackbar.make(findViewById(R.id.ConstraintLayoutMainActivity),"Could not Authenticate ", Snackbar.LENGTH_SHORT);
+                snackbar.show();
+            }
         }
     }
 

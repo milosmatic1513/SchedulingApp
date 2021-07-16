@@ -93,7 +93,6 @@ public class DailyViewFragment extends Fragment {
                 }
                 else{
                     reminderEntryRecyclerView.setVisibility(View.VISIBLE);
-
                 }
             }
         });

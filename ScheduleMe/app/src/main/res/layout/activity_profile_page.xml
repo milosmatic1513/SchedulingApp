@@ -187,7 +187,7 @@
         android:backgroundTint="#2980b9"
         android:elevation="20dp"
         android:enabled="false"
-        android:onClick="saveChanges"
+        android:onClick="exit"
         android:text="@string/save_changes"
         android:textAllCaps="false"
         android:textColor="#FBFBFB"

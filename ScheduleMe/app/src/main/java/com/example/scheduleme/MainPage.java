@@ -124,14 +124,12 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
         textViewDateYear  = findViewById(R.id.textViewDateYear);
         loadingScreen = findViewById(R.id.loadingPanel);
         currentDateButton=findViewById(R.id.currentDateButton);
-
         drawerLayout=findViewById(R.id.drawer_layout);
         navigationView=findViewById(R.id.nav_view);
         toolbar=findViewById(R.id.toolbar);
-
         imageViewCalendar=findViewById(R.id.imageViewCalendar);
-
         message=findViewById(R.id.message);
+
         //Check if the user Is authenticated;
         Intent intent = getIntent();
         authenticated=intent.getBooleanExtra("Authenticated",false);
@@ -139,7 +137,6 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
         {
             authenticatedTag.setVisibility(View.GONE);
         }
-
 
         //Firebase Initialization
         mAuth = FirebaseAuth.getInstance();
@@ -196,7 +193,6 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
         toggle.syncState();
         menu=navigationView.getMenu();
         navigationView.setNavigationItemSelectedListener(this);
-
 
         // Check if user is signed in (non-null) and update UI accordingly.
         currentUser = mAuth.getCurrentUser();
@@ -318,7 +314,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
                                         calendarEntry.setReminder(false);
                                         calendarEntriesPublic.add(calendarEntry);
                                     }
-
+                                    //update if a child changes
                                     updateDate(currentDate);
                                 }
                             }
@@ -327,8 +323,12 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
                             public void onCancelled(@NonNull DatabaseError error) {
 
                             }
+
                         });
+
                     }
+                    //update if a reference is deleted
+                    updateDate(currentDate);
                 }
 
                 @Override
@@ -339,8 +339,10 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
 
         }
 
+        //set up calendar lists
         calendarEntries = new ArrayList<>();
         calendarEntriesPublic= new ArrayList<>();
+
         // Begin the transaction
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         // Replace the contents of the container with the new fragment
@@ -351,6 +353,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
         ft.replace(R.id.frameLayout, dailyViewFragment);
         ft.commit();
 
+        //initialize reminder utilities
         reminderUtilities = new ReminderUtilities(this);
     }
 
@@ -359,13 +362,16 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
     }
 
     public void logout() {
+        //Log user out
         mAuth.signOut();
         finish();
 
     }
 
     public void createEvent(View view) {
+        //Check if app is online
         if(NetworkUtilities.isNetworkAvailable(this)){
+            //start EventCreatePage activity
             Intent intent = new Intent(getApplicationContext(),EventCreatePage.class);
             intent.putExtra("Date",getDate());
             startActivity(intent);
@@ -376,13 +382,10 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
     }
 
     public void idProcessor(View view) {
-        //Redirect to home page
+        //start FacetecAuthentication activity
         Intent intent = new Intent(getApplicationContext(),FacetecAuthentication.class);
         intent.putExtra("mode",3);
-
         startActivity(intent);
-
-
     }
 
     public void updateDate(Date date) {
@@ -406,15 +409,14 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
         String formattedDateDayOfTheWeek = dfdayOfTheWeek .format(date);
 
         currentDate = date;
-
+        //get correct entries
         List<CalendarEntry> calendarEntriesFinal = Stream.concat(calendarEntries.stream(), calendarEntriesPublic.stream())
                 .collect(Collectors.toList());
 
+        //pass data to correct fragment
         if(selectedViewMode==R.id.daily) {
-
             dailyViewFragment.passData(calendarEntriesFinal);
             dailyViewFragment.updateDate(date,formattedDateDayOfTheWeek);
-
         }
         else if (selectedViewMode==R.id.weekly){
             weeklyViewFragment.passData(calendarEntriesFinal);
@@ -424,13 +426,13 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
         else{
             dailyAltViewFragment.passData(calendarEntriesFinal);
             dailyAltViewFragment.updateDate(date,formattedDateDayOfTheWeek);
-
         }
 
 
     }
     @Override
     public void onBackPressed(){
+        //overide back button not to return to homescreen
         if(drawerLayout.isDrawerOpen(GravityCompat.START)){
             drawerLayout.closeDrawer(GravityCompat.START);
         }
@@ -441,28 +443,22 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
     }
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        //Initialize coresponding fragment or activity based on selection
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         switch (item.getItemId()) {
-
             case R.id.weekly:
                 selectedViewMode=R.id.weekly;
                 ft.replace(R.id.frameLayout, weeklyViewFragment);
-                // or ft.add(R.id.your_placeholder, new FooFragment());
-                // Complete the changes added above
                 ft.commit();
                 break;
             case R.id.daily:
                 selectedViewMode=R.id.daily;
                 ft.replace(R.id.frameLayout, dailyViewFragment);
-                // or ft.add(R.id.your_placeholder, new FooFragment());
-                // Complete the changes added above
                 ft.commit();
                 break;
             case R.id.dailyAlt:
                 selectedViewMode=R.id.dailyAlt;
                 ft.replace(R.id.frameLayout, dailyAltViewFragment);
-                // or ft.add(R.id.your_placeholder, new FooFragment());
-                // Complete the changes added above
                 ft.commit();
                 break;
             case R.id.nav_public_events:
@@ -485,7 +481,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
     }
 
     public void setupBottomView(CalendarEntry calendarEntry,boolean photoIdAuth) {
-
+        //create bottom view
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(MainPage.this);
         bottomSheetDialog.setContentView(R.layout.bottom_view_layout);
         //components initialization
@@ -511,11 +507,11 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
         Button authenticateButton = bottomSheetDialog.findViewById(R.id.authenticateButton);
         Button showLocationButton = bottomSheetDialog.findViewById(R.id.showLocationButton);
 
-
         ImageButton copyButton = bottomSheetDialog.findViewById(R.id.copyButtonBottomView);
 
         bottomSheetDialog.show();
         textViewTitle.setText(calendarEntry.getTitle());
+        //check if the user is authenticated and block out sensitive info
         if((!calendarEntry.isImportant() || authenticated) && (!calendarEntry.isRequireIdScan() || photoIdAuth)) {
 
             authenticateLayout.setVisibility(View.GONE);
@@ -529,6 +525,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
             String[] items = getResources().getStringArray(R.array.spinnerItems);
             textViewRepeating.setText(getString(R.string.event_repeating) + items[calendarEntry.getRepeating()]);
 
+            //Display data
             if (calendarEntry.getDescription().length() == 0) {
                 descriptionBox.setVisibility(View.GONE);
             } else {
@@ -644,7 +641,9 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         if(requestCode==EDIT_ACTIVITY_REQUEST) {
+            //Display edited calendar entry
             CalendarEntry calendarEntry=null;
             try {
                 calendarEntry=(CalendarEntry) data.getSerializableExtra("calendarEntry");
@@ -663,6 +662,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
         }
         else if(requestCode==PROFILE_ACTIVITY_REQUEST)
         {
+            //Check if restart is needed
             boolean restart =false;
             try {
                 restart = data.getBooleanExtra("restart",false);
@@ -683,6 +683,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
             }
         }
         else if(requestCode==FACETEC_ACTIVITY_REQUEST) {
+            //Check if user athenticated properly and show calendar entry
             try {
                 authenticated=data.getBooleanExtra("Authenticated",false);
                 CalendarEntry calendarEntry=(CalendarEntry) data.getSerializableExtra("CalendarEntry");
@@ -751,6 +752,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
     }
     @Override
     public void onComplete() {
+        //Display data when fragment is loaded
         if(currentDate==null) {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
             try {
@@ -766,6 +768,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
     }
 
     public void showDateButton(Date date) {
+        //update date to current date
         SimpleDateFormat dfday = new SimpleDateFormat("dd", Locale.getDefault());
         String formattedDateDay = dfday.format(date);
         currentDateButton.setText(formattedDateDay);
@@ -783,6 +786,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
     }
 
     public Date getDate() {
+        //return current date
         if(currentDate==null) {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
             try {
@@ -809,6 +813,7 @@ public class MainPage extends AppCompatActivity implements  NavigationView.OnNav
     }
 
     private void deleteReference(String key) {
+        //delete reference from database
         DatabaseReference databaseReference = database.getReference("Users/"+currentUser.getUid()+"/TasksReferences/"+key);
         databaseReference.removeValue();
     }

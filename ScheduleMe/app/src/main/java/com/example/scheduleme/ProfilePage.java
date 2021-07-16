@@ -140,10 +140,7 @@ public class ProfilePage extends AppCompatActivity {
     private void saveChanges(){
         DatabaseReference myRef = database.getReference("Users/" + currentUser.getUid()+"/UserInfo");
         myRef.setValue(alteredUser);
-        Intent intent=new Intent();
-        setResult(3,intent);
         finish();
-
     }
 
     public void exit(View view) {

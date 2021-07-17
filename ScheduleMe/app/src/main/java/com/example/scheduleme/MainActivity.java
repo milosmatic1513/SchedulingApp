@@ -382,4 +382,9 @@ public class MainActivity extends AppCompatActivity {
         facebookButton.setEnabled(mode);
         googleButton.setEnabled(mode);
     }
+
+    public void logInWithFacebook(View view) {
+        Snackbar snackbar = Snackbar.make(findViewById(R.id.ConstraintLayoutMainActivity),"Authentication with Facebook is not yet supported", Snackbar.LENGTH_SHORT);
+        snackbar.show();
+    }
 }

@@ -2,6 +2,7 @@ package com.example.scheduleme.DataClasses;
 
 import android.graphics.Bitmap;
 import android.util.Base64;
+import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
@@ -267,11 +268,15 @@ public class CalendarEntry implements Serializable ,Comparable<CalendarEntry> {
 
     @Override
     public int compareTo(CalendarEntry ce) {
-        if(getTimeStart()==ce.getTimeStart())
-            return 0;
-        else if(getTimeStart()<ce.getTimeStart())
+        Log.e("tag","comparing "+ getTitle() +" to "+ ce.getTitle() +getTimeEnd()+ " "+ce.getTimeStart());
+        if (getTimeStart() > ce.getTimeStart())
             return 1;
-        else
+        else if (getTimeStart() < ce.getTimeStart())
             return -1;
+        else
+        if ( getTimeEnd() < ce.getTimeEnd())
+            return -1;
+        else
+            return 1;
     }
 }

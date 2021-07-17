@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -102,10 +104,7 @@ public class DailyViewFragment extends Fragment {
          mListener.onComplete();
     }
 
-    public void passData(List<CalendarEntry> calendarEntryList)
-    {
-        Collections.sort(calendarEntryList);
-        Collections.reverse(calendarEntryList);
+    public void passData(List<CalendarEntry> calendarEntryList) {
         this.calendarEntryList = calendarEntryList;
     }
 
@@ -235,6 +234,8 @@ public class DailyViewFragment extends Fragment {
                 .filter(calendarEntry -> (calendarEntry.getType()==CalendarEntry.TYPE_EVENT))
                 .collect(Collectors.toList())
         );
+        //sort before updating
+        Collections.sort(calendarEntriesEvents);
         updateRecyclerView(calendarEntriesEvents);
         updateRecyclerViewEvents(calendarEntriesReminder);
         if(date.getTime()!=currentDate.getTime()) {

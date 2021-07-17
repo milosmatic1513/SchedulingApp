@@ -265,6 +265,8 @@ public class WeeklyViewFragment extends Fragment {
 
     public void updateRecyclerView(int weekday , List<CalendarEntry> calendarEntryListForAdapter){
         //create new adapter
+        //sort before updating
+        Collections.sort(calendarEntryListForAdapter);
         adapter = new CalendarEntitiesAdapter(calendarEntryListForAdapter, new MyOnClickListener(){
             @Override
             public void onItemClicked(int index) {

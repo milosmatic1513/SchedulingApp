@@ -257,6 +257,8 @@ public class DailyViewFragmentAlternative extends Fragment {
                 .filter(calendarEntry -> (calendarEntry.getType()==CalendarEntry.TYPE_EVENT))
                 .collect(Collectors.toList())
         );
+        //sort before updating
+        Collections.sort(calendarEntriesEvents);
         updateRecyclerView(calendarEntriesEvents);
         updateRecyclerViewEvents(calendarEntriesReminder);
         if(date.getTime()!=currentDate.getTime()) {

@@ -780,9 +780,16 @@ public class EventCreatePage extends AppCompatActivity implements LocationListen
                             if(current_location_marker!=null) {
                                 selectedMarkerLatLong = null;
                                 mMap.clear();
-                                mMap.addMarker(new MarkerOptions().position(latLng).
-                                        title("New Custom Marker")
-                                );
+                                if(editTextTitle.length()==0){
+                                    mMap.addMarker(new MarkerOptions().position(latLng).
+                                            title("Location Marker")
+                                    );
+                                }
+                                else{
+                                    mMap.addMarker(new MarkerOptions().position(latLng).
+                                            title(editTextTitle.getText().toString())
+                                    );
+                                }
                                 selectedMarkerLatLong = latLng;
                                 mMap.addMarker(new MarkerOptions().position(current_location_marker.getPosition())
                                         .title(getString(R.string.event_current_location))
@@ -793,9 +800,16 @@ public class EventCreatePage extends AppCompatActivity implements LocationListen
                         }
                     });
                     if (selectedMarkerLatLong!=null){
-                        mMap.addMarker(new MarkerOptions().position(selectedMarkerLatLong).
-                                title("New Custom Marker")
-                        );
+                        if(editTextTitle.length()==0){
+                            mMap.addMarker(new MarkerOptions().position(selectedMarkerLatLong).
+                                    title("Location Marker")
+                            );
+                        }
+                        else{
+                            mMap.addMarker(new MarkerOptions().position(selectedMarkerLatLong).
+                                    title(editTextTitle.getText().toString())
+                            );
+                        }
                     }
                 }
             });

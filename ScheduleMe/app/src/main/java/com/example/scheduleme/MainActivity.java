@@ -51,12 +51,17 @@ import java.util.Date;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
+    //static variables
     private static int RC_SIGN_IN =532;
     static int FACETEC_ACTIVITY_REQUEST=4;
 
+    //firebase
     private FirebaseAuth mAuth;
     private FirebaseDatabase database;
+    GoogleSignInClient mGoogleSignInClient;
+    FirebaseUser currentUser;
 
+    //components
     EditText passwordEditText , emailEditText;
     CheckBox rememberMeCheckbox;
 
@@ -70,8 +75,7 @@ public class MainActivity extends AppCompatActivity {
     Button loginButton;
     Button facebookButton;
 
-    GoogleSignInClient mGoogleSignInClient;
-    FirebaseUser currentUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //Get and set Language
@@ -139,7 +143,6 @@ public class MainActivity extends AppCompatActivity {
     public void updateUI() {
         //update email and password based on previous logins stored in
         //shared preferences
-
         emailEditText.setText(sharedPreferences.getString("email",""));
         passwordEditText.setText(sharedPreferences.getString("password",""));
         rememberMeCheckbox.setChecked(sharedPreferences.getBoolean("checked",false));
@@ -162,6 +165,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void logIn(View view) {
+        //log user in with local account
         if(NetworkUtilities.isNetworkAvailable(this)) {
 
             toogleButtons(false);
@@ -195,6 +199,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void  logInAuthenticated(){
+        //once user is logged in get private data
         currentUser = mAuth.getCurrentUser();
         if(currentUser!=null) {
             DatabaseReference myRef = database.getReference("Users/" + currentUser.getUid() + "/UserInfo");
@@ -206,6 +211,7 @@ public class MainActivity extends AppCompatActivity {
                     User user = snapshot.getValue(User.class);
                     if(user!=null)
                     {
+                        //check if user wants authentication on login
                         if (user.isLoginAuth())
                         {
                             Intent intent = new Intent(getApplicationContext(), FacetecAuthentication.class);
@@ -229,6 +235,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void logInWithGoogle(View view){
+        //log user in with google account
         toogleButtons(false);
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions
@@ -247,6 +254,7 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
+            //Handle google login results
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
                 // Google Sign In was successful, authenticate with Firebase
@@ -260,6 +268,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         else if(requestCode==4) {
+            //Handle authenticate results
             if(data.getBooleanExtra("Authenticated",false)){
                 Intent intent = new Intent(getApplicationContext(), MainPage.class);
                 startActivity(intent);
@@ -272,6 +281,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void firebaseAuthWithGoogle(String idToken,String displayName) {
+        //when user logs in with google, create a firebase login instance
         progressBarGoogle.setVisibility(View.VISIBLE);
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         mAuth.signInWithCredential(credential)
@@ -341,6 +351,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void resetPassword(View view) {
+        //send user reset email
         if (emailEditText.getText().length()!=0) {
             view.setEnabled(false);
             FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -378,6 +389,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void toogleButtons(boolean mode){
+        //toggle login buttons
         loginButton.setEnabled(mode);
         facebookButton.setEnabled(mode);
         googleButton.setEnabled(mode);

@@ -42,12 +42,14 @@ import java.util.List;
 import java.util.Locale;
 
 public class ProfilePage extends AppCompatActivity {
+    //firebase
     private FirebaseDatabase database;
     private FirebaseAuth mAuth;
     FirebaseUser currentUser;
-
+    //Users
     User originalUser;
     User alteredUser;
+    //Components
     TextView emailTextView,nameTextView;
     Switch switchAuth;
     Button saveChangesButton;

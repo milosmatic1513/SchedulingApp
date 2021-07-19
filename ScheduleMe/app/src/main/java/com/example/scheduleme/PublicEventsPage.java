@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.scheduleme.DataClasses.CalendarEntry;
+import com.example.scheduleme.DataClasses.Preferences;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -28,8 +29,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class PublicEventsPage extends AppCompatActivity {
+    //firebase
     FirebaseDatabase database;
     FirebaseAuth mAuth;
+    //components
     ProgressBar progressBar;
     ImageView negativeIcon,positiveIcon;
     EditText publicEventCodeEditText;
@@ -40,8 +43,13 @@ public class PublicEventsPage extends AppCompatActivity {
     Button buttonPublicEvents;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Get and set Language
+        String currentLocale = Preferences.getLanguage(this);
+        Preferences.setLocale(this, currentLocale);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_public_events_page);
+        //components initialization
         database= FirebaseDatabase.getInstance();
         mAuth = FirebaseAuth.getInstance();
         progressBar = (ProgressBar)findViewById(R.id.progressBarPublicEvents);
@@ -60,6 +68,7 @@ public class PublicEventsPage extends AppCompatActivity {
         timeLayoutPublicEvents= findViewById(R.id.timeLayoutPublicEvents);
         taskPublicEvents = findViewById(R.id.taskPublicEvents);
         taskPublicEvents.setVisibility(View.GONE);
+        //listeners
         publicEventCodeEditText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

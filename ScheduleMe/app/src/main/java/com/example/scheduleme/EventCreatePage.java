@@ -73,11 +73,15 @@ import java.util.Date;
 import java.util.Locale;
 
 public class EventCreatePage extends AppCompatActivity implements LocationListener {
+    //static variables
+    private final int RESULT_LOAD_IMG = 155;
+    private final int RESULT_TAKE_PHOTO = 156;
+    private final int RESULT_TURN_ON_LOCATION= 157;
     //firebase
     private FirebaseAuth mAuth;
     FirebaseUser currentUser;
     FirebaseDatabase database;
-
+    //components
     TimePickerDialog pickerTime;
     DatePickerDialog pickerDate;
 
@@ -119,9 +123,6 @@ public class EventCreatePage extends AppCompatActivity implements LocationListen
     ConstraintLayout timeConstraintLayout;
     ConstraintLayout constraintLayoutPublic;
     ConstraintLayout constraintLayoutReminderTime;
-    private final int RESULT_LOAD_IMG = 155;
-    private final int RESULT_TAKE_PHOTO = 156;
-    private final int RESULT_TURN_ON_LOCATION= 157;
     Bitmap imageBitmap = null;
 
     LocationManager locationManager;
@@ -133,7 +134,7 @@ public class EventCreatePage extends AppCompatActivity implements LocationListen
     int minuteTo = 0;
     //marker
     LatLng selectedMarkerLatLong;
-    //string
+    //strings
     String publicCode = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -451,6 +452,7 @@ public class EventCreatePage extends AppCompatActivity implements LocationListen
         //setup google maps
         setupMap();
 
+        //check if the passed calendar Entry isn't null and update the page accordingly
         if(calendarEntry != null){
             createPageTitle.setText(getString(R.string.edit_task));
             editTextTitle.setText(calendarEntry.getTitle());
@@ -497,7 +499,6 @@ public class EventCreatePage extends AppCompatActivity implements LocationListen
                 selectedMarkerLatLong=new LatLng(calendarEntry.getLocationLat(),calendarEntry.getLocationLong());
             }
 
-
             switchImportant.setChecked(calendarEntry.isImportant());
             switchPhotoId.setChecked(calendarEntry.isRequireIdScan());
             reminderSwitch.setChecked(calendarEntry.getReminder());
@@ -536,10 +537,6 @@ public class EventCreatePage extends AppCompatActivity implements LocationListen
                 editTextDate.setText(formattedDateDay + "/" +formattedDateMonth + "/" + formattedDateYear);
             }
         }
-
-
-
-
     }
 
     public void checkCreate(View view) {
